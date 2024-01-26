@@ -1,6 +1,11 @@
-part of 'registration_bloc.dart';
+class RegistrationStaste {}
 
-@immutable
-abstract class RegistrationState {}
+class RegistrationInitalState extends RegistrationStaste{}
 
-class RegistrationInitial extends RegistrationState {}
+class RegistrationAuthErrorState extends RegistrationStaste{}
+
+class RegistrationValidationErrorState extends RegistrationStaste{}
+
+class RegistrationAuthSuccessStatre extends RegistrationStaste{}
+
+class RegistrationValidationSuccessState extends RegistrationStaste{}
