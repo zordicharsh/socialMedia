@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/firebase_options.dart';
-import 'package:socialmedia/screens/registration/registration.dart';
+import 'package:socialmedia/screens/registration/registrationui/registration.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_bloc.dart';
 
 void main() async {

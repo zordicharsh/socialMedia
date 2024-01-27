@@ -1,11 +1,10 @@
 class RegistrationStaste {}
 
-class RegistrationInitalState extends RegistrationStaste{}
+class RegistrationInitalState extends RegistrationStaste {}
 
-class RegistrationAuthErrorState extends RegistrationStaste{}
+class RegistrationValidationErrorState extends RegistrationStaste {
+  String DynmaicError;
+  RegistrationValidationErrorState({required this.DynmaicError});
+}
 
-class RegistrationValidationErrorState extends RegistrationStaste{}
-
-class RegistrationAuthSuccessStatre extends RegistrationStaste{}
-
-class RegistrationValidationSuccessState extends RegistrationStaste{}
+class RegistrationValidationSuccessState extends RegistrationStaste {}
