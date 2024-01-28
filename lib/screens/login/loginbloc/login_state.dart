@@ -9,13 +9,14 @@ class VisibilityTrueState extends LoginState {}
 class VisibilityFalseState extends LoginState {}
 
 
-class LoginValidationState extends LoginState{
+class LoginValidationErrorState extends LoginState{
   String message ;
 
-  LoginValidationState(this.message);
+  LoginValidationErrorState({required this.message});
 }
 
 class LoginSuccessState extends LoginState{}
+class LoginLodingSuccessState extends LoginState{}
 
 
 

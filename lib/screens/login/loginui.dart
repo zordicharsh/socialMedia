@@ -1,28 +1,24 @@
-import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
+import 'package:socialmedia/screens/new.dart';
 import 'package:text_divider/text_divider.dart';
-
 class LoginUi extends StatefulWidget {
   const LoginUi({Key? key}) : super(key: key);
-
   @override
   _LoginUiState createState() => _LoginUiState();
 }
-
 class _LoginUiState extends State<LoginUi> {
   final loginKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     var obscured = true;
-
     return Scaffold(
       body: Form(
         key: loginKey,
@@ -46,8 +42,7 @@ class _LoginUiState extends State<LoginUi> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Enter Email";
-                    } else if (!RegExp(
-                        r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
+                    } else if (!RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
                         .hasMatch(value)) {
                       return "Incorrect Email Format";
                     }
@@ -75,7 +70,8 @@ class _LoginUiState extends State<LoginUi> {
                       ),
                     ),
                     errorStyle: const TextStyle(
-                      color: Colors.red, // Customize the color of the error text
+                      color:
+                          Colors.red, // Customize the color of the error text
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(9),
@@ -88,7 +84,8 @@ class _LoginUiState extends State<LoginUi> {
                       borderRadius: BorderRadius.circular(9),
                       borderSide: const BorderSide(
                         width: 2,
-                        color: Colors.red, // Customize the color of the focused error border
+                        color: Colors
+                            .red, // Customize the color of the focused error border
                       ),
                     ),
                   ),
@@ -142,20 +139,23 @@ class _LoginUiState extends State<LoginUi> {
                           ),
                         ),
                         errorStyle: const TextStyle(
-                          color: Colors.red, // Customize the color of the error text
+                          color: Colors
+                              .red, // Customize the color of the error text
                         ),
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(9),
                           borderSide: const BorderSide(
                             width: 2,
-                            color: Colors.red, // Customize the color of the error border
+                            color: Colors
+                                .red, // Customize the color of the error border
                           ),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(9),
                           borderSide: const BorderSide(
                             width: 2,
-                            color: Colors.red, // Customize the color of the focused error border
+                            color: Colors
+                                .red, // Customize the color of the focused error border
                           ),
                         ),
                       ),
@@ -176,29 +176,60 @@ class _LoginUiState extends State<LoginUi> {
                   ],
                 ),
                 const SizedBox(height: 30),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (loginKey.currentState!.validate()) {
-                          String email = emailController.text;
-                          String password = passwordController.text;
-                          BlocProvider.of<LoginBloc>(context)
-                              .add(LoginValidationError(Email: email, Password: password));
+                Center(
+                  child: BlocListener<LoginBloc, LoginState>(
+                    listener: (context, state) {
+                      if (state is LoginValidationErrorState) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)));
+                      } else if (state is LoginSuccessState) {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(
+                              builder: (context) => const neww(),
+                            ));
+                      }
+                    },
+                    child: BlocBuilder<LoginBloc, LoginState>(
+                      buildWhen: (previous, current) =>
+                          current is LoginLodingSuccessState,
+                      builder: (context, state) {
+                        if (state is LoginLodingSuccessState) {
+                          return ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(400, 40),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              backgroundColor: Colors.blue,
+                            ),
+                            child:const CircularProgressIndicator(),
+                          );
+                        } else {
+                          return ElevatedButton(
+                            onPressed: () {
+                              if (loginKey.currentState!.validate()) {
+                                String email = emailController.text;
+                                String password = passwordController.text;
+                                BlocProvider.of<LoginBloc>(context).add(
+                                    LoginValidationError(Email: email, Password: password));}},
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(400, 40),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              backgroundColor: Colors.blue,
+                            ),
+                            child: const Text(
+                              "Login",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          );
                         }
                       },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(400, 40),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white),
-                      ),
                     ),
                   ),
+                ),
                 const SizedBox(height: 30),
                 const TextDivider(
                   text: Text(
