@@ -1,151 +1,246 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
+import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
+import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
 import 'package:text_divider/text_divider.dart';
+
 class LoginUi extends StatefulWidget {
-  const LoginUi({super.key});
+  const LoginUi({Key? key}) : super(key: key);
+
   @override
-  State<LoginUi> createState() => _LoginUiState();
+  _LoginUiState createState() => _LoginUiState();
 }
+
 class _LoginUiState extends State<LoginUi> {
-  var obscured;
-  @override
-  void initState() {
-    super.initState();
-    obscured = true;
-  }
-  final login_key = GlobalKey<FormState>();
+  final loginKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController email_controller = TextEditingController();
-    final TextEditingController password_controll = TextEditingController();
-    double screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    var obscured = true;
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(padding: EdgeInsets.only(top: 120)),
-              Align(
+    return Scaffold(
+      body: Form(
+        key: loginKey,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Padding(padding: EdgeInsets.only(top: 120)),
+                Align(
                   alignment: Alignment.topCenter,
                   child: SvgPicture.asset(
-                    'assets/harsh.svg',
+                    'assets/images/instaLOGO.svg',
                     width: 300,
-                  )),
-              const SizedBox(height: 40),
-              TextFormField(
-                decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.person, color: Colors.white60),
+                  ),
+                ),
+                const SizedBox(height: 40),
+                TextFormField(
+                  controller: emailController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Enter Email";
+                    } else if (!RegExp(
+                        r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
+                        .hasMatch(value)) {
+                      return "Incorrect Email Format";
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    suffixIcon: const Icon(Icons.person),
                     labelText: "Enter your username",
-                    labelStyle: TextStyle(fontSize: 14, color: Colors.white60),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                        borderSide:
-                            const BorderSide(width: 2, color: Colors.white70)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                        borderSide: BorderSide(
-                          width: 2,
-                          color: Colors.white60,
-                        ))),
-              ),
-              const SizedBox(height: 18),
-              TextFormField(
-                obscureText: obscured,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      obscured ? Icons.visibility : Icons.visibility_off,
+                    labelStyle: const TextStyle(
+                      fontSize: 14,
                       color: Colors.white60,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        obscured = !obscured;
-                      });
-                    },
-                  ),
-                  labelText: "Password",
-                  labelStyle:
-                      const TextStyle(fontSize: 14, color: Colors.white60),
-                  focusedBorder: OutlineInputBorder(
+                    focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(9),
-                      borderSide:
-                          const BorderSide(width: 2, color: Colors.white70)),
-                  enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        width: 2,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(9),
-                      borderSide:
-                          const BorderSide(color: Colors.white70, width: 2)),
-                ),
-              ),
-              const SizedBox(height: 15),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    child: Text(
-                      "Forgot password?",
-                      style: TextStyle(color: Colors.blue),
+                      borderSide: const BorderSide(
+                        width: 2,
+                        color: Colors.white60,
+                      ),
+                    ),
+                    errorStyle: const TextStyle(
+                      color: Colors.red, // Customize the color of the error text
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(9),
+                      borderSide: const BorderSide(
+                        width: 2,
+                        color: Colors.red, // Customize the color of the error border
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(9),
+                      borderSide: const BorderSide(
+                        width: 2,
+                        color: Colors.red, // Customize the color of the focused error border
+                      ),
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(400, 40),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9)),
-                  backgroundColor: Colors.blue,
                 ),
-                child: const Text(
-                  "Login",
-                  style: TextStyle(color: Colors.white),
+                const SizedBox(height: 18),
+                BlocBuilder<LoginBloc, LoginState>(
+                  builder: (context, state) {
+                    return TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter Password";
+                        }
+                        return null;
+                      },
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: BlocBuilder<LoginBloc, LoginState>(
+                            builder: (context, state) {
+                              if (state is VisibilityFalseState) {
+                                obscured = true;
+                                return const Icon(Icons.visibility);
+                              } else {
+                                obscured = false;
+                                return const Icon(Icons.visibility_off);
+                              }
+                            },
+                          ),
+                          onPressed: () {
+                            BlocProvider.of<LoginBloc>(context)
+                                .add(VisibilityButtonEvent(visi: obscured));
+                          },
+                        ),
+                        labelText: "Password",
+                        labelStyle: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white60,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                          borderSide: const BorderSide(
+                            width: 2,
+                            color: Colors.white70,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                          borderSide: const BorderSide(
+                            color: Colors.white70,
+                            width: 2,
+                          ),
+                        ),
+                        errorStyle: const TextStyle(
+                          color: Colors.red, // Customize the color of the error text
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                          borderSide: const BorderSide(
+                            width: 2,
+                            color: Colors.red, // Customize the color of the error border
+                          ),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                          borderSide: const BorderSide(
+                            width: 2,
+                            color: Colors.red, // Customize the color of the focused error border
+                          ),
+                        ),
+                      ),
+                      obscureText: obscured,
+                    );
+                  },
                 ),
-              ),
-              const SizedBox(height: 30),
-              const TextDivider(
-                text: Text(
-                  "or",
-                  style: TextStyle(color: Colors.white54, fontSize: 14),
-                ),
-                color: Colors.grey,
-                thickness: 1,
-              ),
-              const SizedBox(height: 22),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.facebook, color: Colors.blue),
-                  SizedBox(width: 6),
-                  InkWell(
-                    child: Text(
-                      "Log in with Facebook",
-                      style: TextStyle(color: Colors.blue),
+                const SizedBox(height: 15),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      child: Text(
+                        "Forgot password?",
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 190),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account?",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  SizedBox(width: 6),
-                  InkWell(
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(color: Colors.blue),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (loginKey.currentState!.validate()) {
+                          String email = emailController.text;
+                          String password = passwordController.text;
+                          BlocProvider.of<LoginBloc>(context)
+                              .add(LoginValidationError(Email: email, Password: password));
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(400, 40),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ],
+                const SizedBox(height: 30),
+                const TextDivider(
+                  text: Text(
+                    "or",
+                    style: TextStyle(color: Colors.white54, fontSize: 14),
+                  ),
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
+                const SizedBox(height: 22),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.facebook, color: Colors.blue),
+                    SizedBox(width: 6),
+                    InkWell(
+                      child: Text(
+                        "Log in with Facebook",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 190),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account?",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(width: 6),
+                    InkWell(
+                      child: Text(
+                        "Sign Up",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
