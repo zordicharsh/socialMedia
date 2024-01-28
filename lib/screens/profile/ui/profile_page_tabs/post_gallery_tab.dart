@@ -83,8 +83,15 @@ class _PostGalleryState extends State<PostGallery> {
       width: double.infinity,
       color: Colors.grey[900],
       child: const ListTile(
-        leading: CircleAvatar(
-          backgroundImage: AssetImage('assets/images/cat_pic.jpg'),
+        leading:  CircleAvatar(
+          radius: 14.1,
+          backgroundColor: Colors.white,
+          child: CircleAvatar(
+            backgroundColor: Colors.grey,
+            backgroundImage:
+            AssetImage("assets/images/cat_pic.jpg"),
+            radius: 14,
+          ),
         ),
         title: Text(
           'lilstuart',

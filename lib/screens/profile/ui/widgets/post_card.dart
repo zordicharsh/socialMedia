@@ -22,7 +22,6 @@ class _PostCardState extends State<PostCard> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-
         leading: ModalRoute.of(context)?.canPop == true
             ? IconButton(
                 onPressed: Navigator.of(context).pop,
@@ -53,7 +52,7 @@ class _PostCardState extends State<PostCard> {
                   const Row(
                     children: [
                       CircleAvatar(
-                        radius: 14.3,
+                        radius: 14.1,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
                           backgroundColor: Colors.grey,
@@ -68,7 +67,8 @@ class _PostCardState extends State<PostCard> {
                       Text(
                         "lilstuart",
                         style: TextStyle(
-                            color: Colors.white,),
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -109,7 +109,7 @@ class _PostCardState extends State<PostCard> {
                     fit: BoxFit.cover,
                     filterQuality: FilterQuality.high,
                     image: NetworkImage(
-                     widget.currentImageIndex,
+                      widget.currentImageIndex,
                     )),
               )),
           Padding(
@@ -129,13 +129,13 @@ class _PostCardState extends State<PostCard> {
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.messenger_outline_outlined),
+                      icon: const Icon(Icons.chat_bubble_outline_outlined,),
                       color: Colors.white,
                     ),
                     IconButton(
                       splashColor: Colors.black,
                       onPressed: () {},
-                      icon: const Icon(Icons.send_outlined),
+                      icon: const Icon(Icons.send),
                       color: Colors.white,
                     ),
                   ],

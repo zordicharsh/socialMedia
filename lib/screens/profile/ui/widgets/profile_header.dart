@@ -15,10 +15,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Padding(
-          padding:
-          const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Row(
             children: [
               const CircleAvatar(
@@ -73,20 +71,21 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           height: 16,
         ),
         const Padding(
-          padding:
-          EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ProfileManipulationButton(text:"Edit profile",height:32 ,width: 184),
-              ProfileManipulationButton(text:"Share profile",height:32 ,width: 184),
+              ProfileManipulationButton(
+                  text: "Edit profile", height: 32, width: 184),
+              ProfileManipulationButton(
+                  text: "Share profile", height: 32, width: 184),
             ],
           ),
         ),
-
       ],
     );
   }
+
   Column buildStatColumn(int num, String label) {
     return Column(
       mainAxisSize: MainAxisSize.min,
