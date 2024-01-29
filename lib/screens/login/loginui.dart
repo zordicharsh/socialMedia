@@ -7,6 +7,7 @@ import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';
+import 'package:socialmedia/screens/registration/registrationui/registration.dart';
 
 import 'package:text_divider/text_divider.dart';
 
@@ -280,16 +281,17 @@ class LoginUiState extends State<LoginUi> {
                   ],
                 ),
                 const SizedBox(height: 190),
-                const Row(
+                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "Don't have an account?",
                       style: TextStyle(color: Colors.white),
                     ),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     InkWell(
-                      child: Text(
+                      onTap: ()=> const SignUp(),
+                      child: const Text(
                         "Sign Up",
                         style: TextStyle(color: Colors.blue),
                       ),
