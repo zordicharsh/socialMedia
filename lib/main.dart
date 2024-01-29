@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/firebase_options.dart';
-import 'package:socialmedia/screens/registration/registrationui/registration.dart';
-import 'package:socialmedia/screens/registration/registrationbloc/registration_bloc.dart';
+import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
+
+import 'package:socialmedia/screens/login/loginui.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,11 +14,16 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RegistrationBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoginBloc(),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
@@ -26,9 +31,8 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.dark(),
           useMaterial3: true,
         ),
-        home: SignUp(),
+        home: LoginUi(),
       ),
     );
   }
 }
-
