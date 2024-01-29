@@ -1,5 +1,6 @@
 abstract class RegistrationEvents{}
 
+
 class ClickOnSignUpButton extends RegistrationEvents{
   String Password;
   String Email;
@@ -10,6 +11,7 @@ class ClickOnSignUpButton extends RegistrationEvents{
   ClickOnSignUpButton({ required this.Username, required this.Email,required this.Password,required this.ConfromPassword});
 }
 
+
 class ClickOnSigninButton extends RegistrationEvents{
   String GetUsername;
   String GetEmail;
@@ -17,8 +19,10 @@ class ClickOnSigninButton extends RegistrationEvents{
   ClickOnSigninButton(this.GetUsername, this.GetEmail, this.GetPassword);
 }
 
-class ClickOnLightButton extends RegistrationEvents{
+
+class ClickOnVisibilityButton extends RegistrationEvents{
   bool Obsecure;
-  ClickOnLightButton({required this.Obsecure});
+  ClickOnVisibilityButton({required this.Obsecure});
 }
+
 

@@ -1,28 +1,28 @@
-abstract class RegistrationStaste {}
+abstract class RegistrationStates {}
 
-class RegistrationInitalState extends RegistrationStaste {}
+class RegistrationInitalState extends RegistrationStates {}
 
-class FirebaseAuthErrorState extends RegistrationStaste {
+class FirebaseAuthErrorState extends RegistrationStates {
   String AuthErrorMessage;
   FirebaseAuthErrorState({required this.AuthErrorMessage});
 }
 
-class FirebaseAuthSuccessState extends RegistrationStaste {
+class FirebaseAuthSuccessState extends RegistrationStates {
   String AuthSuccessMessage;
 
   FirebaseAuthSuccessState({required this.AuthSuccessMessage});
 }
 
-class AuthSuccessLoading extends RegistrationStaste {}
+class AuthSuccessLoading extends RegistrationStates {}
 
-class obsecureTrue extends RegistrationStaste {
+class obsecureTrue extends RegistrationStates {
   bool Obsecure;
   obsecureTrue({required this.Obsecure});
 }
 
-class obsecureFalse extends RegistrationStaste {
+class obsecureFalse extends RegistrationStates {
   bool Obsecure;
   obsecureFalse({required this.Obsecure});
 }
 
-class NavigateToLoginScreen extends RegistrationStaste {}
+class NavigateToLoginScreen extends RegistrationStates {}

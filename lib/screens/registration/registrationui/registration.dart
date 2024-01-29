@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,8 +29,13 @@ class _SignUpState extends State<SignUp> {
     String? _validateUserName(String? value) {
       if (value == null || value.isEmpty) {
         return 'Please enter a username';
+      } else {
+        if (RegExp(
+                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            .hasMatch(value)) {
+          return 'please enter valid username';
+        }
       }
-      return null;
     }
 
     String? _validateEmail(String? value) {
@@ -96,15 +102,15 @@ class _SignUpState extends State<SignUp> {
                               GetIcon: Icons.email,
                             ),
                             SizedBox(height: 10),
-                            BlocBuilder<RegistrationBloc, RegistrationStaste>(
+                            BlocBuilder<RegistrationBloc, RegistrationStates>(
                               builder: (context, state) {
                                 print(state.toString());
-                                if (state is obsecureTrue) {
+                                if (state is obsecureFalse) {
                                   return Column(
                                     children: [
                                       CustomTextFormFieldError(
                                           validator: _validatePassword,
-                                          LightIcon: Icons.flashlight_on,
+                                          LightIcon: Icons.visibility_off,
                                           Obsecure: state.Obsecure,
                                           GetController: PasswordController,
                                           GetHintText: "Create your password",
@@ -112,7 +118,7 @@ class _SignUpState extends State<SignUp> {
                                       SizedBox(height: 10),
                                       CustomTextFormFieldError(
                                           validator: _validateConfirmPassword,
-                                          LightIcon: Icons.flashlight_on,
+                                          LightIcon: Icons.visibility_off,
                                           Obsecure: state.Obsecure,
                                           GetController:
                                               ConfromPasswordController,
@@ -120,13 +126,12 @@ class _SignUpState extends State<SignUp> {
                                           GetIcon: Icons.password),
                                     ],
                                   );
-                                }
-                                else if (state is obsecureFalse) {
+                                } else if (state is obsecureTrue) {
                                   return Column(
                                     children: [
                                       CustomTextFormFieldError(
                                           validator: _validatePassword,
-                                          LightIcon: Icons.flashlight_off,
+                                          LightIcon: Icons.visibility,
                                           Obsecure: state.Obsecure,
                                           GetController: PasswordController,
                                           GetHintText: "Create your password",
@@ -134,7 +139,7 @@ class _SignUpState extends State<SignUp> {
                                       SizedBox(height: 10),
                                       CustomTextFormFieldError(
                                           validator: _validateConfirmPassword,
-                                          LightIcon: Icons.flashlight_off,
+                                          LightIcon: Icons.visibility,
                                           Obsecure: state.Obsecure,
                                           GetController:
                                               ConfromPasswordController,
@@ -142,22 +147,21 @@ class _SignUpState extends State<SignUp> {
                                           GetIcon: Icons.password)
                                     ],
                                   );
-                                }
-                                else {
+                                } else {
                                   return Column(
                                     children: [
                                       CustomTextFormFieldError(
                                           validator: _validatePassword,
-                                          LightIcon: Icons.flashlight_on,
-                                          Obsecure: false,
+                                          LightIcon: Icons.visibility_off,
+                                          Obsecure: true,
                                           GetController: PasswordController,
                                           GetHintText: "Create your password",
                                           GetIcon: Icons.password),
                                       SizedBox(height: 10),
                                       CustomTextFormFieldError(
                                           validator: _validateConfirmPassword,
-                                          LightIcon: Icons.flashlight_on,
-                                          Obsecure: false,
+                                          LightIcon: Icons.visibility_off,
+                                          Obsecure: true,
                                           GetController:
                                               ConfromPasswordController,
                                           GetHintText: "Conform your password",
@@ -170,7 +174,7 @@ class _SignUpState extends State<SignUp> {
                             SizedBox(height: 10),
                           ],
                         ),
-                        BlocListener<RegistrationBloc, RegistrationStaste>(
+                        BlocListener<RegistrationBloc, RegistrationStates>(
                           listener: (context, state) {
                             if (state is FirebaseAuthErrorState) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -188,11 +192,12 @@ class _SignUpState extends State<SignUp> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => LoginPage(),
-                                  ));
+                                  ),
+                              );
                             }
                           },
                           child:
-                              BlocBuilder<RegistrationBloc, RegistrationStaste>(
+                              BlocBuilder<RegistrationBloc, RegistrationStates>(
                             buildWhen: (previous, current) =>
                                 current is AuthSuccessLoading,
                             builder: (context, state) {
@@ -225,8 +230,26 @@ class _SignUpState extends State<SignUp> {
                                     height: 40,
                                     width: 346,
                                     child: Center(
-                                      child:
-                                          CircularProgressIndicator.adaptive(),
+                                      child: BackdropFilter(
+                                        filter: ImageFilter.blur(
+                                            sigmaX: 5, sigmaY: 5),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(
+                                                0.5), // Adjust opacity as needed
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                          height: 24,
+                                          width: 24,
+                                          child: CircularProgressIndicator
+                                              .adaptive(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.white),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 );

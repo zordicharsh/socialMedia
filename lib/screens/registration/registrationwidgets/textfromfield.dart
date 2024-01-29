@@ -96,7 +96,7 @@ class CustomTextFormFieldError extends StatelessWidget {
           suffixIcon: IconButton(
               onPressed: () {
                 BlocProvider.of<RegistrationBloc>(context)
-                    .add(ClickOnLightButton(Obsecure: Obsecure));
+                    .add(ClickOnVisibilityButton(Obsecure: Obsecure));
               },
               icon: Icon(
                 LightIcon,
