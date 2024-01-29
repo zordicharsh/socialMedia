@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:socialmedia/common_widgets/transition_widgets/left_to_right/cutom_page_route_left_to_right.dart';
+import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
@@ -190,9 +192,7 @@ class LoginUiState extends State<LoginUi> {
                       } else if (state is LoginSuccessState) {
                         Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfilePage(),
-                            ));
+                           MaterialPageRoute(builder: (context) => ProfilePage(),));
                       }
                     },
                     child: BlocBuilder<LoginBloc, LoginState>(
@@ -201,7 +201,9 @@ class LoginUiState extends State<LoginUi> {
                       builder: (context, state) {
                         if (state is LoginLoadingSuccessState) {
                           return ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+
+                            },
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(400, 40),
                               shape: RoundedRectangleBorder(
@@ -290,7 +292,7 @@ class LoginUiState extends State<LoginUi> {
                     ),
                     const SizedBox(width: 6),
                     InkWell(
-                      onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp(),)),
+                      onTap: ()=> Navigator.push(context, CustomPageRouteRightToLeft(child:const SignUp())),
                       child: const Text(
                         "Sign Up",
                         style: TextStyle(color: Colors.blue),

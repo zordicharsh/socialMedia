@@ -26,6 +26,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
   FutureOr<void> clickOnSignUpButton(
       ClickOnSignUpButton event, Emitter<RegistrationStates> emit) async {
     try {
+      final UserAuth = FirebaseAuth.instance.currentUser;
       CollectionReference users =
           FirebaseFirestore.instance.collection('RegisteredUsers');
       QuerySnapshot querySnapshot = await users
@@ -45,7 +46,6 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
       // print(password.toString());
 
       if (querySnapshot.docs.isEmpty) {
-        final UserAuth = FirebaseAuth.instance.currentUser;
         final UserCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: event.Email.trim(), password: event.Password.trim());
@@ -64,7 +64,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
             .collection("RegisteredUsers")
             .doc(UserAuth.uid.toString())
             .set(RegModel.toMap());
-        emit(FirebaseAuthSuccessState(AuthSuccessMessage: "Loginpage load"));
+        // emit(FirebaseAuthSuccessState(AuthSuccessMessage: "Loginpage load"));
         emit(AuthSuccessLoading());
         emit(NavigateToLoginScreen());
       } else {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-import '../../../../common_widgets/transition_widgets/right_to_left/custom_page_route.dart';
+import '../../../../common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import '../widgets/animated_dialog.dart';
 import '../widgets/post_card.dart';
 
@@ -38,7 +38,7 @@ class _PostGalleryState extends State<PostGallery> {
             onTap: () {
               Navigator.push(
                   context,
-                  CustomPageRoute(
+                  CustomPageRouteRightToLeft(
                       child: PostCard(
                           currentImageIndex: widget.photosList[index])));
             },

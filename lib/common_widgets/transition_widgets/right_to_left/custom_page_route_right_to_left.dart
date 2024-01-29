@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class CustomPageRoute extends PageRouteBuilder {
+class CustomPageRouteRightToLeft extends PageRouteBuilder {
   final Widget child;
 
-  CustomPageRoute({
+  CustomPageRouteRightToLeft({
     required this.child,
   }) : super(pageBuilder: (context, animation, secondaryAnimation) => child,barrierColor: Colors.black45,transitionDuration: const Duration(milliseconds: 200),reverseTransitionDuration: const Duration(milliseconds: 200));
 
