@@ -64,7 +64,9 @@ class _SignUpState extends State<SignUp> {
       return null;
     }
 
-    return Scaffold(
+    return BlocProvider(
+  create: (context) => RegistrationBloc(),
+  child: Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -327,6 +329,7 @@ class _SignUpState extends State<SignUp> {
           ),
         ),
       ),
-    );
+    ),
+);
   }
 }

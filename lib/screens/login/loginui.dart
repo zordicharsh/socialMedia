@@ -290,7 +290,7 @@ class LoginUiState extends State<LoginUi> {
                     ),
                     const SizedBox(width: 6),
                     InkWell(
-                      onTap: ()=> const SignUp(),
+                      onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp(),)),
                       child: const Text(
                         "Sign Up",
                         style: TextStyle(color: Colors.blue),
