@@ -49,7 +49,7 @@ class _LoginUiState extends State<LoginUi> {
                   },
                   decoration: InputDecoration(
                     suffixIcon: const Icon(Icons.person),
-                    labelText: "Enter your username",
+                    labelText: "Enter your Email/Username",
                     labelStyle: const TextStyle(
                       fontSize: 14,
                       color: Colors.white60,

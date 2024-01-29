@@ -45,7 +45,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginValidationErrorState(message: "Wrong Password"));
         }
       }
-    } else {
+    } else { /////////////////////////////////////////////////  UserName //////////////////////////////////////////////////
       try {
         var response = await FirebaseFirestore.instance
             .collection('RegisteredUsers')
