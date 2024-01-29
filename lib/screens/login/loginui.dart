@@ -1,21 +1,25 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
-import 'package:socialmedia/screens/new.dart';
+import 'package:socialmedia/screens/profile/ui/profile.dart';
+
 import 'package:text_divider/text_divider.dart';
 
 class LoginUi extends StatefulWidget {
   const LoginUi({Key? key}) : super(key: key);
+
   @override
-  _LoginUiState createState() => _LoginUiState();
+  LoginUiState createState() => LoginUiState();
 }
 
-class _LoginUiState extends State<LoginUi> {
+class LoginUiState extends State<LoginUi> {
   final loginKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController emailController = TextEditingController();
@@ -186,7 +190,7 @@ class _LoginUiState extends State<LoginUi> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const neww(),
+                              builder: (context) => const ProfilePage(),
                             ));
                       }
                     },

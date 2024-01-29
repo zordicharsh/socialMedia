@@ -3,7 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:socialmedia/screens/Loginpage.dart';
+import 'package:socialmedia/screens/login/loginui.dart';
+
 import 'package:socialmedia/screens/registration/registrationbloc/registration_bloc.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_event.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_state.dart';
@@ -184,7 +185,7 @@ class _SignUpState extends State<SignUp> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const LoginPage(),
+                                  builder: (context) => const LoginUi(),
                                 ),
                               );
                             }
@@ -207,7 +208,7 @@ class _SignUpState extends State<SignUp> {
                                                   .toString(),
                                               Password: PasswordController.text
                                                   .toString(),
-                                              ConfromPassword:
+                                              ConfirmPassword:
                                                   PasswordController.text
                                                       .toString()));
                                     }
@@ -258,7 +259,7 @@ class _SignUpState extends State<SignUp> {
                                                   .toString(),
                                               Password: PasswordController.text
                                                   .toString(),
-                                              ConfromPassword:
+                                              ConfirmPassword:
                                                   PasswordController.text
                                                       .toString()));
                                     }

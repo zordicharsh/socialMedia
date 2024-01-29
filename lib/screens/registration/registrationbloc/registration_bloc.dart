@@ -16,7 +16,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
 
   FutureOr<void> clickOnLightButton(
       ClickOnVisibilityButton event, Emitter<RegistrationStates> emit) {
-    if (event.Obsecure == true) {
+    if (event.Obscure == true) {
       emit(obsecureTrue(Obsecure: false));
     } else {
       emit(obsecureFalse(Obsecure: true));
@@ -31,7 +31,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
       QuerySnapshot querySnapshot = await users
           .where('username', isEqualTo: event.Username.toString())
           .get();
-      print(querySnapshot.docs);
+      //print(querySnapshot.docs);
       // String ?gloable;
       // String ?password;
       // querySnapshot.docs.forEach((data) {

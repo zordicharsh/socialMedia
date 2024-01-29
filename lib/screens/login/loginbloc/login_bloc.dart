@@ -1,12 +1,14 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'login_event.dart';
 import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitailState()) {
+  LoginBloc() : super(LoginInitialState()) {
     on<VisibilityButtonEvent>(visibilityButtonEvent);
     on<LoginValidationError>(loginValidationError);
   }
@@ -41,11 +43,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginValidationErrorState(
               message: "User Not Found For That Email "));
         } else if (e.code == 'wrong-password') {
-            //print("Wrong password");
+          //print("Wrong password");
           emit(LoginValidationErrorState(message: "Wrong Password"));
         }
       }
-    } else { /////////////////////////////////////////////////  UserName //////////////////////////////////////////////////
+    } else {
+      /////////////////////////////////////////////////  UserName //////////////////////////////////////////////////
       try {
         var response = await FirebaseFirestore.instance
             .collection('RegisteredUsers')

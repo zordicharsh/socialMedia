@@ -5,9 +5,10 @@ class RegistrationModel {
   String Password;
   List Following = [];
   List Follower = [];
-  DateTime datetime ;
+  DateTime datetime;
 
-  RegistrationModel(this.Uid, this.Username, this.Email, this.Password,this.Follower,this.Following,this.datetime);
+  RegistrationModel(this.Uid, this.Username, this.Email, this.Password,
+      this.Follower, this.Following, this.datetime);
 
   Map<String, dynamic> toMap() {
     return {
@@ -15,9 +16,9 @@ class RegistrationModel {
       'username': Username,
       'email': Email,
       'password': Password,
-      'following' : Following,
-      'follower' : Follower,
-      'datetime' : datetime
+      'following': Following,
+      'follower': Follower,
+      'datetime': datetime
     };
   }
 }

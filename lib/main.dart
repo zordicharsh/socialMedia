@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/firebase_options.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
-
 import 'package:socialmedia/screens/login/loginui.dart';
 
 void main() async {
@@ -28,10 +27,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.dark(),
+          colorScheme: const ColorScheme.dark(),
           useMaterial3: true,
         ),
-        home: LoginUi(),
+        home: const LoginUi(),
       ),
     );
   }
