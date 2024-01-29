@@ -2,8 +2,8 @@ abstract class LoginEvent {}
 
 
 class  VisibilityButtonEvent  extends LoginEvent {
-  var visi ;
-  VisibilityButtonEvent({required this.visi});
+  var visibility ;
+  VisibilityButtonEvent({required this.visibility});
 }
 
 class LoginValidationError extends LoginEvent{

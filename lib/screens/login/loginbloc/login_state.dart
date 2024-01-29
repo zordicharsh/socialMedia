@@ -16,7 +16,8 @@ class LoginValidationErrorState extends LoginState{
 }
 
 class LoginSuccessState extends LoginState{}
-class LoginLodingSuccessState extends LoginState{}
+
+class LoginLoadingSuccessState extends LoginState{}
 
 
 
