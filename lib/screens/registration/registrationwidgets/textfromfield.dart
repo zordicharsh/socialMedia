@@ -24,25 +24,25 @@ class CustomTextFromField extends StatelessWidget {
       controller: GetController,
       decoration: InputDecoration(
         focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.red, width: 0.3),
+          borderSide: const BorderSide(color: Colors.red, width: 0.3),
           borderRadius: BorderRadius.circular(7),
         ),
         errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.red,
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(7),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: 1),
+          borderSide: const BorderSide(color: Colors.grey, width: 1),
           borderRadius: BorderRadius.circular(7),
         ),
         prefixIcon: Icon(GetIcon, color: Colors.white60, size: 20),
         labelText: GetHintText.toString(),
-        labelStyle: TextStyle(fontSize: 13, color: Colors.white60),
+        labelStyle: const TextStyle(fontSize: 13, color: Colors.white60),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white, width: 0.2),
+          borderSide: const BorderSide(color: Colors.white, width: 0.2),
           borderRadius: BorderRadius.circular(7),
         ),
       ),
@@ -75,20 +75,20 @@ class CustomTextFormFieldError extends StatelessWidget {
       controller: GetController,
       decoration: InputDecoration(
           focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Colors.red,
                 width: 0.3,
               ),
               borderRadius: BorderRadius.circular(7)),
           errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: Colors.red,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(7),
           ),
           focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Colors.grey,
                 width: 1,
               ),
@@ -104,9 +104,9 @@ class CustomTextFormFieldError extends StatelessWidget {
               )),
           prefixIcon: Icon(GetIcon, color: Colors.white60, size: 20),
           labelText: GetHintText.toString(),
-          labelStyle: TextStyle(fontSize: 13, color: Colors.white60),
+          labelStyle: const TextStyle(fontSize: 13, color: Colors.white60),
           enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Colors.white,
                 width: 0.2,
               ),

@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_event.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_state.dart';
@@ -52,6 +50,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
             .createUserWithEmailAndPassword(
                 email: event.Email.trim(), password: event.Password.trim());
         emit(AuthSuccessLoading());
+        // await Future.delayed(Duration(seconds: 6));
         DateTime now = DateTime.now();
         RegistrationModel RegModel = RegistrationModel(
             UserAuth!.uid.toString(),

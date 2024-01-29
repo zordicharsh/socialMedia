@@ -76,8 +76,8 @@ class _SignUpState extends State<SignUp> {
                   child: SvgPicture.asset('assets/images/instalogosvg.svg',
                       width: 300),
                 ),
-                Text("Sign up to see photos and videos from your friends",
-                    style: TextStyle(fontSize: 16, color: Colors.white60),
+                const Text("Sign up to see photos and videos from your friends",
+                    style: const TextStyle(fontSize: 16, color: Colors.white60),
                     maxLines: 2,
                     textAlign: TextAlign.center),
                 Padding(
@@ -86,94 +86,87 @@ class _SignUpState extends State<SignUp> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          children: [
-                            CustomTextFromField(
-                              validator: _validateUserName,
-                              GetController: UserNameController,
-                              GetHintText: "Enter your username",
-                              GetIcon: Icons.person,
-                            ),
-                            SizedBox(height: 10),
-                            CustomTextFromField(
-                              validator: _validateEmail,
-                              GetController: EmailController,
-                              GetHintText: "Enter your email",
-                              GetIcon: Icons.email,
-                            ),
-                            SizedBox(height: 10),
-                            BlocBuilder<RegistrationBloc, RegistrationStates>(
-                              builder: (context, state) {
-                                print(state.toString());
-                                if (state is obsecureFalse) {
-                                  return Column(
-                                    children: [
-                                      CustomTextFormFieldError(
-                                          validator: _validatePassword,
-                                          LightIcon: Icons.visibility_off,
-                                          Obsecure: state.Obsecure,
-                                          GetController: PasswordController,
-                                          GetHintText: "Create your password",
-                                          GetIcon: Icons.password),
-                                      SizedBox(height: 10),
-                                      CustomTextFormFieldError(
-                                          validator: _validateConfirmPassword,
-                                          LightIcon: Icons.visibility_off,
-                                          Obsecure: state.Obsecure,
-                                          GetController:
-                                              ConfromPasswordController,
-                                          GetHintText: "Conform your password",
-                                          GetIcon: Icons.password),
-                                    ],
-                                  );
-                                } else if (state is obsecureTrue) {
-                                  return Column(
-                                    children: [
-                                      CustomTextFormFieldError(
-                                          validator: _validatePassword,
-                                          LightIcon: Icons.visibility,
-                                          Obsecure: state.Obsecure,
-                                          GetController: PasswordController,
-                                          GetHintText: "Create your password",
-                                          GetIcon: Icons.password),
-                                      SizedBox(height: 10),
-                                      CustomTextFormFieldError(
-                                          validator: _validateConfirmPassword,
-                                          LightIcon: Icons.visibility,
-                                          Obsecure: state.Obsecure,
-                                          GetController:
-                                              ConfromPasswordController,
-                                          GetHintText: "Conform your password",
-                                          GetIcon: Icons.password)
-                                    ],
-                                  );
-                                } else {
-                                  return Column(
-                                    children: [
-                                      CustomTextFormFieldError(
-                                          validator: _validatePassword,
-                                          LightIcon: Icons.visibility_off,
-                                          Obsecure: true,
-                                          GetController: PasswordController,
-                                          GetHintText: "Create your password",
-                                          GetIcon: Icons.password),
-                                      SizedBox(height: 10),
-                                      CustomTextFormFieldError(
-                                          validator: _validateConfirmPassword,
-                                          LightIcon: Icons.visibility_off,
-                                          Obsecure: true,
-                                          GetController:
-                                              ConfromPasswordController,
-                                          GetHintText: "Conform your password",
-                                          GetIcon: Icons.password)
-                                    ],
-                                  );
-                                }
-                              },
-                            ),
-                            SizedBox(height: 10),
-                          ],
+                        CustomTextFromField(
+                          validator: _validateUserName,
+                          GetController: UserNameController,
+                          GetHintText: "Enter your username",
+                          GetIcon: Icons.person,
                         ),
+                        const SizedBox(height: 10),
+                        CustomTextFromField(
+                          validator: _validateEmail,
+                          GetController: EmailController,
+                          GetHintText: "Enter your email",
+                          GetIcon: Icons.email,
+                        ),
+                        const SizedBox(height: 10),
+                        BlocBuilder<RegistrationBloc, RegistrationStates>(
+                          builder: (context, state) {
+                            print(state.toString());
+                            if (state is obsecureFalse) {
+                              return Column(
+                                children: [
+                                  CustomTextFormFieldError(
+                                      validator: _validatePassword,
+                                      LightIcon: Icons.visibility_off,
+                                      Obsecure: state.Obsecure,
+                                      GetController: PasswordController,
+                                      GetHintText: "Create your password",
+                                      GetIcon: Icons.password),
+                                  const SizedBox(height: 10),
+                                  CustomTextFormFieldError(
+                                      validator: _validateConfirmPassword,
+                                      LightIcon: Icons.visibility_off,
+                                      Obsecure: state.Obsecure,
+                                      GetController: ConfromPasswordController,
+                                      GetHintText: "Conform your password",
+                                      GetIcon: Icons.password),
+                                ],
+                              );
+                            } else if (state is obsecureTrue) {
+                              return Column(
+                                children: [
+                                  CustomTextFormFieldError(
+                                      validator: _validatePassword,
+                                      LightIcon: Icons.visibility,
+                                      Obsecure: state.Obsecure,
+                                      GetController: PasswordController,
+                                      GetHintText: "Create your password",
+                                      GetIcon: Icons.password),
+                                  const SizedBox(height: 10),
+                                  CustomTextFormFieldError(
+                                      validator: _validateConfirmPassword,
+                                      LightIcon: Icons.visibility,
+                                      Obsecure: state.Obsecure,
+                                      GetController: ConfromPasswordController,
+                                      GetHintText: "Confirm your password",
+                                      GetIcon: Icons.password)
+                                ],
+                              );
+                            } else {
+                              return Column(
+                                children: [
+                                  CustomTextFormFieldError(
+                                      validator: _validatePassword,
+                                      LightIcon: Icons.visibility_off,
+                                      Obsecure: true,
+                                      GetController: PasswordController,
+                                      GetHintText: "Create your password",
+                                      GetIcon: Icons.password),
+                                  const SizedBox(height: 10),
+                                  CustomTextFormFieldError(
+                                      validator: _validateConfirmPassword,
+                                      LightIcon: Icons.visibility_off,
+                                      Obsecure: true,
+                                      GetController: ConfromPasswordController,
+                                      GetHintText: "Confirm your password",
+                                      GetIcon: Icons.password)
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 10),
                         BlocListener<RegistrationBloc, RegistrationStates>(
                           listener: (context, state) {
                             if (state is FirebaseAuthErrorState) {
@@ -189,10 +182,10 @@ class _SignUpState extends State<SignUp> {
                             } else if (state is NavigateToLoginScreen) {
                               // Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage(),));
                               Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoginPage(),
-                                  ),
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginPage(),
+                                ),
                               );
                             }
                           },
@@ -222,7 +215,7 @@ class _SignUpState extends State<SignUp> {
                                         name: "81 line in Registration.dart");
                                   },
                                   child: Container(
-                                    margin: EdgeInsets.only(top: 24),
+                                    margin: const EdgeInsets.only(top: 24),
                                     decoration: BoxDecoration(
                                       color: Colors.blue,
                                       borderRadius: BorderRadius.circular(5),
@@ -242,7 +235,7 @@ class _SignUpState extends State<SignUp> {
                                           ),
                                           height: 24,
                                           width: 24,
-                                          child: CircularProgressIndicator
+                                          child: const CircularProgressIndicator
                                               .adaptive(
                                             valueColor:
                                                 AlwaysStoppedAnimation<Color>(
@@ -273,14 +266,14 @@ class _SignUpState extends State<SignUp> {
                                         name: "81 line in Registration.dart");
                                   },
                                   child: Container(
-                                    margin: EdgeInsets.only(top: 24),
+                                    margin: const EdgeInsets.only(top: 24),
                                     decoration: BoxDecoration(
                                       color: Colors.blue,
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     height: 40,
                                     width: 346,
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
                                         "Sign up",
                                         style: TextStyle(
@@ -300,8 +293,8 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 115, 0, 0),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 115, 0, 0),
                   child: TextDivider(
                     text: Text(
                       "or",
@@ -314,14 +307,14 @@ class _SignUpState extends State<SignUp> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "Already have an account?",
                       style: TextStyle(fontSize: 14, color: Colors.white60),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     InkWell(
                       onTap: () {},
-                      child: Text(
+                      child: const Text(
                         "Sign in",
                         style: TextStyle(color: Colors.blueAccent),
                       ),
