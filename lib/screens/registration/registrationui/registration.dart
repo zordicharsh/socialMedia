@@ -33,11 +33,14 @@ class _SignUpState extends State<SignUp> {
     String? validateUserName(String? value) {
       if (value == null || value.isEmpty) {
         return 'Please enter a username';
+      } else if (RegExp(
+          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          .hasMatch(value)) {
+        return 'please enter username in valid format';
       } else {
         return null;
       }
     }
-
     String? validateEmail(String? value) {
       if (value == null || value.isEmpty) {
         return 'Please enter an email';
