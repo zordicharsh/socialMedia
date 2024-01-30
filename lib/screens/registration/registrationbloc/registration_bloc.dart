@@ -19,7 +19,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
     if (event.Obscure == true) {
       emit(obsecureTrue(Obsecure: false));
     } else {
-      emit(obsecureFalse(Obsecure: true));
+      emit(obsecureFalse(Obscure: true));
     }
   }
 

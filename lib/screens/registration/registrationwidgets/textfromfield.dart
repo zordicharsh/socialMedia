@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../registrationbloc/registration_bloc.dart';
 import '../registrationbloc/registration_event.dart';
@@ -40,7 +41,7 @@ class CustomTextFromField extends StatelessWidget {
         ),
         prefixIcon: Icon(GetIcon, color: Colors.white60, size: 20),
         labelText: GetHintText.toString(),
-        labelStyle: const TextStyle(fontSize: 13, color: Colors.white60),
+        labelStyle:  TextStyle(fontSize: 12.sp, color: Colors.white60),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.white, width: 0.2),
           borderRadius: BorderRadius.circular(7),
@@ -52,7 +53,7 @@ class CustomTextFromField extends StatelessWidget {
 
 class CustomTextFormFieldError extends StatelessWidget {
   final String? Function(String?)? validator;
-  bool Obsecure;
+  bool Obscure;
   var GetController = TextEditingController();
   String GetHintText;
   var LightIcon;
@@ -62,7 +63,7 @@ class CustomTextFormFieldError extends StatelessWidget {
     required this.GetController,
     required this.GetHintText,
     required this.GetIcon,
-    required this.Obsecure,
+    required this.Obscure,
     required this.LightIcon,
     required this.validator,
   });
@@ -71,7 +72,7 @@ class CustomTextFormFieldError extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       validator: validator,
-      obscureText: Obsecure,
+      obscureText: Obscure,
       controller: GetController,
       decoration: InputDecoration(
           focusedErrorBorder: OutlineInputBorder(
@@ -96,7 +97,7 @@ class CustomTextFormFieldError extends StatelessWidget {
           suffixIcon: IconButton(
               onPressed: () {
                 BlocProvider.of<RegistrationBloc>(context)
-                    .add(ClickOnVisibilityButton(Obscure: Obsecure));
+                    .add(ClickOnVisibilityButton(Obscure: Obscure));
               },
               icon: Icon(
                 LightIcon,
@@ -104,7 +105,7 @@ class CustomTextFormFieldError extends StatelessWidget {
               )),
           prefixIcon: Icon(GetIcon, color: Colors.white60, size: 20),
           labelText: GetHintText.toString(),
-          labelStyle: const TextStyle(fontSize: 13, color: Colors.white60),
+          labelStyle:  TextStyle(fontSize: 12.sp, color: Colors.white60),
           enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 color: Colors.white,

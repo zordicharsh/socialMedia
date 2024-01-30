@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key});
@@ -19,10 +20,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Row(
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 backgroundColor: Colors.grey,
-                backgroundImage: AssetImage("assets/images/cat_pic.jpg"),
-                radius: 40,
+                backgroundImage: const AssetImage("assets/images/cat_pic.jpg"),
+                radius: 36.sp,
               ),
               const SizedBox(
                 width: 8,
@@ -51,36 +52,43 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             ],
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Text("Sussy Baka",
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.bold)),
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+       Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Text("Meow Meow😸",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 12.sp,
               )),
         ),
         const SizedBox(
           height: 16,
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+  Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Expanded(flex:1,child:   Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
               ProfileManipulationButton(
-                  text: "Edit profile", height: 32, width: 184),
-              ProfileManipulationButton(
-                  text: "Share profile", height: 32, width: 184),
-            ],
-          ),
+                  text: "Edit profile", height: 32, width: 160.sp),
+                  ProfileManipulationButton(
+                  text: "Share profile", height: 32, width:160.sp),
+                  ],
+                  ),
+          )
+            ]
+          )
         ),
       ],
     );
@@ -92,14 +100,14 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(num.toString(),
-            style: const TextStyle(
+            style:  TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.bold)),
         Text(label,
-            style: const TextStyle(
+            style: TextStyle(
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.normal))
       ],
     );

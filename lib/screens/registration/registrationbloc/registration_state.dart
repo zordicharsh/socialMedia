@@ -23,9 +23,9 @@ class obsecureTrue extends RegistrationStates {
 }
 
 class obsecureFalse extends RegistrationStates {
-  bool Obsecure;
+  bool Obscure;
 
-  obsecureFalse({required this.Obsecure});
+  obsecureFalse({required this.Obscure});
 }
 
 class NavigateToLoginScreen extends RegistrationStates {}
