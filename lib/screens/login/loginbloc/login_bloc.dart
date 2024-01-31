@@ -12,7 +12,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<VisibilityButtonEvent>(visibilityButtonEvent);
     on<LoginValidationError>(loginValidationError);
   }
-
   ////////////////////////////////////////////////////////////      OBESCURED  METHOD/////////////////////////////////////////////////////
   FutureOr<void> visibilityButtonEvent(
       VisibilityButtonEvent event, Emitter<LoginState> emit) {
@@ -20,11 +19,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       //  print("true");
       emit(VisibilityTrueState());
     } else {
-      // print("kuchnahi");
+      // print("kuchen");
       emit(VisibilityFalseState());
     }
   }
-
   //////////////////////////////////////////////////////////////// LOGIN  METHOD ///////////////////////////////////////////////////////////
   Future<void> loginValidationError(
       LoginValidationError event, Emitter<LoginState> emit) async {

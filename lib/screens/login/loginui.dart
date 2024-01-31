@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,22 +10,18 @@ import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';
 import 'package:socialmedia/screens/registration/registrationui/registration.dart';
 import 'package:text_divider/text_divider.dart';
-
 class LoginUi extends StatefulWidget {
   const LoginUi({Key? key}) : super(key: key);
-
   @override
   LoginUiState createState() => LoginUiState();
 }
-
 class LoginUiState extends State<LoginUi> {
   final loginKey2 = GlobalKey<FormState>();
   late OverlayEntry circularLoadingBar;
-
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
     var obscured = true;
     double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -279,10 +274,7 @@ class LoginUiState extends State<LoginUi> {
                                             LoginValidationError(
                                                 Email: email,
                                                 Password: password));
-                                        circularLoadingBar =
-                                            _createCircularLoadingBar();
-                                        Overlay.of(context)
-                                            .insert(circularLoadingBar);
+                                        circularLoadingBar = _createCircularLoadingBar();Overlay.of(context).insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(

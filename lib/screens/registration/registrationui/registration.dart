@@ -18,16 +18,17 @@ class SignUp extends StatefulWidget {
 
   @override
   State<SignUp> createState() => _SignUpState();
+
 }
 
 class _SignUpState extends State<SignUp> {
+  final formkeyreg = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final UserNameController = TextEditingController();
     final EmailController = TextEditingController();
     final PasswordController = TextEditingController();
     final ConfirmPasswordController = TextEditingController();
-    final formkeyreg = GlobalKey<FormState>();
     late OverlayEntry circularLoadingbar;
 
     String? validateUserName(String? value) {
