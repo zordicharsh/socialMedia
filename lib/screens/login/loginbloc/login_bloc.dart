@@ -36,8 +36,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           email: event.Email.trim(),
           password: event.Password.trim(),
         );
+        String uidofuserlogin = FirebaseAuth.instance.currentUser!.uid;
         emit(LoginLoadingSuccessState());
-        emit(LoginSuccessState());
+        emit(LoginSuccessState(uidofuserlogin));
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           emit(LoginValidationErrorState(
@@ -56,11 +57,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             .get();
         late String pas;
         late String use;
+        late String uid;
         //  print("its all goo men");
         if (response.docs.isNotEmpty) {
           for (var value in response.docs) {
             use = value['username'].toString();
             pas = value['password'].toString();
+            uid = value['uid'].toString();
           }
         }
         //  print(use.toString());
@@ -69,7 +72,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginValidationErrorState(message: "Wrong Password"));
         } else {
           emit(LoginLoadingSuccessState());
-          emit(LoginSuccessState());
+          emit(LoginSuccessState(uid));
         }
       } catch (e) {
         emit(LoginValidationErrorState(message: "User Not Found"));

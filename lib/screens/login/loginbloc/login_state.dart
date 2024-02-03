@@ -14,6 +14,9 @@ class LoginValidationErrorState extends LoginState {
   LoginValidationErrorState({required this.message});
 }
 
-class LoginSuccessState extends LoginState {}
+class LoginSuccessState extends LoginState {
+  String Uid;
+  LoginSuccessState(this.Uid);
+}
 
 class LoginLoadingSuccessState extends LoginState {}

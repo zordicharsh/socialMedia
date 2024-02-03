@@ -228,7 +228,7 @@ class LoginUiState extends State<LoginUi> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(state.message)));
                               } else if (state is LoginSuccessState) {
-                                Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext context) => const ProfilePage(),));
+                                Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) =>BlocProvider.value(value: BlocProvider.of<LoginBloc>(context),child: ProfilePage(uid: state.Uid),)));
                               }
                             },
                             child: BlocBuilder<LoginBloc, LoginState>(

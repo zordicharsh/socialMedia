@@ -5,13 +5,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/firebase_options.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginui.dart';
-import 'package:device_preview/device_preview.dart';
+import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
+import 'package:socialmedia/screens/search_user/searchbloc/search_bloc.dart';
+import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(DevicePreview(
-      builder:(context) => const MyApp()));
+  runApp(
+     const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -27,6 +29,15 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) => LoginBloc(),
+          ),
+          BlocProvider(
+            create: (context) => ProfileBloc(),
+          ),
+          BlocProvider(
+            create: (context) => UserpostBloc(),
+          ),
+          BlocProvider(
+            create: (context) => SearchBloc(),
           ),
         ],
         child: MaterialApp(

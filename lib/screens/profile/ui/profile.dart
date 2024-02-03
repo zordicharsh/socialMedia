@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/reels_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/tags_tab.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/profile_header.dart';
-
+import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
+import 'package:socialmedia/screens/user_post/ui/userpost.dart';
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
+  final String uid;
+  const ProfilePage({super.key,required this.uid});
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -16,16 +18,14 @@ class _ProfilePageState extends State<ProfilePage> {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpYTOlv2wcTRyNd1Ebq0C24UoX8ysKqCK94E0oxAaC2h53Jz4_4kQfV0IxUrRYx6QtN5o&usqp=CAU",
     "https://media.istockphoto.com/id/1281804798/photo/very-closeup-view-of-amazing-domestic-pet-in-mirror-round-fashion-sunglasses-is-isolated-on.jpg?s=612x612&w=0&k=20&c=oMoz9rUr-rDhMGNmEepCkr7F1g3AXs9416hvVnT_4CI=",
     "https://t4.ftcdn.net/jpg/05/72/79/19/360_F_572791996_K9b6rBflENxOXgome76NzXyDq2zmIC9Y.jpg",
-    "https://storage.googleapis.com/pod_public/1300/150704.jpg",
-    "https://wallpapers.com/images/featured/cool-cat-1bdkaxbrpo86pxd3.jpg",
-    "https://cdn1.vectorstock.com/i/1000x1000/16/60/colorful-cool-cat-sitting-and-looking-vector-23271660.jpg",
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9dUYzr3f1ACgjAFMqT4OL3an2E1z2LTtyfxwr2FXiJw&s",
     "https://steamuserimages-a.akamaihd.net/ugc/1644340994747007967/853B20CD7694F5CF40E83AAC670572A3FE1E3D35/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpYTOlv2wcTRyNd1Ebq0C24UoX8ysKqCK94E0oxAaC2h53Jz4_4kQfV0IxUrRYx6QtN5o&usqp=CAU",
   ];
 
-  @override
+    @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -35,7 +35,15 @@ class _ProfilePageState extends State<ProfilePage> {
               Icons.add_box_outlined,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              // Navigator.push(context,MaterialPageRoute(builder: (context) => BlocProvider.value(value: BlocProvider.of<ProfileBloc>(context),child:const SearchUser(),)));
+              // Navigator.push(context,MaterialPageRoute(builder: (context) => ImageUpload(),));
+              Navigator.push(context,MaterialPageRoute(builder: (context) => BlocProvider(
+  create: (context) => UserpostBloc(),
+  child: ImageUploadScreen(),
+),));
+            },
+
           ),
           IconButton(
             icon: const Icon(
