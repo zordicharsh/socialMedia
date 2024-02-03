@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'login_event.dart';
 import 'login_state.dart';
 
@@ -12,32 +10,29 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<VisibilityButtonEvent>(visibilityButtonEvent);
     on<LoginValidationError>(loginValidationError);
   }
-
-  ////////////////////////////////////////////////////////////      OBESCURED  METHOD/////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////    OBESCURED  METHOD/////////////////////////////////////////////////////
   FutureOr<void> visibilityButtonEvent(
       VisibilityButtonEvent event, Emitter<LoginState> emit) {
     if (event.visibility == true) {
       //  print("true");
       emit(VisibilityTrueState());
     } else {
-      // print("kuchnahi");
+      // print("kuchen");
       emit(VisibilityFalseState());
     }
   }
-
   //////////////////////////////////////////////////////////////// LOGIN  METHOD ///////////////////////////////////////////////////////////
   Future<void> loginValidationError(
       LoginValidationError event, Emitter<LoginState> emit) async {
     if (RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
         .hasMatch(event.Email)) {
       try {
-        UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: event.Email.trim(),
           password: event.Password.trim(),
         );
         emit(LoginLoadingSuccessState());
-        emit(LoginSuccessState());
+        emit(LoginSuccessState(uid: userCredential.user!.uid));
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           emit(LoginValidationErrorState(
@@ -56,20 +51,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             .get();
         late String pas;
         late String use;
+        late String UseEmail;
+        late String uid;
         //  print("its all goo men");
         if (response.docs.isNotEmpty) {
           for (var value in response.docs) {
             use = value['username'].toString();
             pas = value['password'].toString();
+            UseEmail =value['email'].toString();
+            uid =value['uid'].toString();
           }
         }
-        //  print(use.toString());
-        //  print(pas.toString());
         if (event.Email != use || event.Password != pas) {
           emit(LoginValidationErrorState(message: "Wrong Password"));
         } else {
+          UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: UseEmail,
+            password: pas,
+          );
           emit(LoginLoadingSuccessState());
-          emit(LoginSuccessState());
+          emit(LoginSuccessState(uid: uid));
         }
       } catch (e) {
         emit(LoginValidationErrorState(message: "User Not Found"));

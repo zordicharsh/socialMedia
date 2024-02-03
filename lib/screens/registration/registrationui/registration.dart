@@ -20,52 +20,70 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
+class KeyboardHider extends StatelessWidget{
+
+  final Widget child;
+
+  const KeyboardHider({super.key, required this.child});
+
+  Widget build(BuildContext context){
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: child,
+    );
+  }
+}
+
 class _SignUpState extends State<SignUp> {
+  late OverlayEntry circularLoadingbar;
+  final UserNameController = TextEditingController();
+  final EmailController = TextEditingController();
+  final PasswordController = TextEditingController();
+  final ConfirmPasswordController = TextEditingController();
+  final formkeyreg = GlobalKey<FormState>();
+
+
+
+  String? validateUserName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a username';
+    } else if (RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value)) {
+      return 'please enter username in valid format';
+    } else {
+      return null;
+    }
+  }
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter an email';
+    } else if (!RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    }
+    return null;
+  }
+
+  String? validateConfirmPassword(String? value) {
+    if (value != PasswordController.text || value!.isEmpty) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final UserNameController = TextEditingController();
-    final EmailController = TextEditingController();
-    final PasswordController = TextEditingController();
-    final ConfirmPasswordController = TextEditingController();
-    final formkeyreg = GlobalKey<FormState>();
-    late OverlayEntry circularLoadingbar;
-
-    String? validateUserName(String? value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter a username';
-      } else if (RegExp(
-          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-          .hasMatch(value)) {
-        return 'please enter username in valid format';
-      } else {
-        return null;
-      }
-    }
-    String? validateEmail(String? value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter an email';
-      } else if (!RegExp(
-              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-          .hasMatch(value)) {
-        return 'Please enter a valid email';
-      }
-      return null;
-    }
-
-    String? validatePassword(String? value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter a password';
-      }
-      return null;
-    }
-
-    String? validateConfirmPassword(String? value) {
-      if (value != PasswordController.text || value!.isEmpty) {
-        return 'Passwords do not match';
-      }
-      return null;
-    }
-
     double deviceWidth = MediaQuery.of(context).size.width;
     return BlocProvider(
       create: (context) => RegistrationBloc(),
@@ -120,11 +138,13 @@ class _SignUpState extends State<SignUp> {
                                 SizedBox(
                                   width: deviceWidth * .90,
                                   height: deviceWidth * .14,
-                                  child: CustomTextFromField(
-                                    validator: validateUserName,
-                                    GetController: UserNameController,
-                                    GetHintText: "Enter your username",
-                                    GetIcon: Icons.person,
+                                  child: GestureDetector(
+                                    child: CustomTextFromField(
+                                      validator: validateUserName,
+                                      GetController: UserNameController,
+                                      GetHintText: "Enter your username",
+                                      GetIcon: Icons.person,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: deviceWidth * .05),
@@ -256,16 +276,19 @@ class _SignUpState extends State<SignUp> {
                             BlocListener<RegistrationBloc, RegistrationStates>(
                               listener: (context, state) {
                                 if (state is FirebaseAuthErrorState) {
+                                  circularLoadingbar.remove();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(state.AuthErrorMessage
                                               .toString())));
                                 } else if (state is FirebaseAuthSuccessState) {
+                                  circularLoadingbar.remove();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(state.AuthSuccessMessage
                                               .toString())));
                                 } else if (state is NavigateToLoginScreen) {
+                                  circularLoadingbar.remove();
                                   // Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage(),));
                                   Navigator.pushReplacement(
                                     context,
@@ -278,15 +301,13 @@ class _SignUpState extends State<SignUp> {
                               child: BlocBuilder<RegistrationBloc,
                                   RegistrationStates>(
                                 builder: (context, state) {
-                                  if (state is NavigateToLoginScreen) {
-                                    circularLoadingbar.remove();
-                                    return const SizedBox();
-                                  } else if (state is FirebaseAuthErrorState) {
-                                    circularLoadingbar.remove();
+                                  if (state is FirebaseAuthErrorState) {
+                                     // circularLoadingbar.remove();
                                     return Column(
                                       children: [
                                         GestureDetector(
                                           onTap: () {
+                                            FocusScope.of(context).unfocus();
                                             if (formkeyreg.currentState!
                                                 .validate()) {
                                               BlocProvider.of<RegistrationBloc>(
@@ -345,6 +366,7 @@ class _SignUpState extends State<SignUp> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
+                                            FocusScope.of(context).unfocus();
                                             if (formkeyreg.currentState!
                                                 .validate()) {
                                               BlocProvider.of<RegistrationBloc>(

@@ -5,12 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
+import 'package:socialmedia/global_Bloc/global_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
-import 'package:socialmedia/screens/profile/ui/profile.dart';
+import 'package:socialmedia/screens/navigation_handler/navigation.dart';
 import 'package:socialmedia/screens/registration/registrationui/registration.dart';
 import 'package:text_divider/text_divider.dart';
+
+import '../profile/ui/profile.dart';
 
 class LoginUi extends StatefulWidget {
   const LoginUi({Key? key}) : super(key: key);
@@ -22,12 +25,12 @@ class LoginUi extends StatefulWidget {
 class LoginUiState extends State<LoginUi> {
   final loginKey2 = GlobalKey<FormState>();
   late OverlayEntry circularLoadingBar;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  var obscured = true;
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    var obscured = true;
     double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
@@ -42,7 +45,6 @@ class LoginUiState extends State<LoginUi> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    //   Padding(padding: EdgeInsets.only(top: 116.sp)),
                     SizedBox(
                         width: deviceWidth,
                         child: const Row(
@@ -225,23 +227,26 @@ class LoginUiState extends State<LoginUi> {
                           child: BlocListener<LoginBloc, LoginState>(
                             listener: (context, state) {
                               if (state is LoginValidationErrorState) {
+                                circularLoadingBar.remove();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(state.message)));
                               } else if (state is LoginSuccessState) {
-                                Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext context) => const ProfilePage(),));
+                                circularLoadingBar.remove();
+                                BlocProvider.of<GlobalBloc>(context)
+                                    .add(GetUserIDEvent(uid: state.uid));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (newContext) =>
+                                            const LandingPage()));
                               }
                             },
                             child: BlocBuilder<LoginBloc, LoginState>(
-                              /*   buildWhen: (previous, current) =>
-                                  current is LoginLoadingSuccessState.00,*/
                               builder: (context, state) {
-                                if (state is LoginSuccessState) {
-                                  circularLoadingBar.remove();
-                                  return const SizedBox();
-                                } else if (state is LoginValidationErrorState) {
-                                  circularLoadingBar.remove();
+                                if (state is LoginValidationErrorState) {
                                   return ElevatedButton(
                                     onPressed: () {
+                                      FocusScope.of(context).unfocus();
                                       if (loginKey2.currentState!.validate()) {
                                         String email = emailController.text;
                                         String password =
@@ -271,6 +276,7 @@ class LoginUiState extends State<LoginUi> {
                                 } else {
                                   return ElevatedButton(
                                     onPressed: () {
+                                      FocusScope.of(context).unfocus();
                                       if (loginKey2.currentState!.validate()) {
                                         String email = emailController.text;
                                         String password =

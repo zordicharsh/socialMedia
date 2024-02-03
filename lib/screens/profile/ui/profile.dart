@@ -7,8 +7,6 @@ import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_ta
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/reels_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/tags_tab.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/profile_header.dart';
-
-
 import '../../../models/user_model.dart';
 import '../../login/loginui.dart';
 import '../../navigation_handler/bloc/navigation_bloc.dart';
