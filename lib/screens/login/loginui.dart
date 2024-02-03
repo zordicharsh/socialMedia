@@ -10,8 +10,7 @@ import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
 import 'package:socialmedia/screens/registration/registrationui/registration.dart';
 import 'package:text_divider/text_divider.dart';
-
-import '../global_Bloc/global_bloc.dart';
+import 'package:socialmedia/global_Bloc/global_bloc.dart';
 import '../profile/ui/profile.dart';
 
 class LoginUi extends StatefulWidget {

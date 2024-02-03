@@ -50,7 +50,9 @@ dependencies:
   flutter_screenutil: ^5.9.0
   image_picker: ^0.8.4+4
   image_cropper: ^5.0.1
-
+  get: ^4.6.6
+  path: ^1.8.3
+  shimmer_animation: ^2.1.0+1
 
 dev_dependencies:
   flutter_test:

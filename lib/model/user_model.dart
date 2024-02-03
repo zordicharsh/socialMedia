@@ -12,17 +12,18 @@ class UserModel {
   String? Bio;
   String? Name;
 
-  UserModel(
-      {required this.Uid,
-      required this.Username,
-      required this.Email,
-      required this.Password,
-      required this.Follower,
-      required this.Following,
-      required this.datetime,
-      this.Profileurl,
-      this.Bio,
-      this.Name,});
+  UserModel({
+    required this.Uid,
+    required this.Username,
+    required this.Email,
+    required this.Password,
+    required this.Follower,
+    required this.Following,
+    required this.datetime,
+    this.Profileurl,
+    this.Bio,
+    this.Name,
+  });
 
   Map<String, dynamic> toMap() {
     return {

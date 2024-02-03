@@ -1,16 +1,16 @@
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/firebase_options.dart';
-import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
 import 'package:socialmedia/screens/SplashScreeenUI.dart';
-import 'package:socialmedia/screens/global_Bloc/global_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
+import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart';
 
 
-
+import 'global_Bloc/global_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,9 +39,7 @@ class _MyAppState extends State<MyApp> {
               BlocProvider(
                 create: (context) => GlobalBloc(),
               ),
-              BlocProvider(
-                create: (context) => EditprofileBloc(),
-              ),
+              BlocProvider(create: (context) => NavigationBloc(),),
               BlocProvider(
                 create: (context) => LoginBloc(),
               ),
@@ -50,13 +48,13 @@ class _MyAppState extends State<MyApp> {
               )
             ],
             child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: 'Flutter Demo',
-                theme: ThemeData(
-                  colorScheme: const ColorScheme.dark(),
-                  useMaterial3: true,
-                ),
-                home: const spl()
+              debugShowCheckedModeBanner: false,
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                colorScheme: const ColorScheme.dark(),
+                useMaterial3: true,
+              ),
+              home: const spl()
             ),
           ),
     );

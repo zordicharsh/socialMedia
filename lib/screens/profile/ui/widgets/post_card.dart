@@ -86,7 +86,7 @@ class _PostCardState extends State<PostCard> {
             ),
           ),
           SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.4,
+              height: MediaQuery.sizeOf(context).height * 0.45,
               width: double.infinity,
               child: ZoomOverlay(
                 modalBarrierColor: Colors.black12,
