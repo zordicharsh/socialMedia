@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:socialmedia/UserSearch.dart';
-import 'package:socialmedia/screens/EditProfile/ui/editprofile.dart';
+
 
 import 'package:socialmedia/screens/login/loginui.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_tab.dart';
