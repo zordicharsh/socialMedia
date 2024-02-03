@@ -186,6 +186,10 @@ class _EditProfileState extends State<EditProfile> {
                            ScaffoldMessenger.of(context).showSnackBar(
                                SnackBar(content: Text(state.ErrorMessage)));
                          }
+                         else if(state is EditProfileMessageSuccessState){
+                           ScaffoldMessenger.of(context).showSnackBar(
+                               SnackBar(content: Text(state.SuccessMessage)));
+                         }
                          else if(state is EditProfileSuccessState)
                            {
                              if (imageFile == null) {

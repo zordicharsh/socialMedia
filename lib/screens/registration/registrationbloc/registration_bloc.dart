@@ -3,16 +3,17 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:socialmedia/model/user_model.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_event.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_state.dart';
-
+import '../../../model/user_model.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
   RegistrationBloc() : super(RegistrationInitalState()) {
+    //init of ClickOnSignup and Signin Button
     on<ClickOnVisibilityButton>(clickOnLightButton);
     on<ClickOnSignUpButton>(clickOnSignUpButton);
   }
+
   FutureOr<void> clickOnLightButton(
       ClickOnVisibilityButton event, Emitter<RegistrationStates> emit) {
     if (event.Obscure == true) {
@@ -21,11 +22,14 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
       emit(obsecureFalse(Obscure: true));
     }
   }
+
   FutureOr<void> clickOnSignUpButton(
       ClickOnSignUpButton event, Emitter<RegistrationStates> emit) async {
     try {
-      CollectionReference users = FirebaseFirestore.instance.collection('RegisteredUsers');
-      QuerySnapshot querySnapshot = await users.where('username', isEqualTo: event.Username.toString())
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('RegisteredUsers');
+      QuerySnapshot querySnapshot = await users
+          .where('username', isEqualTo: event.Username.toString())
           .get();
       //print(querySnapshot.docs);
       // String ?gloable;
@@ -39,22 +43,22 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
       // });
       // print(gloable.toString());
       // print(password.toString());
-
       if (querySnapshot.docs.isEmpty) {
-        final UserCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: event.Email.trim(), password: event.Password.trim());
+        final UserCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: event.Email.trim(), password: event.Password.trim());
         final UserAuth = FirebaseAuth.instance.currentUser;
         emit(AuthSuccessLoading());
-        // await Future.delayed(Duration(seconds:6));
-        DateTime now = DateTime.now();
+        // DateTime now = DateTime.now();
         UserModel RegModel = await UserModel(
-            Uid: UserAuth!.uid.toString(),
-            Username: event.Username.trim(),
-            Email: event.Email.trim(),
-            Password: event.Password.trim(),
-            Following: [],
-            Follower: [],
-            datetime: Timestamp.now(),
-            );
+             Name: event.Name.toString(),
+            Uid:  UserAuth!.uid.toString(),
+            Username:  event.Username.trim(),
+            Email:  event.Email.trim(),
+            Password:  event.Password.trim(),
+            Following:  [],
+            Follower:  [],
+            datetime:  Timestamp.now());
         var res = await FirebaseFirestore.instance
             .collection("RegisteredUsers")
             .doc(UserAuth.uid.toString())

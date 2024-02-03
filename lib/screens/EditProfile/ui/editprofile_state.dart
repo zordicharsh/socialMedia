@@ -9,3 +9,7 @@ class EditProfileUserNameErrorState extends EditProfileState{
 
   EditProfileUserNameErrorState(this.ErrorMessage);
 }
+class EditProfileMessageSuccessState extends EditProfileState{
+  String SuccessMessage;
+  EditProfileMessageSuccessState(this.SuccessMessage);
+}
