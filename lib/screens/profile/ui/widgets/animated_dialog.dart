@@ -14,18 +14,15 @@ class AnimatedDialogState extends State<AnimatedDialog>
   late AnimationController controller;
   late Animation<double> opacityAnimation;
   late Animation<double> scaleAnimation;
-
   @override
   void initState() {
     super.initState();
-
     controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
     scaleAnimation =
         CurvedAnimation(parent: controller, curve: Curves.easeOutExpo);
     opacityAnimation = Tween<double>(begin: 0.0, end: 0.6).animate(
         CurvedAnimation(parent: controller, curve: Curves.easeOutExpo));
-
     controller.addListener(() => setState(() {}));
     controller.forward();
   }

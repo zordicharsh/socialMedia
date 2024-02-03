@@ -13,7 +13,6 @@ class PostGallery extends StatefulWidget {
   @override
   State<PostGallery> createState() => _PostGalleryState();
 }
-
 class _PostGalleryState extends State<PostGallery> {
   @override
   Widget build(BuildContext context) {

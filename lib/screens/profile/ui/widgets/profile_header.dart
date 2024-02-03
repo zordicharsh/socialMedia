@@ -80,8 +80,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              ProfileManipulationButton(
-                  text: "Edit profile", height: 32, width: 160.sp),
+              ProfileManipulationButton(text: "Edit profile", height: 32, width: 160.sp,),
                   ProfileManipulationButton(
                   text: "Share profile", height: 32, width:160.sp),
                   ],
@@ -93,7 +92,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       ],
     );
   }
-
   Column buildStatColumn(int num, String label) {
     return Column(
       mainAxisSize: MainAxisSize.min,

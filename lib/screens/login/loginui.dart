@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,19 +8,26 @@ import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/cust
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
-import 'package:socialmedia/screens/profile/ui/profile.dart';
 import 'package:socialmedia/screens/registration/registrationui/registration.dart';
 import 'package:text_divider/text_divider.dart';
+
+import '../global_Bloc/global_bloc.dart';
+import '../profile/ui/profile.dart';
+
 class LoginUi extends StatefulWidget {
   const LoginUi({Key? key}) : super(key: key);
+
   @override
   LoginUiState createState() => LoginUiState();
 }
+
 class LoginUiState extends State<LoginUi> {
   final loginKey2 = GlobalKey<FormState>();
   late OverlayEntry circularLoadingBar;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     var obscured = true;
@@ -37,7 +45,6 @@ class LoginUiState extends State<LoginUi> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    //   Padding(padding: EdgeInsets.only(top: 116.sp)),
                     SizedBox(
                         width: deviceWidth,
                         child: const Row(
@@ -137,13 +144,13 @@ class LoginUiState extends State<LoginUi> {
                                     icon: BlocBuilder<LoginBloc, LoginState>(
                                       builder: (context, state) {
                                         if (state is VisibilityFalseState) {
-                                          obscured = true;
+                                          obscured = state.Obsecure;
                                           return const Icon(Icons.visibility);
                                         } else {
                                           obscured = false;
-                                          return const Icon(
-                                              Icons.visibility_off);
+                                          return const Icon(Icons.visibility_off);
                                         }
+
                                       },
                                     ),
                                     onPressed: () {
@@ -220,23 +227,26 @@ class LoginUiState extends State<LoginUi> {
                           child: BlocListener<LoginBloc, LoginState>(
                             listener: (context, state) {
                               if (state is LoginValidationErrorState) {
+                                circularLoadingBar.remove();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(state.message)));
                               } else if (state is LoginSuccessState) {
-                                Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext context) => const ProfilePage(),));
+                                circularLoadingBar.remove();
+                                BlocProvider.of<GlobalBloc>(context)
+                                    .add(GetUserIDEvent(uid: state.uid));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (newContext) =>
+                                        const ProfilePage()));
                               }
                             },
                             child: BlocBuilder<LoginBloc, LoginState>(
-                              /*   buildWhen: (previous, current) =>
-                                  current is LoginLoadingSuccessState.00,*/
                               builder: (context, state) {
-                                if (state is LoginSuccessState) {
-                                  circularLoadingBar.remove();
-                                  return const SizedBox();
-                                } else if (state is LoginValidationErrorState) {
-                                  circularLoadingBar.remove();
+                                if (state is LoginValidationErrorState) {
                                   return ElevatedButton(
                                     onPressed: () {
+                                      FocusScope.of(context).unfocus();
                                       if (loginKey2.currentState!.validate()) {
                                         String email = emailController.text;
                                         String password =
@@ -266,6 +276,7 @@ class LoginUiState extends State<LoginUi> {
                                 } else {
                                   return ElevatedButton(
                                     onPressed: () {
+                                      FocusScope.of(context).unfocus();
                                       if (loginKey2.currentState!.validate()) {
                                         String email = emailController.text;
                                         String password =
@@ -274,7 +285,10 @@ class LoginUiState extends State<LoginUi> {
                                             LoginValidationError(
                                                 Email: email,
                                                 Password: password));
-                                        circularLoadingBar = _createCircularLoadingBar();Overlay.of(context).insert(circularLoadingBar);
+                                        circularLoadingBar =
+                                            _createCircularLoadingBar();
+                                        Overlay.of(context)
+                                            .insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -301,10 +315,10 @@ class LoginUiState extends State<LoginUi> {
                           text: Text(
                             "or",
                             style:
-                                TextStyle(color: Colors.white54, fontSize: 14),
+                            TextStyle(color: Colors.white54, fontSize: 14),
                           ),
-                          color: Colors.grey,
                           thickness: 1,
+                          color: Colors.grey,
                         ),
                         SizedBox(
                           height: deviceWidth * .05,

@@ -1,10 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:socialmedia/UserSearch.dart';
+import 'package:socialmedia/screens/EditProfile/ui/editprofile.dart';
+
+import 'package:socialmedia/screens/login/loginui.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/reels_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/tags_tab.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/profile_header.dart';
 
 class ProfilePage extends StatefulWidget {
+
   const ProfilePage({super.key});
 
   @override
@@ -42,7 +48,10 @@ class _ProfilePageState extends State<ProfilePage> {
               Icons.menu,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext context) => const LoginUi(),));
+            },
           )
         ],
         leading: ModalRoute.of(context)?.canPop == true
@@ -64,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
           headerSliverBuilder: (context, _) {
             return [
               SliverList(
-                delegate: SliverChildListDelegate(
+                delegate:SliverChildListDelegate(
                   [
                     const ProfileHeader(),
                   ],

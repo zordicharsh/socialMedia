@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +8,6 @@ import 'package:socialmedia/common_widgets/transition_widgets/left_to_right/cust
 import 'package:socialmedia/screens/registration/registrationbloc/registration_bloc.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_event.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_state.dart';
-
 import '../../login/loginui.dart';
 import '../registrationwidgets/textfromfield.dart';
 
@@ -25,6 +23,7 @@ class _SignUpState extends State<SignUp> {
   final formkeyreg = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+
     final UserNameController = TextEditingController();
     final EmailController = TextEditingController();
     final PasswordController = TextEditingController();
