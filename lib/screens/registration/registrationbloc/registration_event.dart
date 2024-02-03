@@ -5,9 +5,10 @@ class ClickOnSignUpButton extends RegistrationEvents {
   String Email;
   String Username;
   String ConfirmPassword;
+  String Name;
 
   ClickOnSignUpButton(
-      {required this.Username,
+      {required this.Name,required this.Username,
       required this.Email,
       required this.Password,
       required this.ConfirmPassword});

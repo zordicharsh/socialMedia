@@ -20,53 +20,80 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
+class KeyboardHider extends StatelessWidget{
+
+  final Widget child;
+
+  const KeyboardHider({super.key, required this.child});
+
+  Widget build(BuildContext context){
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: child,
+    );
+  }
+}
+
 class _SignUpState extends State<SignUp> {
+  late OverlayEntry circularLoadingbar;
+  final NameController = TextEditingController();
   final UserNameController = TextEditingController();
   final EmailController = TextEditingController();
   final PasswordController = TextEditingController();
   final ConfirmPasswordController = TextEditingController();
   final formkeyreg = GlobalKey<FormState>();
-  late OverlayEntry circularLoadingbar;
+
+  String? validateName(String? value) {
+    if(value!.isEmpty){
+      return 'please enter your name';
+    }
+    else{
+      return null;
+    }
+  }
+
+
+
+  String? validateUserName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a username';
+    } else if (RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value)) {
+      return 'please enter username in valid format';
+    } else {
+      return null;
+    }
+  }
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter an email';
+    } else if (!RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    }
+    return null;
+  }
+
+  String? validateConfirmPassword(String? value) {
+    if (value != PasswordController.text || value!.isEmpty) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
-    String? validateUserName(String? value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter a username';
-      } else if (RegExp(
-          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-          .hasMatch(value)) {
-        return 'please enter username in valid format';
-      } else {
-        return null;
-      }
-    }
-    String? validateEmail(String? value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter an email';
-      } else if (!RegExp(
-              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-          .hasMatch(value)) {
-        return 'Please enter a valid email';
-      }
-      return null;
-    }
-
-    String? validatePassword(String? value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter a password';
-      }
-      return null;
-    }
-
-    String? validateConfirmPassword(String? value) {
-      if (value != PasswordController.text || value!.isEmpty) {
-        return 'Passwords do not match';
-      }
-      return null;
-    }
-
     double deviceWidth = MediaQuery.of(context).size.width;
     return BlocProvider(
       create: (context) => RegistrationBloc(),
@@ -121,11 +148,26 @@ class _SignUpState extends State<SignUp> {
                                 SizedBox(
                                   width: deviceWidth * .90,
                                   height: deviceWidth * .14,
-                                  child: CustomTextFromField(
-                                    validator: validateUserName,
-                                    GetController: UserNameController,
-                                    GetHintText: "Enter your username",
-                                    GetIcon: Icons.person,
+                                  child: GestureDetector(
+                                    child: CustomTextFromField(
+                                      validator: validateName,
+                                      GetController: NameController,
+                                      GetHintText: "Enter your Name",
+                                      GetIcon: Icons.account_circle,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: deviceWidth * .05),
+                                SizedBox(
+                                  width: deviceWidth * .90,
+                                  height: deviceWidth * .14,
+                                  child: GestureDetector(
+                                    child: CustomTextFromField(
+                                      validator: validateUserName,
+                                      GetController: UserNameController,
+                                      GetHintText: "Enter your username",
+                                      GetIcon: Icons.person,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: deviceWidth * .05),
@@ -146,7 +188,7 @@ class _SignUpState extends State<SignUp> {
                                     if (state is obsecureFalse) {
                                       return Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: deviceWidth * .90,
@@ -156,9 +198,9 @@ class _SignUpState extends State<SignUp> {
                                                 LightIcon: Icons.visibility_off,
                                                 Obscure: state.Obscure,
                                                 GetController:
-                                                    PasswordController,
+                                                PasswordController,
                                                 GetHintText:
-                                                    "Create your password",
+                                                "Create your password",
                                                 GetIcon: Icons.password),
                                           ),
                                           SizedBox(height: deviceWidth * .05),
@@ -167,13 +209,13 @@ class _SignUpState extends State<SignUp> {
                                             height: deviceWidth * .14,
                                             child: CustomTextFormFieldError(
                                                 validator:
-                                                    validateConfirmPassword,
+                                                validateConfirmPassword,
                                                 LightIcon: Icons.visibility_off,
                                                 Obscure: state.Obscure,
                                                 GetController:
-                                                    ConfirmPasswordController,
+                                                ConfirmPasswordController,
                                                 GetHintText:
-                                                    "Confirm your password",
+                                                "Confirm your password",
                                                 GetIcon: Icons.password),
                                           ),
                                         ],
@@ -181,7 +223,7 @@ class _SignUpState extends State<SignUp> {
                                     } else if (state is obsecureTrue) {
                                       return Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: deviceWidth * .90,
@@ -191,9 +233,9 @@ class _SignUpState extends State<SignUp> {
                                                 LightIcon: Icons.visibility,
                                                 Obscure: state.Obsecure,
                                                 GetController:
-                                                    PasswordController,
+                                                PasswordController,
                                                 GetHintText:
-                                                    "Create your password",
+                                                "Create your password",
                                                 GetIcon: Icons.password),
                                           ),
                                           SizedBox(height: deviceWidth * .05),
@@ -202,13 +244,13 @@ class _SignUpState extends State<SignUp> {
                                             height: deviceWidth * .14,
                                             child: CustomTextFormFieldError(
                                                 validator:
-                                                    validateConfirmPassword,
+                                                validateConfirmPassword,
                                                 LightIcon: Icons.visibility,
                                                 Obscure: state.Obsecure,
                                                 GetController:
-                                                    ConfirmPasswordController,
+                                                ConfirmPasswordController,
                                                 GetHintText:
-                                                    "Confirm your password",
+                                                "Confirm your password",
                                                 GetIcon: Icons.password),
                                           )
                                         ],
@@ -216,7 +258,7 @@ class _SignUpState extends State<SignUp> {
                                     } else {
                                       return Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: deviceWidth * .90,
@@ -226,9 +268,9 @@ class _SignUpState extends State<SignUp> {
                                                 LightIcon: Icons.visibility_off,
                                                 Obscure: true,
                                                 GetController:
-                                                    PasswordController,
+                                                PasswordController,
                                                 GetHintText:
-                                                    "Create your password",
+                                                "Create your password",
                                                 GetIcon: Icons.password),
                                           ),
                                           SizedBox(height: deviceWidth * .05),
@@ -237,13 +279,13 @@ class _SignUpState extends State<SignUp> {
                                             height: deviceWidth * .14,
                                             child: CustomTextFormFieldError(
                                                 validator:
-                                                    validateConfirmPassword,
+                                                validateConfirmPassword,
                                                 LightIcon: Icons.visibility_off,
                                                 Obscure: true,
                                                 GetController:
-                                                    ConfirmPasswordController,
+                                                ConfirmPasswordController,
                                                 GetHintText:
-                                                    "Confirm your password",
+                                                "Confirm your password",
                                                 GetIcon: Icons.password),
                                           )
                                         ],
@@ -257,16 +299,19 @@ class _SignUpState extends State<SignUp> {
                             BlocListener<RegistrationBloc, RegistrationStates>(
                               listener: (context, state) {
                                 if (state is FirebaseAuthErrorState) {
+                                  circularLoadingbar.remove();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(state.AuthErrorMessage
                                               .toString())));
                                 } else if (state is FirebaseAuthSuccessState) {
+                                  circularLoadingbar.remove();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(state.AuthSuccessMessage
                                               .toString())));
                                 } else if (state is NavigateToLoginScreen) {
+                                  circularLoadingbar.remove();
                                   // Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage(),));
                                   Navigator.pushReplacement(
                                     context,
@@ -279,36 +324,35 @@ class _SignUpState extends State<SignUp> {
                               child: BlocBuilder<RegistrationBloc,
                                   RegistrationStates>(
                                 builder: (context, state) {
-                                  if (state is NavigateToLoginScreen) {
-                                    circularLoadingbar.remove();
-                                    return const SizedBox();
-                                  } else if (state is FirebaseAuthErrorState) {
-                                    circularLoadingbar.remove();
+                                  if (state is FirebaseAuthErrorState) {
+                                    // circularLoadingbar.remove();
                                     return Column(
                                       children: [
                                         GestureDetector(
                                           onTap: () {
+                                            FocusScope.of(context).unfocus();
                                             if (formkeyreg.currentState!
                                                 .validate()) {
                                               BlocProvider.of<RegistrationBloc>(
-                                                      context)
+                                                  context)
                                                   .add(
-                                                      ClickOnSignUpButton(
-                                                          Username:
-                                                              UserNameController
-                                                                  .text
-                                                                  .toString(),
-                                                          Email: EmailController
-                                                              .text
-                                                              .toString(),
-                                                          Password:
-                                                              PasswordController
-                                                                  .text
-                                                                  .toString(),
-                                                          ConfirmPassword:
-                                                              PasswordController
-                                                                  .text
-                                                                  .toString()));
+                                                  ClickOnSignUpButton(
+                                                    Name: NameController.text.toString(),
+                                                      Username:
+                                                      UserNameController
+                                                          .text
+                                                          .toString(),
+                                                      Email: EmailController
+                                                          .text
+                                                          .toString(),
+                                                      Password:
+                                                      PasswordController
+                                                          .text
+                                                          .toString(),
+                                                      ConfirmPassword:
+                                                      PasswordController
+                                                          .text
+                                                          .toString()));
                                               circularLoadingbar =
                                                   _createCircularLoadingBar();
                                               Overlay.of(context)
@@ -316,13 +360,13 @@ class _SignUpState extends State<SignUp> {
                                             }
                                             log("Sign Up Functionality",
                                                 name:
-                                                    "81 line in Registration.dart");
+                                                "81 line in Registration.dart");
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
                                               color: Colors.blue,
                                               borderRadius:
-                                                  BorderRadius.circular(5),
+                                              BorderRadius.circular(5),
                                             ),
                                             height: 40,
                                             //  width: deviceWidth * .14,
@@ -346,27 +390,29 @@ class _SignUpState extends State<SignUp> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
+                                            FocusScope.of(context).unfocus();
                                             if (formkeyreg.currentState!
                                                 .validate()) {
                                               BlocProvider.of<RegistrationBloc>(
-                                                      context)
+                                                  context)
                                                   .add(
-                                                      ClickOnSignUpButton(
-                                                          Username:
-                                                              UserNameController
-                                                                  .text
-                                                                  .toString(),
-                                                          Email: EmailController
-                                                              .text
-                                                              .toString(),
-                                                          Password:
-                                                              PasswordController
-                                                                  .text
-                                                                  .toString(),
-                                                          ConfirmPassword:
-                                                              PasswordController
-                                                                  .text
-                                                                  .toString()));
+                                                  ClickOnSignUpButton(
+                                                      Name: NameController.text.toString(),
+                                                      Username:
+                                                      UserNameController
+                                                          .text
+                                                          .toString(),
+                                                      Email: EmailController
+                                                          .text
+                                                          .toString(),
+                                                      Password:
+                                                      PasswordController
+                                                          .text
+                                                          .toString(),
+                                                      ConfirmPassword:
+                                                      PasswordController
+                                                          .text
+                                                          .toString()));
                                               circularLoadingbar =
                                                   _createCircularLoadingBar();
                                               Overlay.of(context)
@@ -374,13 +420,13 @@ class _SignUpState extends State<SignUp> {
                                             }
                                             log("Sign Up Functionality",
                                                 name:
-                                                    "81 line in Registration.dart");
+                                                "81 line in Registration.dart");
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
                                               color: Colors.blue,
                                               borderRadius:
-                                                  BorderRadius.circular(5),
+                                              BorderRadius.circular(5),
                                             ),
                                             height: 40,
                                             //  width: deviceWidth * .14,

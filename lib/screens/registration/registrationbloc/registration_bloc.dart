@@ -51,6 +51,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
         emit(AuthSuccessLoading());
         // DateTime now = DateTime.now();
         UserModel RegModel = await UserModel(
+             Name: event.Name.toString(),
             Uid:  UserAuth!.uid.toString(),
             Username:  event.Username.trim(),
             Email:  event.Email.trim(),

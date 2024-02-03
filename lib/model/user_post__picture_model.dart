@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserPostImageModel {
+  String Postid;
   String Username;
   String Uid;
   List Likes;
@@ -10,7 +11,8 @@ class UserPostImageModel {
   Timestamp datetime;
 
   UserPostImageModel(
-      {required this.Username,
+      {required this.Postid,
+        required this.Username,
       required this.Uid,
       required this.Likes,
       this.Caption,
@@ -18,6 +20,7 @@ class UserPostImageModel {
 
   Map<String, dynamic> tomap() {
     return {
+      'postid' : Postid,
       'username': Username,
       'uid': Uid,
       'likes': Likes,

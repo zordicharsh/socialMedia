@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/reels_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/tags_tab.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/profile_header.dart';
+import 'package:socialmedia/screens/search_user/searchui/searchui.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
 import 'package:socialmedia/screens/user_post/ui/userpost.dart';
 class ProfilePage extends StatefulWidget {

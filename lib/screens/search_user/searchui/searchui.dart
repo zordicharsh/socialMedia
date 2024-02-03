@@ -87,7 +87,7 @@ class _SearchUserState extends State<SearchUser> {
                                 maxRadius: 50,
                                 minRadius: 20,
                                 backgroundColor: Colors.grey,
-                                // backgroundImage: NetworkImage(state.users[index].Profileurl.toString()),
+                                backgroundImage: NetworkImage(state.users[index].Profileurl.toString()),
                               ),
                               title: Text(
                                 state.users[index].Username.toString(),
