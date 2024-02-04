@@ -8,14 +8,15 @@ class UserPostImageModel {
   String? Caption;
   String PostUrl;
   Timestamp datetime;
+  String ProfileUrl;
 
   UserPostImageModel(
       {required this.Postid,
         required this.Username,
       required this.Uid,
       required this.Likes,
-      this.Caption,
-      required this.PostUrl,required this.datetime});
+      required this.Caption,
+      required this.PostUrl,required this.datetime,required this.ProfileUrl});
 
   Map<String, dynamic> tomap() {
     return {
@@ -25,7 +26,8 @@ class UserPostImageModel {
       'likes': Likes,
       'caption': Caption,
       'posturl': PostUrl,
-      'uploadtime':datetime
+      'uploadtime':datetime,
+      'profileurl':ProfileUrl,
     };
   }
 

@@ -20,9 +20,9 @@ class UserModel {
       required this.Follower,
       required this.Following,
       required this.datetime,
-      this.Profileurl,
-      this.Bio,
-      this.Name,});
+      required this.Profileurl,
+      required this.Bio,
+      required this.Name,});
 
   Map<String, dynamic> toMap() {
     return {
