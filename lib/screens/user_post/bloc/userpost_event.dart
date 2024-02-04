@@ -2,7 +2,11 @@ abstract class UserpostEvents {
 }
 
 class UserClickonPostbtn extends UserpostEvents{
-    // var upload;
+  String profileurl;
+
+  UserClickonPostbtn({required this.profileurl});
+
+// var upload;
     // UserClickonPostbtn(this.upload);
 }
 

@@ -67,7 +67,7 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         await uploadTask.whenComplete(() async{
           var res = await FirebaseFirestore.instance.collection("UserPost")
               .doc();
-          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth!.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now());
+          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth!.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: "",ProfileUrl: event.profileurl);
               res.set(userPostImageModel.tomap());
         });
         emit(LoadingGoState());
