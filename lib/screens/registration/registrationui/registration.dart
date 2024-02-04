@@ -312,7 +312,6 @@ class _SignUpState extends State<SignUp> {
                                               .toString())));
                                 } else if (state is NavigateToLoginScreen) {
                                   circularLoadingbar.remove();
-                                  // Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage(),));
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
@@ -465,7 +464,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(width: 6),
                             InkWell(
-                              onTap: () => Navigator.push(
+                              onTap: () => Navigator.pushReplacement(
                                   context,
                                   CustomPageRouteLeftToRight(
                                       child: const LoginUi())),

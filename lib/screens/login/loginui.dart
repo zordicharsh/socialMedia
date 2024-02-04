@@ -1,18 +1,18 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
+import 'package:socialmedia/screens/navigation_handler/navigation.dart';
 import 'package:socialmedia/screens/registration/registrationui/registration.dart';
 import 'package:text_divider/text_divider.dart';
-
-import '../global_Bloc/global_bloc.dart';
-import '../profile/ui/profile.dart';
+import '../../global_Bloc/global_bloc.dart';
+import '../navigation_handler/bloc/navigation_bloc.dart';
 
 class LoginUi extends StatefulWidget {
   const LoginUi({Key? key}) : super(key: key);
@@ -234,11 +234,12 @@ class LoginUiState extends State<LoginUi> {
                                 circularLoadingBar.remove();
                                 BlocProvider.of<GlobalBloc>(context)
                                     .add(GetUserIDEvent(uid: state.uid));
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationInitialEvent(tabIndex: 0));
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (newContext) =>
-                                        const ProfilePage()));
+                                        const LandingPage()));
                               }
                             },
                             child: BlocBuilder<LoginBloc, LoginState>(
@@ -352,7 +353,7 @@ class LoginUiState extends State<LoginUi> {
                           ),
                           const SizedBox(width: 6),
                           InkWell(
-                            onTap: () => Navigator.push(
+                            onTap: () => Navigator.pushReplacement(
                                 context,
                                 CustomPageRouteRightToLeft(
                                     child: const SignUp())),

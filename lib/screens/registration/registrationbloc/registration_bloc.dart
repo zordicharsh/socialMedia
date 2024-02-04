@@ -58,7 +58,10 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
             Password:  event.Password.trim(),
             Following:  [],
             Follower:  [],
-            datetime:  Timestamp.now());
+            datetime:  Timestamp.now(),
+          Profileurl: "",
+          Bio: "",
+        );
         var res = await FirebaseFirestore.instance
             .collection("RegisteredUsers")
             .doc(UserAuth.uid.toString())
