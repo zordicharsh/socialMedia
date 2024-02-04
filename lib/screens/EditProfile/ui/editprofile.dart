@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
@@ -52,7 +53,7 @@ class _EditProfileState extends State<EditProfile> {
     );
     if (croppedImage != null) {
       setState(() {
-        imageFile = File(croppedImage.path!);
+        imageFile = File(croppedImage.path);
       });
     }
   }
@@ -95,7 +96,9 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text('Edit Profile'),
       ),
       body: Form(
@@ -115,7 +118,7 @@ class _EditProfileState extends State<EditProfile> {
                         children: [
                           CircleAvatar(
                             radius: 50,
-                            backgroundColor: Colors.grey[300],
+                            backgroundColor: Colors.grey.withOpacity(0.3),
                             backgroundImage: imageFile != null
                                 ? FileImage(imageFile!)
                                 : null,
@@ -127,25 +130,21 @@ class _EditProfileState extends State<EditProfile> {
                                 : null,
                           ),
                           Positioned(
-                            bottom: 2,
-                            right: 9,
-                            child: CircleAvatar(
-                              radius: 16,
-                              backgroundColor: Colors.black,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.blue,
-                                ),
-                                child: const Icon(
-                                  Icons.add,
-                                  size: 20,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
+                              top: 62.sp,
+                              left: 62.sp,
+                              child: const CircleAvatar(
+                                backgroundColor: Colors.black,
+                                radius: 12,
+                                child: CircleAvatar(
+                                    backgroundColor: Colors.blue,
+                                    radius: 10,
+                                    child: Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ))),
+                              ))
                         ],
                       ),
                       TextFormField(
