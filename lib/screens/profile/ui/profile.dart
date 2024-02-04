@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/reels_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/tags_tab.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/profile_header.dart';
-import 'package:socialmedia/screens/search_user/searchui/searchui.dart';
-import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
-import 'package:socialmedia/screens/user_post/ui/userpost.dart';
+
 class ProfilePage extends StatefulWidget {
-  final String uid;
-  const ProfilePage({super.key,required this.uid});
+  const ProfilePage({super.key});
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -38,12 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.white,
             ),
             onPressed: () {
-              // Navigator.push(context,MaterialPageRoute(builder: (context) => BlocProvider.value(value: BlocProvider.of<ProfileBloc>(context),child:const SearchUser(),)));
-              // Navigator.push(context,MaterialPageRoute(builder: (context) => ImageUpload(),));
-              Navigator.push(context,MaterialPageRoute(builder: (context) => BlocProvider(
-  create: (context) => UserpostBloc(),
-  child: ImageUploadScreen(),
-),));
+
             },
 
           ),
@@ -52,7 +42,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Icons.menu,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+
+            },
           )
         ],
         leading: ModalRoute.of(context)?.canPop == true

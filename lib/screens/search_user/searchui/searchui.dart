@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:socialmedia/model/user_model.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';
-import 'package:socialmedia/screens/search_user/controller/listview_controller.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_bloc.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_event.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_state.dart';

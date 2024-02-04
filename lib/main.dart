@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/firebase_options.dart';
-import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
 import 'package:socialmedia/screens/SplashScreeenUI.dart';
+import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
 import 'package:socialmedia/screens/global_Bloc/global_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
+import 'package:socialmedia/screens/search_user/searchbloc/search_bloc.dart';
+import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
 
 
 
@@ -36,6 +38,12 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) =>
           MultiBlocProvider(
             providers: [
+              BlocProvider(
+                create: (context) => SearchBloc(),
+              ),
+              BlocProvider(
+                create: (context) => UserpostBloc(),
+              ),
               BlocProvider(
                 create: (context) => GlobalBloc(),
               ),
