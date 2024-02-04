@@ -1,6 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
+import 'package:socialmedia/screens/EditProfile/ui/editprofile.dart';
+import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
+import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
+
+import '../../../../global_Bloc/global_bloc.dart';
+import '../../../../model/user_model.dart';
 
 class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key});
@@ -20,33 +29,145 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Row(
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.grey,
-                backgroundImage: const AssetImage("assets/images/cat_pic.jpg"),
-                radius: 36.sp,
+              BlocBuilder<GlobalBloc, GlobalState>(
+                builder: (context, state) {
+                  if (state is GetUserDataFromGlobalBlocState) {
+                    List<UserModel> userdata = state.userData;
+                    if (userdata[0].Profileurl.toString() != "") {
+                      return CircleAvatar(
+                        backgroundColor: Colors.grey.withOpacity(0.4),
+                        backgroundImage:
+                            NetworkImage(userdata[0].Profileurl.toString()),
+                        radius: 36.sp,
+                      );
+                    } else {
+                      return GestureDetector(
+                        onTap: ()=>Navigator.push(
+                            context,
+                            CustomPageRouteRightToLeft(
+                              child: const EditProfile(),
+                            )),
+                        child: Stack(children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.grey.withOpacity(0.3),
+                            radius: 36.sp,
+                          ),
+                          Positioned(
+                              top: 48.sp,
+                              left: 48.sp,
+                              child: const CircleAvatar(
+                                backgroundColor: Colors.black,
+                                radius: 12,
+                                child: CircleAvatar(
+                                    backgroundColor: Colors.blue,
+                                    radius: 10,
+                                    child: Center(
+                                        child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ))),
+                              ))
+                        ]),
+                      );
+                    }
+                  } else {
+                    return GestureDetector(
+                      onTap: ()=>Navigator.push(
+                          context,
+                          CustomPageRouteRightToLeft(
+                            child: const EditProfile(),
+                          )),
+                      child: Stack(children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.grey.withOpacity(0.3),
+                          radius: 36.sp,
+                        ),
+                        Positioned(
+                            top: 48.sp,
+                            left: 48.sp,
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.black,
+                              radius: 12,
+                              child: CircleAvatar(
+                                  backgroundColor: Colors.blue,
+                                  radius: 10,
+                                  child: Center(
+                                      child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ))),
+                            ))
+                      ]),
+                    );
+                  }
+                },
               ),
               const SizedBox(
                 width: 8,
               ),
               Expanded(
                 flex: 1,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const SizedBox(
-                      width: 24,
-                    ),
-                    buildStatColumn(15, "Posts"),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    buildStatColumn(105, "Followers"),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    buildStatColumn(311, "Following"),
-                  ],
+                child: BlocBuilder<GlobalBloc, GlobalState>(
+                  builder: (context, state) {
+                    if (state is GetUserDataFromGlobalBlocState) {
+                      List<UserModel> userdata = state.userData;
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const SizedBox(
+                            width: 24,
+                          ),
+                          BlocBuilder<ProfileBloc, ProfileState>(
+                            builder: (context, state) {
+                              if(state is ProfilePageFetchUserPostSuccessState) {
+                                return buildStatColumn(
+                                    state.postlength, "Posts");
+                              }else if(state is ProfilePageFetchUserPostLengthSuccessState){
+                                return buildStatColumn(state.postlength, "Posts");
+                              }
+                              else{
+                                return buildStatColumn(0, "Posts");
+                              }
+                            }
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          buildStatColumn(
+                              userdata[0].Follower.length,
+                              "Followers"),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          buildStatColumn(
+                              userdata[0].Following.length,
+                              "Following"),
+                        ],
+                      );
+                    } else {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const SizedBox(
+                            width: 24,
+                          ),
+                          buildStatColumn(0, "Posts"),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          buildStatColumn(2, "Followers"),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          buildStatColumn(0, "Following"),
+                        ],
+                      );
+                    }
+                  },
                 ),
               ),
             ],
@@ -54,51 +175,98 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
-          child: Text("Sussy Baka",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.bold)),
+          child: BlocBuilder<GlobalBloc, GlobalState>(
+            builder: (context, state) {
+              if (state is GetUserDataFromGlobalBlocState) {
+                List<UserModel> userdata = state.userData;
+                return Text(userdata[0].Name.toString(),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold));
+              } else {
+                return Text("",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold));
+              }
+            },
+          ),
         ),
-       Padding(
+        Padding(
           padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
-          child: Text("Meow Meow😸",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12.sp,
-              )),
+          child: BlocBuilder<GlobalBloc, GlobalState>(
+            builder: (context, state) {
+              if (state is GetUserDataFromGlobalBlocState) {
+                List<UserModel> userdata = state.userData;
+               /* BlocProvider.of<ProfileBloc>(context).add(
+                    ProfilePageFetchUserPostEvent(userid: userdata[0].Uid));*/
+                if (userdata[0].Bio.toString() != "") {
+                  return Text(userdata[0].Bio.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                      ));
+                } else {
+                  return Text("",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                      ));
+                }
+              } else {
+                return Text("",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                    ));
+              }
+            },
+          ),
         ),
         const SizedBox(
-          height: 16,
+          height: 8,
         ),
-  Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
-          child: Row(
-            children: [
-              Expanded(flex:1,child:   Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-              ProfileManipulationButton(text: "Edit profile", height: 32, width: 160.sp,),
-                  ProfileManipulationButton(
-                  text: "Share profile", height: 32, width:160.sp),
+        Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+            child: Row(children: [
+              Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+// mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ProfileManipulationButton(
+                        text: "Edit profile",
+                        height: 32,
+                        width: 160.sp,
+                        onTap: () => Navigator.push(
+                            context,
+                            CustomPageRouteRightToLeft(
+                              child: const EditProfile(),
+                            ))),
+                    ProfileManipulationButton(
+                        text: "Share profile",
+                        height: 32,
+                        width: 160.sp,
+                        onTap: () => log("share button tapped from profile")),
                   ],
-                  ),
-          )
-            ]
-          )
-        ),
+                ),
+              )
+            ])),
       ],
     );
   }
-  Column buildStatColumn(int num, String label) {
+
+  Column buildStatColumn(int? num, String label) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(num.toString(),
-            style:  TextStyle(
+            style: TextStyle(
                 color: Colors.white,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold)),
