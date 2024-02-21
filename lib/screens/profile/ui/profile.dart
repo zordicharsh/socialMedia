@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/global_Bloc/global_bloc.dart';
@@ -18,14 +17,12 @@ class ProfilePage extends StatefulWidget {
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
-
 class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     BlocProvider.of<ProfileBloc>(context).add(ProfilePageInitialEvent());
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,9 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
           builder: (context, state) {
             if (state is GetUserDataFromGlobalBlocState) {
               List<UserModel> userdata = state.userData;
-              BlocProvider.of<ProfileBloc>(context).add(
-                  ProfilePageFetchUserPostLengthEvent(
-                      userid: state.userData[0].Uid));
+              BlocProvider.of<ProfileBloc>(context).add(ProfilePageFetchUserPostLengthEvent(userid: state.userData[0].Uid));
               log("userdata in profile:- ${userdata.length.toString()}");
               return Text(
                 userdata[0].Username,
@@ -90,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
         length: 3,
         animationDuration: const Duration(milliseconds: 800),
         child: NestedScrollView(
-            headerSliverBuilder: (context, _) {
+            headerSliverBuilder: (context,_) {
               return [
                 SliverList(
                   delegate: SliverChildListDelegate(

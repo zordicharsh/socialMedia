@@ -61,13 +61,19 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         print(downloadURL.toString());
         final Firebasesnapshot = await FirebaseFirestore.instance
             .collection("RegisteredUsers").where('uid' ,isEqualTo: UserAuth!.uid).get();
+        late String Url;
+        if (Firebasesnapshot.docs.isNotEmpty) {
+          for (var value in Firebasesnapshot.docs) {
+            Url = value['profileurl'].toString();
+          }
+        }
         final userdata = Firebasesnapshot.docs.map((e) => UserModel.fromSnapshot(e)).single;
         print("6");
 
         await uploadTask.whenComplete(() async{
           var res = await FirebaseFirestore.instance.collection("UserPost")
               .doc();
-          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth!.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: "",ProfileUrl: event.profileurl);
+          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth!.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: "",ProfileUrl: Url);
               res.set(userPostImageModel.tomap());
         });
         emit(LoadingGoState());

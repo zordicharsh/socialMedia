@@ -19,6 +19,8 @@ class ProfileHeader extends StatefulWidget {
 }
 
 class _ProfileHeaderState extends State<ProfileHeader> {
+  get userdata => null;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,24 +31,18 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Row(
             children: [
-              BlocBuilder<GlobalBloc, GlobalState>(
+              BlocBuilder<GlobalBloc,GlobalState>(
                 builder: (context, state) {
                   if (state is GetUserDataFromGlobalBlocState) {
                     List<UserModel> userdata = state.userData;
                     if (userdata[0].Profileurl.toString() != "") {
                       return CircleAvatar(
                         backgroundColor: Colors.grey.withOpacity(0.4),
-                        backgroundImage:
-                            NetworkImage(userdata[0].Profileurl.toString()),
+                        backgroundImage: NetworkImage(userdata[0].Profileurl.toString()),
                         radius: 36.sp,
                       );
                     } else {
-                      return GestureDetector(
-                        onTap: ()=>Navigator.push(
-                            context,
-                            CustomPageRouteRightToLeft(
-                              child: const EditProfile(),
-                            )),
+                      return GestureDetector(onTap:()=>Navigator.push(context, CustomPageRouteRightToLeft(child: EditProfile(),)),
                         child: Stack(children: [
                           CircleAvatar(
                             backgroundColor: Colors.grey.withOpacity(0.3),
@@ -76,7 +72,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       onTap: ()=>Navigator.push(
                           context,
                           CustomPageRouteRightToLeft(
-                            child: const EditProfile(),
+                            child: EditProfile(),
                           )),
                       child: Stack(children: [
                         CircleAvatar(
@@ -109,7 +105,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
               ),
               Expanded(
                 flex: 1,
-                child: BlocBuilder<GlobalBloc, GlobalState>(
+                child: BlocBuilder<GlobalBloc,GlobalState>(
                   builder: (context, state) {
                     if (state is GetUserDataFromGlobalBlocState) {
                       List<UserModel> userdata = state.userData;
@@ -136,15 +132,11 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           const SizedBox(
                             width: 16,
                           ),
-                          buildStatColumn(
-                              userdata[0].Follower.length,
-                              "Followers"),
+                          buildStatColumn(userdata[0].Follower.length, "Followers"),
                           const SizedBox(
                             width: 16,
                           ),
-                          buildStatColumn(
-                              userdata[0].Following.length,
-                              "Following"),
+                          buildStatColumn(userdata[0].Following.length, "Following"),
                         ],
                       );
                     } else {
@@ -175,7 +167,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
-          child: BlocBuilder<GlobalBloc, GlobalState>(
+          child: BlocBuilder<GlobalBloc,GlobalState>(
             builder: (context, state) {
               if (state is GetUserDataFromGlobalBlocState) {
                 List<UserModel> userdata = state.userData;
@@ -242,10 +234,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         text: "Edit profile",
                         height: 32,
                         width: 160.sp,
-                        onTap: () => Navigator.push(
+                        onTap: () =>Navigator.push(
                             context,
                             CustomPageRouteRightToLeft(
-                              child: const EditProfile(),
+                              child: EditProfile(),
                             ))),
                     ProfileManipulationButton(
                         text: "Share profile",
@@ -259,7 +251,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       ],
     );
   }
-
   Column buildStatColumn(int? num, String label) {
     return Column(
       mainAxisSize: MainAxisSize.min,

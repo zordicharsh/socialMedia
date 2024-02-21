@@ -2,7 +2,9 @@ abstract class EditProfileState {}
 
 class EditProfileInitialState extends EditProfileState {}
 
-class EditProfileSuccessState extends EditProfileState {}
+class EditProfileSuccessState extends EditProfileState {
+
+}
 
 class EditProfileUserNameErrorState extends EditProfileState{
   String ErrorMessage ;
@@ -11,5 +13,24 @@ class EditProfileUserNameErrorState extends EditProfileState{
 }
 class EditProfileMessageSuccessState extends EditProfileState{
   String SuccessMessage;
-  EditProfileMessageSuccessState(this.SuccessMessage);
+  String Usernameeee;
+  EditProfileMessageSuccessState(this.SuccessMessage,this.Usernameeee);
+}
+
+class GetUserAllDataState extends EditProfileState{
+ String naam;
+ String Usernaam;
+ String Bio;
+ String profileUrl;
+ GetUserAllDataState(this.naam, this.Usernaam, this.Bio, this.profileUrl);
+
+}
+
+class IfUserProfilePicIsNull extends EditProfileState{
+  String naam;
+  String Usernaam;
+  String Bio;
+
+  IfUserProfilePicIsNull(this.naam, this.Usernaam, this.Bio);
+
 }

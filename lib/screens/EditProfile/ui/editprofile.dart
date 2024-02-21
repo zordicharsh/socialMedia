@@ -7,20 +7,24 @@ import 'package:image_picker/image_picker.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_event.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_state.dart';
-
 class EditProfile extends StatefulWidget {
-  const EditProfile({Key? key}) : super(key: key);
   @override
   State<EditProfile> createState() => _EditProfileState();
 }
 class _EditProfileState extends State<EditProfile> {
   File? imageFile;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _bioController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+  late OverlayEntry circularLoadingBar;
   final _editprofilekey = GlobalKey<FormState>();
-  String UsernameCheck = "dipakfuck";
 
+  String? url;
+  @override
+  void initState() {
+    BlocProvider.of<EditprofileBloc>(context).add(GetUserAlldataEvent());
+    super.initState();
+  }
   void selectImage(ImageSource source) async {
     XFile? pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
@@ -51,14 +55,407 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ],
     );
+
     if (croppedImage != null) {
       setState(() {
         imageFile = File(croppedImage.path);
       });
     }
   }
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EditprofileBloc, EditProfileState>(
+      builder: (context, state) {
+        if(state is GetUserAllDataState)
+          {    _nameController = TextEditingController(text: state.naam);
+             _bioController = TextEditingController(text: state.Bio);
+            _usernameController = TextEditingController(text: state.Usernaam);
+            url = state.profileUrl;
+            return Scaffold(
+                backgroundColor: Colors.black,
+                appBar: AppBar(
+                  backgroundColor: Colors.black,
+                  title: const Text('Edit Profile'),
+                ),
+                body: Form(
+                  key: _editprofilekey,
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showOptionsDialog(context);
+                            },
+                            child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                CircleAvatar(
+                                 radius: 50,
+                                 backgroundColor: Colors.grey.withOpacity(0.3),
+                                 backgroundImage: imageFile != null
+                                     ? FileImage(imageFile!)
+                                     : null,
+                                 child: (imageFile == null)
+                                     ? ClipOval(child: Image.network(url!, fit: BoxFit.cover, height: 120,width: 120, ),)
+                                     : null,),
+                                Positioned(
+                                  top: 62.sp,
+                                  left: 62.sp,
+                                  child: const CircleAvatar(
+                                    backgroundColor: Colors.black,
+                                    radius: 12,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.blue,
+                                      radius: 10,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _nameController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter Name";
+                              } else {
+                                return null;
+                              }
+                            },
+                            decoration:
+                            const InputDecoration(labelText: 'Name'),
+                          ),
+                          TextFormField(
+                            controller: _bioController,
+                            decoration:
+                            const InputDecoration(labelText: 'Bio'),
+                          ),
+                          TextFormField(
+                            controller: _usernameController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter Email or Username";
+                              } else if (RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(value)) {
+                                return 'please enter username in valid format';
+                              } else {
+                                return null;
+                              }
+                            },
+                            decoration:
+                            const InputDecoration(labelText: 'Username'),
+                          ),
+                          const SizedBox(height: 40),
+                          BlocListener<EditprofileBloc, EditProfileState>(
+                            listener: (context, state) {
+                              if (state is EditProfileUserNameErrorState) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.ErrorMessage),
+                                  ),
+                                );
+                              } else if (state is EditProfileMessageSuccessState) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.SuccessMessage),
+                                  ),
+                                );
+                              } else if (state is EditProfileSuccessState) {
+                                if (imageFile == null) {
 
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2(url!, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
 
+                                } else {
+
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+
+                                }
+                              }
+                            },
+                            child: ElevatedButton(
+                                onPressed: ()  {
+                                  if (_editprofilekey.currentState!.validate()) {
+                                      print("phela if 1");
+                                      BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),),
+                                      );
+                                  }
+                                },
+                              child: const Text("submit"),
+                            ),
+                          )
+                        ],
+                      )),
+                ));
+          }
+        else if(state is IfUserProfilePicIsNull)
+          {
+            { _nameController = TextEditingController(text: state.naam);
+            _bioController = TextEditingController(text: state.Bio);
+            _usernameController = TextEditingController(text: state.Usernaam);
+            return Scaffold(
+                backgroundColor: Colors.black,
+                appBar: AppBar(
+                  backgroundColor: Colors.black,
+                  title: const Text('Edit Profile'),
+                ),
+                body: Form(
+                  key: _editprofilekey,
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showOptionsDialog(context);
+                            },
+                            child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                CircleAvatar(
+                                    radius: 50,
+                                    backgroundColor: Colors.grey.withOpacity(0.3),
+                                    backgroundImage: imageFile != null
+                                        ? FileImage(imageFile!)
+                                        : null,
+                                    child: (imageFile == null)
+                                        ? Icon(Icons.person)
+                                        : null),
+                                Positioned(
+                                  top: 62.sp,
+                                  left: 62.sp,
+                                  child: const CircleAvatar(
+                                    backgroundColor: Colors.black,
+                                    radius: 12,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.blue,
+                                      radius: 10,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _nameController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter Name";
+                              } else {
+                                return null;
+                              }
+                            },
+                            decoration:
+                            const InputDecoration(labelText: 'Name'),
+                          ),
+                          TextFormField(
+                            controller: _bioController,
+                            decoration:
+                            const InputDecoration(labelText: 'Bio'),
+                          ),
+                          TextFormField(
+                            controller: _usernameController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter Email or Username";
+                              } else if (RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(value)) {
+                                return 'please enter username in valid format';
+                              } else {
+                                return null;
+                              }
+                            },
+                            decoration:
+                            const InputDecoration(labelText: 'Username'),
+                          ),
+                          const SizedBox(height: 40),
+                          BlocListener<EditprofileBloc,EditProfileState>(
+                            listener: (context, state) {
+                              if (state is EditProfileUserNameErrorState) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.ErrorMessage),
+                                  ),
+                                );
+                              } else if (state is EditProfileMessageSuccessState) {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.SuccessMessage),),);
+                              } else if (state is EditProfileSuccessState) {
+                                if (imageFile == null) {
+                                  print("phela if 3  from listrener");
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+
+                                } else {
+                                  print("phela if 4 listerner");
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+
+                                }
+                              }
+                            },
+                            child: ElevatedButton(
+                              onPressed: ()  {
+                                if (_editprofilekey.currentState!.validate()) {
+                                  print("phela if 1");
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),),
+                                  );
+                                }
+
+                              },
+                              child: const Text("submit"),
+                            ),
+                          )
+                        ],
+                      )),
+                ));
+            }
+          }
+        else
+        {
+          return Scaffold(
+              backgroundColor: Colors.black,
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                title: const Text('Edit Profile'),
+              ),
+              body: Form(
+                key: _editprofilekey,
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                           showOptionsDialog(context);
+                          },
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.grey.withOpacity(0.3),
+                                backgroundImage: imageFile != null
+                                    ? FileImage(imageFile!)
+                                    : null,
+                                child: (imageFile == null)
+                                    ? Icon(Icons.person)
+                                    : null,
+                              ),
+                              Positioned(
+                                top: 62.sp,
+                                left: 62.sp,
+                                child: const CircleAvatar(
+                                  backgroundColor: Colors.black,
+                                  radius: 12,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.blue,
+                                    radius: 10,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        TextFormField(
+                          controller: _nameController,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Enter Name";
+                            } else {
+                              return null;
+                            }
+                          },
+                          decoration:
+                          const InputDecoration(labelText: 'Name'),
+                        ),
+                        TextFormField(
+                          controller: _bioController,
+                          decoration:
+                          const InputDecoration(labelText: 'Bio'),
+                        ),
+                        TextFormField(
+                          controller: _usernameController,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Enter Email or Username";
+                            } else if (RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(value)) {
+                              return 'please enter username in valid format';
+                            } else {
+                              return null;
+                            }
+                          },
+                          decoration:
+                          const InputDecoration(labelText: 'Username'),
+                        ),
+                        const SizedBox(height: 40),
+                        BlocListener<EditprofileBloc, EditProfileState>(
+                          listener: (context, state) {
+                            if (state is EditProfileUserNameErrorState) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.ErrorMessage),
+                                ),
+                              );
+                            } else if (state is EditProfileMessageSuccessState) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.SuccessMessage),
+                                ),
+                              );
+                            } else if (state is EditProfileSuccessState) {
+                              if (imageFile == null) {
+                                print("phela if 3  from listrener");
+                                BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+
+                              } else {
+                                print("phela if 4 listerner");
+                                BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+
+                              }
+                            }
+                          },
+                          child: ElevatedButton(
+                            onPressed: ()  {
+                              if (_editprofilekey.currentState!.validate()) {
+                                print("phela if 1");
+                                BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),),
+                                );
+                              }
+
+                            },
+                            child: const Text("submit"),
+                          ),
+                        )
+                      ],
+                    )),
+              ));
+        }
+      },
+    );
+  }
   void showOptionsDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -84,148 +481,30 @@ class _EditProfileState extends State<EditProfile> {
                   },
                   leading: const Icon(Icons.camera),
                   title: const Text("Camera"),
-                )
+                ),
+                ListTile(
+                  onTap: () {
+                   if(imageFile != null)
+                     {
+                       setState(() {
+                         imageFile = null;
+                       });
+                     }
+                   else
+                     {
+                       BlocProvider.of<EditprofileBloc>(context).add(ShowingNullProfile("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+                     }
+                    Navigator.of(context).pop();
+                  },
+                  leading: const Icon(Icons.delete),
+                  title: const Text("Remove Photo"),
+                ),
+
               ],
             ),
           ),
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text('Edit Profile'),
-      ),
-      body: Form(
-        key: _editprofilekey,
-        child: GestureDetector(
-            onTap: () {
-              showOptionsDialog(context);
-            },
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Column(
-                    children: [
-                      Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.grey.withOpacity(0.3),
-                            backgroundImage: imageFile != null
-                                ? FileImage(imageFile!)
-                                : null,
-                            child: (imageFile == null)
-                                ? const Icon(
-                                    Icons.person,
-                                    size: 60,
-                                  )
-                                : null,
-                          ),
-                          Positioned(
-                              top: 62.sp,
-                              left: 62.sp,
-                              child: const CircleAvatar(
-                                backgroundColor: Colors.black,
-                                radius: 12,
-                                child: CircleAvatar(
-                                    backgroundColor: Colors.blue,
-                                    radius: 10,
-                                    child: Center(
-                                        child: Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                          size: 16,
-                                        ))),
-                              ))
-                        ],
-                      ),
-                      TextFormField(
-                        controller: _nameController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Enter Name";
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: const InputDecoration(labelText: 'Name'),
-                      ),
-                      TextFormField(
-                        controller: _bioController,
-                        decoration: const InputDecoration(labelText: 'Bio'),
-                      ),
-                      TextFormField(
-                        controller: _usernameController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Enter Email or Username";
-                          } else if (RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(value)) {
-                            return 'please enter username in valid format';
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration:
-                            const InputDecoration(labelText: 'Username'),
-                      ),
-                      const SizedBox(height: 40),
-                      BlocListener<EditprofileBloc, EditProfileState>(
-                        listener: (context, state) {
-                         if(state is EditProfileUserNameErrorState){
-                           ScaffoldMessenger.of(context).showSnackBar(
-                               SnackBar(content: Text(state.ErrorMessage)));
-                         }
-                         else if(state is EditProfileMessageSuccessState){
-                           ScaffoldMessenger.of(context).showSnackBar(
-                               SnackBar(content: Text(state.SuccessMessage)));
-                         }
-                         else if(state is EditProfileSuccessState)
-                           {
-                             if (imageFile == null) {
-                               print("phela if 3  from listrener");
-                               BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim()));
-                             } else {
-                               print("phela if 4 listerner");
-                               BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(),_bioController.text.toString().trim()));}
-                           }
-                        },
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_editprofilekey.currentState!.validate()) {
-                              print("phela if 1");
-                              if (UsernameCheck.toString().trim() == _usernameController.text.toString().trim()) {
-                                print("phela if 2");
-                                if (imageFile == null) {
-                                  print("phela if 3");
-                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim()));
-                                } else {
-                                  print("phela if 4");
-                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(),_bioController.text.toString().trim()));}
-                              } else {
-                                print("phela if 5");
-                                BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim()));
-                              }
-                            }
-                          },
-                          child: const Text("submit"),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            )),
-      ),
     );
   }
 }

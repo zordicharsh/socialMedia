@@ -72,8 +72,7 @@ class _PostGalleryState extends State<PostGallery> {
               final posts = snapshot.data!;
               if (posts.docs.isEmpty) {
                 return GestureDetector(
-                  onTap: () => BlocProvider.of<NavigationBloc>(context)
-                      .add(TabChangedEvent(tabIndex: 2)),
+                  onTap: () => BlocProvider.of<NavigationBloc>(context).add(TabChangedEvent(tabIndex: 2)),
                   child: const Center(
                     child: Tooltip(
                       message: 'Tap to upload a post on your profile',
@@ -117,7 +116,7 @@ class _PostGalleryState extends State<PostGallery> {
                           onLongPress: () {
                             popupDialog = _createPopupDialog(
                                 posts.docs[index]['posturl'].toString(),
-                                posts.docs[index]['profileurl'],
+                                posts.docs[index]['profileurl'].toString(),
                                 posts.docs[index]['username']);
                             Overlay.of(context).insert(popupDialog);
                           },
