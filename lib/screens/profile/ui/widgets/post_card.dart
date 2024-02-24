@@ -72,14 +72,14 @@ class _PostCardState extends State<PostCard> {
                           NetworkImage(widget.profileimage),
                           radius: 14,
                         ),
-                      ):const CircleAvatar(
+                      ):
+                      CircleAvatar(
                         radius: 14.1,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage:
-                          AssetImage("assets/images/cat_pic.jpg"),
+                          backgroundColor: Colors.black.withOpacity(0.8),
                           radius: 14,
+                         child: Icon(Icons.person,color: Colors.black.withOpacity(0.5)),
                         ),
                       ),
                       const SizedBox(

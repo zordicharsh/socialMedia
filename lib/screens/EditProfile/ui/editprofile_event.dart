@@ -21,7 +21,10 @@ class EditProfileDataPassEvent2 extends EditProfileEvent {
 
 class EditProfilUserNameCheckEvent extends EditProfileEvent {
   String Username;
-  EditProfilUserNameCheckEvent(this.Username);
+  String UrLL;
+  String naam;
+  String BIO;
+  EditProfilUserNameCheckEvent(this.Username,this.UrLL,this.naam,this.BIO);
 }
 
 class GetUserAlldataEvent extends EditProfileEvent{

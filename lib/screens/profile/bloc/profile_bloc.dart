@@ -36,7 +36,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     log("post length ---------->${currentUserPostLength.count}");
     log("emitting ProfilePageFetchUserPostLengthSuccessState(postlength: currentUserPostLength)");
     emit(ProfilePageFetchUserPostLengthSuccessState(postlength: currentUserPostLength.count));
-    await Future.delayed(const Duration(milliseconds: 800));
     add(ProfilePageFetchUserPostEvent(currentUserPostLength.count,userid:event.userid));
   }
 }
@@ -44,7 +43,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 _getCurrentUserPosts(String? uid) {
   log("uid in gallery2 $uid");
   Stream<QuerySnapshot<Map<String, dynamic>>> posts =  FirebaseFirestore.instance
-      .collection("UserPost")
+      .collection("UserPost").orderBy('uploadtime',descending: true)
       .where("uid", isEqualTo: uid.toString())
       .snapshots();
   return posts;
