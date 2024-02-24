@@ -38,7 +38,7 @@ class _PostGalleryState extends State<PostGallery> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Shimmer(
-                  duration: const Duration(milliseconds: 4500),
+                  duration: const Duration(milliseconds: 2500),
                   //Default value
                   // interval: const Duration(milliseconds: 100000),
                   //Default value: Duration(seconds: 0)
@@ -72,8 +72,7 @@ class _PostGalleryState extends State<PostGallery> {
               final posts = snapshot.data!;
               if (posts.docs.isEmpty) {
                 return GestureDetector(
-                  onTap: () => BlocProvider.of<NavigationBloc>(context)
-                      .add(TabChangedEvent(tabIndex: 2)),
+                  onTap: () => BlocProvider.of<NavigationBloc>(context).add(TabChangedEvent(tabIndex: 2)),
                   child: const Center(
                     child: Tooltip(
                       message: 'Tap to upload a post on your profile',
@@ -117,7 +116,7 @@ class _PostGalleryState extends State<PostGallery> {
                           onLongPress: () {
                             popupDialog = _createPopupDialog(
                                 posts.docs[index]['posturl'].toString(),
-                                posts.docs[index]['profileurl'],
+                                posts.docs[index]['profileurl'].toString(),
                                 posts.docs[index]['username']);
                             Overlay.of(context).insert(popupDialog);
                           },
@@ -231,9 +230,9 @@ class _PostGalleryState extends State<PostGallery> {
               _createPhotoTitle(profileurl, username),
               Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.415,
                   color: Colors.black,
-                  child: Image.network(url, fit: BoxFit.cover)),
+                  child: Image.network(url, fit: BoxFit.cover,filterQuality: FilterQuality.high,)),
               _createActionBar(),
             ],
           ),
@@ -244,13 +243,24 @@ class _PostGalleryState extends State<PostGallery> {
       width: double.infinity,
       color: Colors.grey[900],
       child:  ListTile(
-        leading: CircleAvatar(
+        leading: widget.profileimage != "" ?
+        CircleAvatar(
           radius: 14.1,
           backgroundColor: Colors.white,
           child: CircleAvatar(
             backgroundColor: Colors.grey,
-   backgroundImage: NetworkImage(profileurl),
+            backgroundImage:
+            NetworkImage(widget.profileimage),
             radius: 14,
+          ),
+        ):
+        CircleAvatar(
+          radius: 14.1,
+          backgroundColor: Colors.white,
+          child: CircleAvatar(
+            backgroundColor: Colors.black.withOpacity(0.8),
+            radius: 14,
+            child: Icon(Icons.person,color: Colors.black.withOpacity(0.5)),
           ),
         ),
         title: Text(

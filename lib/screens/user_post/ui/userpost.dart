@@ -98,7 +98,7 @@ class _ImageUploadState extends State<ImageUploadScreen> {
                     return  ElevatedButton(
                       onPressed: () {
                         BlocProvider.of<UserpostBloc>(context).add(
-                            UserClickonPostbtn(profileurl : listen));
+                            UserClickonPostbtn(profileurl : listen,caption: capttion.text.trim()));
                       },
                       child: const Text('Upload Image'),
                     );

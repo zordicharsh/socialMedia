@@ -10,9 +10,9 @@ class EditProfileDataPassEvent extends EditProfileEvent {
   EditProfileDataPassEvent(this.imageFile, this.username, this.name, this.bio);
 }
 
-/////////////////////////////  this event is for whene url is empty //////////////////////////////////
+/////////////////////////////  if  url is empty     //////////////////////////////////
 class EditProfileDataPassEvent2 extends EditProfileEvent {
-  String kuchnahi;
+  String? kuchnahi;
   String? username;
   String? name;
   String? bio;
@@ -21,6 +21,20 @@ class EditProfileDataPassEvent2 extends EditProfileEvent {
 
 class EditProfilUserNameCheckEvent extends EditProfileEvent {
   String Username;
-  EditProfilUserNameCheckEvent(this.Username);
+  String UrLL;
+  String naam;
+  String BIO;
+  EditProfilUserNameCheckEvent(this.Username,this.UrLL,this.naam,this.BIO);
+}
+
+class GetUserAlldataEvent extends EditProfileEvent{
+
+}
+class ShowingNullProfile extends EditProfileEvent {
+  String? kuchnahi;
+  String? username;
+  String? name;
+  String? bio;
+  ShowingNullProfile(this.kuchnahi, this.username, this.name, this.bio);
 }
 

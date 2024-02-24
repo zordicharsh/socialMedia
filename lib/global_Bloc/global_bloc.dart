@@ -23,7 +23,6 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
   FutureOr<void> getUserIDEvent(
       GetUserIDEvent event, Emitter<GlobalState> emit) async {
     log("in global bloc's getUserIDEvent");
-
     List<UserModel> userdata;
     userdata = await getUserDetail(event.uid);
     emit(GetUserDataFromGlobalBlocState(userdata));

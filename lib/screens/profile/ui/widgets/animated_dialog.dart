@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class AnimatedDialog extends StatefulWidget {
@@ -32,11 +35,14 @@ class AnimatedDialogState extends State<AnimatedDialog>
     return Material(
       color: Colors.black.withOpacity(opacityAnimation.value),
       child: Center(
-        child: FadeTransition(
-          opacity: scaleAnimation,
-          child: ScaleTransition(
-            scale: scaleAnimation,
-            child: widget.child,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5,sigmaY:5 ,tileMode: TileMode.repeated),
+          child: FadeTransition(
+            opacity: scaleAnimation,
+            child: ScaleTransition(
+              scale: scaleAnimation,
+              child: widget.child,
+            ),
           ),
         ),
       ),

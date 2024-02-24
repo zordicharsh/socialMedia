@@ -179,8 +179,7 @@ class LoginUiState extends State<LoginUi> {
                                     ),
                                   ),
                                   errorStyle: const TextStyle(
-                                    color: Colors
-                                        .red, // Customize the color of the error text
+                                    color: Colors.red, // Customize the color of the error text
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(9),
@@ -232,8 +231,7 @@ class LoginUiState extends State<LoginUi> {
                                     SnackBar(content: Text(state.message)));
                               } else if (state is LoginSuccessState) {
                                 circularLoadingBar.remove();
-                                BlocProvider.of<GlobalBloc>(context)
-                                    .add(GetUserIDEvent(uid: state.uid));
+                                BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: state.uid));
                                 BlocProvider.of<NavigationBloc>(context).add(NavigationInitialEvent(tabIndex: 0));
                                 Navigator.pushReplacement(
                                     context,
@@ -252,14 +250,9 @@ class LoginUiState extends State<LoginUi> {
                                         String email = emailController.text;
                                         String password =
                                             passwordController.text;
-                                        BlocProvider.of<LoginBloc>(context).add(
-                                            LoginValidationError(
-                                                Email: email,
-                                                Password: password));
-                                        circularLoadingBar =
-                                            _createCircularLoadingBar();
-                                        Overlay.of(context)
-                                            .insert(circularLoadingBar);
+                                        BlocProvider.of<LoginBloc>(context).add(LoginValidationError(Email: email, Password: password));
+                                        circularLoadingBar = _createCircularLoadingBar();
+                                        Overlay.of(context).insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -286,10 +279,8 @@ class LoginUiState extends State<LoginUi> {
                                             LoginValidationError(
                                                 Email: email,
                                                 Password: password));
-                                        circularLoadingBar =
-                                            _createCircularLoadingBar();
-                                        Overlay.of(context)
-                                            .insert(circularLoadingBar);
+                                        circularLoadingBar = _createCircularLoadingBar();
+                                        Overlay.of(context).insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -377,7 +368,6 @@ class LoginUiState extends State<LoginUi> {
       ),
     );
   }
-
   OverlayEntry _createCircularLoadingBar() {
     return OverlayEntry(
       builder: (context) => Center(

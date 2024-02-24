@@ -42,10 +42,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       );
                     } else {
                       return GestureDetector(
-                        onTap: ()=>Navigator.push(
+                        onTap: () => Navigator.push(
                             context,
                             CustomPageRouteRightToLeft(
-                              child: const EditProfile(),
+                              child: EditProfile(),
                             )),
                         child: Stack(children: [
                           CircleAvatar(
@@ -73,10 +73,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                     }
                   } else {
                     return GestureDetector(
-                      onTap: ()=>Navigator.push(
+                      onTap: () => Navigator.push(
                           context,
                           CustomPageRouteRightToLeft(
-                            child: const EditProfile(),
+                            child: EditProfile(),
                           )),
                       child: Stack(children: [
                         CircleAvatar(
@@ -121,30 +121,26 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                             width: 24,
                           ),
                           BlocBuilder<ProfileBloc, ProfileState>(
-                            builder: (context, state) {
-                              if(state is ProfilePageFetchUserPostSuccessState) {
-                                return buildStatColumn(
-                                    state.postlength, "Posts");
-                              }else if(state is ProfilePageFetchUserPostLengthSuccessState){
-                                return buildStatColumn(state.postlength, "Posts");
-                              }
-                              else{
-                                return buildStatColumn(0, "Posts");
-                              }
+                              builder: (context, state) {
+                            if (state is ProfilePageFetchUserPostSuccessState) {
+                              return buildStatColumn(state.postlength, "Posts");
+                            } else if (state
+                                is ProfilePageFetchUserPostLengthSuccessState) {
+                              return buildStatColumn(state.postlength, "Posts");
+                            } else {
+                              return buildStatColumn(0, "Posts");
                             }
-                          ),
+                          }),
                           const SizedBox(
                             width: 16,
                           ),
                           buildStatColumn(
-                              userdata[0].Follower.length,
-                              "Followers"),
+                              userdata[0].Follower.length, "Followers"),
                           const SizedBox(
                             width: 16,
                           ),
                           buildStatColumn(
-                              userdata[0].Following.length,
-                              "Following"),
+                              userdata[0].Following.length, "Following"),
                         ],
                       );
                     } else {
@@ -159,7 +155,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           const SizedBox(
                             width: 16,
                           ),
-                          buildStatColumn(2, "Followers"),
+                          buildStatColumn(0, "Followers"),
                           const SizedBox(
                             width: 16,
                           ),
@@ -200,7 +196,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             builder: (context, state) {
               if (state is GetUserDataFromGlobalBlocState) {
                 List<UserModel> userdata = state.userData;
-               /* BlocProvider.of<ProfileBloc>(context).add(
+                /* BlocProvider.of<ProfileBloc>(context).add(
                     ProfilePageFetchUserPostEvent(userid: userdata[0].Uid));*/
                 if (userdata[0].Bio.toString() != "") {
                   return Text(userdata[0].Bio.toString(),
@@ -245,7 +241,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         onTap: () => Navigator.push(
                             context,
                             CustomPageRouteRightToLeft(
-                              child: const EditProfile(),
+                              child: EditProfile(),
                             ))),
                     ProfileManipulationButton(
                         text: "Share profile",
