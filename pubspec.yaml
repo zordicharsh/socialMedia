@@ -54,6 +54,7 @@ dependencies:
   path: ^1.8.3
   shimmer_animation: ^2.1.0+1
   intl: ^0.18.1
+  liquid_pull_to_refresh: ^3.0.1
 
 
 dev_dependencies:

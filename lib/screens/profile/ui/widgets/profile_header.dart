@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +6,6 @@ import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/cust
 import 'package:socialmedia/screens/EditProfile/ui/editprofile.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
-
 import '../../../../global_Bloc/global_bloc.dart';
 import '../../../../model/user_model.dart';
 
@@ -26,7 +24,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+          padding: const EdgeInsets.symmetric(
+              vertical: 0.0, horizontal: 16),
           child: Row(
             children: [
               BlocBuilder<GlobalBloc, GlobalState>(
@@ -37,16 +36,17 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       return CircleAvatar(
                         backgroundColor: Colors.grey.withOpacity(0.4),
                         backgroundImage:
-                            NetworkImage(userdata[0].Profileurl.toString()),
+                        NetworkImage(userdata[0].Profileurl.toString()),
                         radius: 36.sp,
                       );
                     } else {
                       return GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            CustomPageRouteRightToLeft(
-                              child: EditProfile(),
-                            )),
+                        onTap: () =>
+                            Navigator.push(
+                                context,
+                                CustomPageRouteRightToLeft(
+                                  child: EditProfile(),
+                                )),
                         child: Stack(children: [
                           CircleAvatar(
                             backgroundColor: Colors.grey.withOpacity(0.3),
@@ -63,21 +63,22 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                                     radius: 10,
                                     child: Center(
                                         child: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                      size: 16,
-                                    ))),
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ))),
                               ))
                         ]),
                       );
                     }
                   } else {
                     return GestureDetector(
-                      onTap: () => Navigator.push(
-                          context,
-                          CustomPageRouteRightToLeft(
-                            child: EditProfile(),
-                          )),
+                      onTap: () =>
+                          Navigator.push(
+                              context,
+                              CustomPageRouteRightToLeft(
+                                child: EditProfile(),
+                              )),
                       child: Stack(children: [
                         CircleAvatar(
                           backgroundColor: Colors.grey.withOpacity(0.3),
@@ -94,10 +95,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                                   radius: 10,
                                   child: Center(
                                       child: Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ))),
+                                        Icons.add,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ))),
                             ))
                       ]),
                     );
@@ -122,15 +123,17 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           ),
                           BlocBuilder<ProfileBloc, ProfileState>(
                               builder: (context, state) {
-                            if (state is ProfilePageFetchUserPostSuccessState) {
-                              return buildStatColumn(state.postlength, "Posts");
-                            } else if (state
+                                if (state is ProfilePageFetchUserPostSuccessState) {
+                                  return buildStatColumn(
+                                      state.postlength, "Posts");
+                                } else if (state
                                 is ProfilePageFetchUserPostLengthSuccessState) {
-                              return buildStatColumn(state.postlength, "Posts");
-                            } else {
-                              return buildStatColumn(0, "Posts");
-                            }
-                          }),
+                                  return buildStatColumn(
+                                      state.postlength, "Posts");
+                                } else {
+                                  return buildStatColumn(0, "Posts");
+                                }
+                              }),
                           const SizedBox(
                             width: 16,
                           ),
@@ -170,7 +173,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+          padding: const EdgeInsets.symmetric(
+              vertical: 0.0, horizontal: 16),
           child: BlocBuilder<GlobalBloc, GlobalState>(
             builder: (context, state) {
               if (state is GetUserDataFromGlobalBlocState) {
@@ -191,7 +195,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+          padding: const EdgeInsets.symmetric(
+              vertical: 0.0, horizontal: 16),
           child: BlocBuilder<GlobalBloc, GlobalState>(
             builder: (context, state) {
               if (state is GetUserDataFromGlobalBlocState) {
@@ -225,33 +230,37 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           height: 8,
         ),
         Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+            padding: const EdgeInsets.symmetric(
+                vertical: 0.0, horizontal: 16),
             child: Row(children: [
               Expanded(
                 flex: 1,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-// mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ProfileManipulationButton(
                         text: "Edit profile",
                         height: 32,
                         width: 160.sp,
-                        onTap: () => Navigator.push(
-                            context,
-                            CustomPageRouteRightToLeft(
-                              child: EditProfile(),
-                            ))),
+                        onTap: () =>
+                            Navigator.push(
+                                context,
+                                CustomPageRouteRightToLeft(
+                                  child: EditProfile(),
+                                ))),
                     ProfileManipulationButton(
                         text: "Share profile",
                         height: 32,
                         width: 160.sp,
-                        onTap: () => log("share button tapped from profile")),
+                        onTap: () =>
+                            log("share button tapped from profile")),
                   ],
                 ),
               )
             ])),
+        const SizedBox(height: 12,),
       ],
     );
   }

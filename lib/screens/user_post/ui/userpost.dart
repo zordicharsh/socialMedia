@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/global_Bloc/global_bloc.dart';
-import 'package:socialmedia/global_Bloc/global_bloc.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_event.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_state.dart';
-
 
 class ImageUploadScreen extends StatefulWidget {
   const ImageUploadScreen({super.key});
@@ -93,22 +91,25 @@ class _ImageUploadState extends State<ImageUploadScreen> {
               BlocBuilder<GlobalBloc, GlobalState>(
                 builder: (context, state) {
                   var listen;
-                  if(state is GetUserDataFromGlobalBlocState){
-                    listen=state.userData[0].Profileurl;
-                    return  ElevatedButton(
+                  if (state is GetUserDataFromGlobalBlocState) {
+                    listen = state.userData[0].Profileurl;
+                    return ElevatedButton(
                       onPressed: () {
                         BlocProvider.of<UserpostBloc>(context).add(
-                            UserClickonPostbtn(profileurl : listen,caption: capttion.text.trim()));
+                            UserClickonPostbtn(profileurl: listen,
+                                caption: capttion.text.trim()));
                       },
                       child: const Text('Upload Image'),
                     );
                   }
-                  else{
+                  else {
                     return ElevatedButton(
                       onPressed: () {
-                        SnackBar(content: Text("check line number 109 in userpost.dart //coded by dipak"));
-                        Tooltip(message: "check line number 109 in userpost.dart //coded by dipak",);
-                      /*  BlocProvider.of<UserpostBloc>(context).add(
+                        SnackBar(content: Text(
+                            "check line number 109 in userpost.dart //coded by dipak"));
+                        Tooltip(
+                          message: "check line number 109 in userpost.dart //coded by dipak",);
+                        /*  BlocProvider.of<UserpostBloc>(context).add(
                             UserClickonPostbtn());*/
                       },
                       child: const Text('Upload Image'),

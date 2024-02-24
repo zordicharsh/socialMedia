@@ -17,7 +17,7 @@ final void Function()?onTap;
         foregroundColor: Colors.black12,
         splashFactory: NoSplash.splashFactory,
         padding: const EdgeInsets.all(4),
-        backgroundColor: Colors.grey.withOpacity(0.2),
+        //backgroundColor: Colors.grey.withOpacity(0.2),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8)),
       ), child:Text(
