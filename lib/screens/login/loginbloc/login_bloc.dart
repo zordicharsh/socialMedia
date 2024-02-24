@@ -15,10 +15,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       VisibilityButtonEvent event, Emitter<LoginState> emit) {
     if (event.visibility == true) {
       //  print("true");
-      emit(VisibilityTrueState());
+      emit(VisibilityTrueState(Obsecure: false));
     } else {
       // print("kuchen");
-      emit(VisibilityFalseState());
+      emit(VisibilityFalseState(Obsecure: true));
     }
   }
   //////////////////////////////////////////////////////////////// LOGIN  METHOD ///////////////////////////////////////////////////////////

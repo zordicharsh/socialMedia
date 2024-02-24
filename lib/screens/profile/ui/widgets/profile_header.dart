@@ -3,12 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
+import 'package:socialmedia/screens/EditProfile/ui/editprofile.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
 
-
 import '../../../../global_Bloc/global_bloc.dart';
-import '../../../../models/user_model.dart';
+import '../../../../model/user_model.dart';
 
 class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key});
@@ -32,15 +33,20 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 builder: (context, state) {
                   if (state is GetUserDataFromGlobalBlocState) {
                     List<UserModel> userdata = state.userData;
-                    if (userdata[0].profileImage.toString() != "") {
+                    if (userdata[0].Profileurl.toString() != "") {
                       return CircleAvatar(
-                        backgroundColor: Colors.grey,
-                       // backgroundImage: NetworkImage(userdata[0].profileImage.toString()),
+                        backgroundColor: Colors.grey.withOpacity(0.4),
+                        backgroundImage:
+                            NetworkImage(userdata[0].Profileurl.toString()),
                         radius: 36.sp,
                       );
                     } else {
                       return GestureDetector(
-                        onTap: (){},
+                        onTap: () => Navigator.push(
+                            context,
+                            CustomPageRouteRightToLeft(
+                              child: EditProfile(),
+                            )),
                         child: Stack(children: [
                           CircleAvatar(
                             backgroundColor: Colors.grey.withOpacity(0.3),
@@ -67,7 +73,11 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                     }
                   } else {
                     return GestureDetector(
-                      onTap: (){},
+                      onTap: () => Navigator.push(
+                          context,
+                          CustomPageRouteRightToLeft(
+                            child: EditProfile(),
+                          )),
                       child: Stack(children: [
                         CircleAvatar(
                           backgroundColor: Colors.grey.withOpacity(0.3),
@@ -84,10 +94,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                                   radius: 10,
                                   child: Center(
                                       child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ))),
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ))),
                             ))
                       ]),
                     );
@@ -110,19 +120,27 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           const SizedBox(
                             width: 24,
                           ),
-                          buildStatColumn("15", "Posts"),
+                          BlocBuilder<ProfileBloc, ProfileState>(
+                              builder: (context, state) {
+                            if (state is ProfilePageFetchUserPostSuccessState) {
+                              return buildStatColumn(state.postlength, "Posts");
+                            } else if (state
+                                is ProfilePageFetchUserPostLengthSuccessState) {
+                              return buildStatColumn(state.postlength, "Posts");
+                            } else {
+                              return buildStatColumn(0, "Posts");
+                            }
+                          }),
                           const SizedBox(
                             width: 16,
                           ),
                           buildStatColumn(
-                              userdata[0].follower.length.toString(),
-                              "Followers"),
+                              userdata[0].Follower.length, "Followers"),
                           const SizedBox(
                             width: 16,
                           ),
                           buildStatColumn(
-                              userdata[0].following.length.toString(),
-                              "Following"),
+                              userdata[0].Following.length, "Following"),
                         ],
                       );
                     } else {
@@ -133,15 +151,15 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           const SizedBox(
                             width: 24,
                           ),
-                          buildStatColumn("0", "Posts"),
+                          buildStatColumn(0, "Posts"),
                           const SizedBox(
                             width: 16,
                           ),
-                          buildStatColumn("0", "Followers"),
+                          buildStatColumn(0, "Followers"),
                           const SizedBox(
                             width: 16,
                           ),
-                          buildStatColumn("0", "Following"),
+                          buildStatColumn(0, "Following"),
                         ],
                       );
                     }
@@ -157,13 +175,13 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             builder: (context, state) {
               if (state is GetUserDataFromGlobalBlocState) {
                 List<UserModel> userdata = state.userData;
-                return Text(userdata[0].uid,
+                return Text(userdata[0].Name.toString(),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.bold));
               } else {
-                return Text("Sussy Baka",
+                return Text("",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.sp,
@@ -177,16 +195,24 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           child: BlocBuilder<GlobalBloc, GlobalState>(
             builder: (context, state) {
               if (state is GetUserDataFromGlobalBlocState) {
-                log("adding ProfilePageFetchUserPostEvent in bloc tree");
-                BlocProvider.of<ProfileBloc>(context).add(ProfilePageFetchUserPostEvent(userid: state.userData[0].uid.toString()));
                 List<UserModel> userdata = state.userData;
-                return Text(userdata[0].email,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                    ));
+                /* BlocProvider.of<ProfileBloc>(context).add(
+                    ProfilePageFetchUserPostEvent(userid: userdata[0].Uid));*/
+                if (userdata[0].Bio.toString() != "") {
+                  return Text(userdata[0].Bio.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                      ));
+                } else {
+                  return Text("",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                      ));
+                }
               } else {
-                return Text("Meow Meow😸",
+                return Text("",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12.sp,
@@ -196,7 +222,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           ),
         ),
         const SizedBox(
-          height: 16,
+          height: 8,
         ),
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
@@ -206,12 +232,22 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+// mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ProfileManipulationButton(
-                        text: "Edit profile", height: 32, width: 160.sp),
+                        text: "Edit profile",
+                        height: 32,
+                        width: 160.sp,
+                        onTap: () => Navigator.push(
+                            context,
+                            CustomPageRouteRightToLeft(
+                              child: EditProfile(),
+                            ))),
                     ProfileManipulationButton(
-                        text: "Share profile", height: 32, width: 160.sp),
+                        text: "Share profile",
+                        height: 32,
+                        width: 160.sp,
+                        onTap: () => log("share button tapped from profile")),
                   ],
                 ),
               )
@@ -220,7 +256,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     );
   }
 
-  Column buildStatColumn(String num, String label) {
+  Column buildStatColumn(int? num, String label) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,

@@ -6,7 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../models/user_model.dart';
+import '../../model/user_model.dart';
+
 
 part 'global_event.dart';
 
@@ -22,10 +23,8 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
   FutureOr<void> getUserIDEvent(
       GetUserIDEvent event, Emitter<GlobalState> emit) async {
     log("in global bloc's getUserIDEvent");
-
     List<UserModel> userdata;
     userdata = await getUserDetail(event.uid);
-
     emit(GetUserDataFromGlobalBlocState(userdata));
     log("emitted GetUserIDFromGlobalBlocState(userID) ");
   }
@@ -39,4 +38,5 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     log("data from getUserDetail method ${snapshot.docs.length.toString()}");
     return snapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
   }
+
 }

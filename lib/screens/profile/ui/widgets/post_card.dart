@@ -1,10 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class PostCard extends StatefulWidget {
-  const PostCard({super.key, required this.currentImageIndex});
+  const PostCard(
+      {super.key,
+      required this.currentImageIndex,
+      required this.username,
+      required this.profileimage, required this.likes, required this.caption, required this.uploadtime});
 
   final String currentImageIndex;
+  final String username;
+  final String profileimage;
+  final String likes;
+  final String caption;
+  final Timestamp uploadtime;
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -49,24 +60,34 @@ class _PostCardState extends State<PostCard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Row(
+                 Row(
                     children: [
+                      widget.profileimage != "" ?
                       CircleAvatar(
                         radius: 14.1,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
                           backgroundColor: Colors.grey,
                           backgroundImage:
-                              AssetImage("assets/images/cat_pic.jpg"),
+                          NetworkImage(widget.profileimage),
                           radius: 14,
                         ),
+                      ):
+                      CircleAvatar(
+                        radius: 14.1,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.black.withOpacity(0.8),
+                          radius: 14,
+                         child: Icon(Icons.person,color: Colors.black.withOpacity(0.5)),
+                        ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Text(
-                        "lilstuart",
-                        style: TextStyle(
+                        widget.username,
+                        style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
@@ -90,21 +111,21 @@ class _PostCardState extends State<PostCard> {
               width: double.infinity,
               child: ZoomOverlay(
                 modalBarrierColor: Colors.black12,
-                // Optional
+// Optional
                 minScale: 0.5,
-                // Optional
+// Optional
                 maxScale: 3.0,
-                // Optional
+// Optional
                 animationCurve: Curves.fastOutSlowIn,
-                // Defaults to fastOutSlowIn which mimics IOS instagram behavior
+// Defaults to fastOutSlowIn which mimics IOS instagram behavior
                 animationDuration: const Duration(milliseconds: 300),
-                // Defaults to 100 Milliseconds. Recommended duration is 300 milliseconds for Curves.fastOutSlowIn
+// Defaults to 100 Milliseconds. Recommended duration is 300 milliseconds for Curves.fastOutSlowIn
                 twoTouchOnly: true,
-                // Defaults to false
+// Defaults to false
                 onScaleStart: () {},
-                // optional VoidCallback
+// optional VoidCallback
                 onScaleStop: () {},
-                // optional VoidCallback
+// optional VoidCallback
                 child: Image(
                     fit: BoxFit.cover,
                     filterQuality: FilterQuality.high,
@@ -129,7 +150,9 @@ class _PostCardState extends State<PostCard> {
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.chat_bubble_outline_outlined,),
+                      icon: const Icon(
+                        Icons.chat_bubble_outline_outlined,
+                      ),
                       color: Colors.white,
                     ),
                     IconButton(
@@ -195,7 +218,7 @@ class _PostCardState extends State<PostCard> {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )
                         ]))
-                    //   Text("Liked by naman2811 and 36 others")
+//   Text("Liked by naman2811 and 36 others")
                   ],
                 )
               ],
@@ -204,15 +227,15 @@ class _PostCardState extends State<PostCard> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
             child: RichText(
-              text: const TextSpan(
-                  style: TextStyle(color: Colors.white),
+              text: TextSpan(
+                  style: const TextStyle(color: Colors.white),
                   children: [
                     TextSpan(
-                      text: "lilstuart",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      text: widget.username,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text: "  This Text Showcases The Caption For Given Pic.",
+                      text:widget.caption,
                     ),
                   ]),
             ),
@@ -225,10 +248,10 @@ class _PostCardState extends State<PostCard> {
                   style: TextStyle(color: Colors.white60)),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
-            child: Text("26 January 2024",
-                style: TextStyle(color: Colors.white60)),
+           Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
+            child: Text(DateFormat.d().add_yMMM().format(widget.uploadtime.toDate()),
+                style: const TextStyle(color: Colors.white60)),
           ),
         ],
       ),

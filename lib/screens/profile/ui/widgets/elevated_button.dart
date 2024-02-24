@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
 class ProfileManipulationButton extends StatelessWidget {
-  const ProfileManipulationButton({super.key, required this.text, required this.width, required this.height});
+  const ProfileManipulationButton({super.key, required this.text, required this.width, required this.height,required this.onTap,});
 final String text;
 final double width;
 final double height;
+final void Function()?onTap;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       height: height,
-      child: ElevatedButton(onPressed: (){}, style: ElevatedButton.styleFrom(
+      child: ElevatedButton(onPressed:onTap,
+        style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black12,
         splashFactory: NoSplash.splashFactory,
         padding: const EdgeInsets.all(4),

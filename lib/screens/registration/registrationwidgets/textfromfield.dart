@@ -10,7 +10,6 @@ class CustomTextFromField extends StatelessWidget {
   String GetHintText;
   var GetIcon;
   final String? Function(String?)? validator;
-
   CustomTextFromField({
     required this.GetController,
     required this.GetHintText,

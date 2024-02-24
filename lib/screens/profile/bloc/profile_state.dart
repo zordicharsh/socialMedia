@@ -7,12 +7,18 @@ abstract class ProfileActionState extends ProfileState {}
 
 class ProfileInitialState extends ProfileState {}
 
-class ProfilePageFetchUserDataState extends ProfileState {
-}
+class ProfilePageFetchUserDataState extends ProfileState {}
+
 class ProfilePageFetchUserPostSuccessState extends ProfileState{
   final Stream<QuerySnapshot<Map<String, dynamic>>> postdata;
+  final int? postlength;
 
-  ProfilePageFetchUserPostSuccessState({required this.postdata});
+  ProfilePageFetchUserPostSuccessState(this.postlength, {required this.postdata});
+}
+class ProfilePageFetchUserPostLengthSuccessState extends ProfileState{
+   final int? postlength;
+
+  ProfilePageFetchUserPostLengthSuccessState({required this.postlength});
 }
 class  ProfilePageFetchUserPostLoadingState extends ProfileState{}
 class SignOutState extends ProfileState {}

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:socialmedia/screens/splashscreen.dart';
+
 class spl extends StatefulWidget {
   const spl({super.key});
   @override
   State<spl> createState() => _splState();
 }
-splservice s=splservice();
+
+splservice s = splservice();
 class _splState extends State<spl> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
     s.isLogin(context);
   }

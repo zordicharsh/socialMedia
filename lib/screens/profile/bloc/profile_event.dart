@@ -7,8 +7,14 @@ class ProfilePageInitialEvent extends ProfileEvent {}
 
 class ProfilePageFetchUserPostEvent extends ProfileEvent {
   final String userid;
+  final int? postlength;
 
-  ProfilePageFetchUserPostEvent({required this.userid});
+  ProfilePageFetchUserPostEvent(this.postlength, {required this.userid});
+}
+class ProfilePageFetchUserPostLengthEvent extends ProfileEvent{
+  final String userid;
+
+  ProfilePageFetchUserPostLengthEvent({required this.userid});
 }
 class OnEditButtonTappedEvent extends ProfileEvent{}
 

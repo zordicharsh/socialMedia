@@ -1,10 +1,11 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_event.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_state.dart';
-import '../../../models/user_model.dart';
+import '../../../model/user_model.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
   RegistrationBloc() : super(RegistrationInitalState()) {
@@ -42,25 +43,24 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
       // });
       // print(gloable.toString());
       // print(password.toString());
-
       if (querySnapshot.docs.isEmpty) {
         final UserCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: event.Email.trim(), password: event.Password.trim());
         final UserAuth = FirebaseAuth.instance.currentUser;
         emit(AuthSuccessLoading());
-        // await Future.delayed(Duration(seconds: 6));
-        DateTime now = DateTime.now();
+        // DateTime now = DateTime.now();
         UserModel RegModel = await UserModel(
-          uid:  UserAuth!.uid.toString(),
-          username: event.Username.trim(),
-          email: event.Email.trim(),
-          password: event.Password.trim(),
-          following:  [],
-          follower:  [],
-          profileImage: "",
-          name: "",
-          datetime: Timestamp.now(),
+             Name: event.Name.toString(),
+            Uid:  UserAuth!.uid.toString(),
+            Username:  event.Username.trim(),
+            Email:  event.Email.trim(),
+            Password:  event.Password.trim(),
+            Following:  [],
+            Follower:  [],
+            datetime:  Timestamp.now(),
+          Profileurl: "",
+          Bio: "",
         );
         var res = await FirebaseFirestore.instance
             .collection("RegisteredUsers")

@@ -2,7 +2,6 @@ abstract class LoginEvent {}
 
 class VisibilityButtonEvent extends LoginEvent {
   bool visibility;
-
   VisibilityButtonEvent({required this.visibility});
 }
 
