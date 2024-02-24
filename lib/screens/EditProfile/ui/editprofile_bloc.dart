@@ -37,7 +37,13 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       }
     else if (event.Username == kk  && uuid != UID)
       {
-        emit(EditProfileUserNameErrorState("This Username Already exist"));
+        if(event.UrLL==""){
+          emit(EditProfileUserNameErrorState("This Username Already exist"));
+        }else{
+          emit(EditProfileUserNameErrorState("This Username Already exist"));
+          emit(GetUserAllDataState(event.naam,event.Username,event.BIO,event.UrLL));
+        }
+
       }
     else{
       emit(EditProfileSuccessState());
@@ -59,9 +65,10 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
 
   void UpdateProfile(String url, String name, String username, String bio) async {
     print("UNDER DOWNLOD Successsssssssssssssssssssssssssssssssssss");
+    var uid = FirebaseAuth.instance.currentUser?.uid;
     await FirebaseFirestore.instance
         .collection('RegisteredUsers')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .doc(uid)
         .update({
       "profileurl": url,
       "bio": bio,
@@ -70,7 +77,7 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     });
     UdateUsernameInPostCollection(username.toString().trim(),url.toString().trim());
     print("UNDER DOWNLOD Successsssssssssssssssssssssssssssssssssss");
-    emit(EditProfileMessageSuccessState("Success upload", username));
+    emit(EditProfileMessageSuccessState("Success upload",username,uid!));
   }
 
   ////////////////////////////////////////  PostCollection Me UserName Change Kerne vala Method /////////////////////////////////
@@ -90,9 +97,10 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
 
   Future<void> editProfileDataPassEvent2(EditProfileDataPassEvent2 event,
       Emitter<EditProfileState> emit) async {
+    var uid = FirebaseAuth.instance.currentUser?.uid;
     await FirebaseFirestore.instance
         .collection('RegisteredUsers')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .doc(uid)
         .update({
       "profileurl": event.kuchnahi,
       "bio": event.bio,
@@ -101,7 +109,7 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     });
     UdateUsernameInPostCollection(event.username.toString().trim(),event.kuchnahi.toString());
     print("nullllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
-    emit(EditProfileMessageSuccessState("Successfull uploaded", event.username.toString()));
+    emit(EditProfileMessageSuccessState("Successfull uploaded",event.username.toString(),uid!));
     if(event.kuchnahi.toString() != "")
       {
         emit(GetUserAllDataState(event.name.toString(),event.username.toString(), event.bio.toString(),event.kuchnahi.toString()));

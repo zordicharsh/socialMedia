@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_event.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_state.dart';
+
+import '../../../global_Bloc/global_bloc.dart';
 class EditProfile extends StatefulWidget {
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -62,12 +65,14 @@ class _EditProfileState extends State<EditProfile> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditprofileBloc, EditProfileState>(
       builder: (context, state) {
         if(state is GetUserAllDataState)
-          {    _nameController = TextEditingController(text: state.naam);
+          {
+            _nameController = TextEditingController(text: state.naam);
              _bioController = TextEditingController(text: state.Bio);
             _usernameController = TextEditingController(text: state.Usernaam);
             url = state.profileUrl;
@@ -156,37 +161,44 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           const SizedBox(height: 40),
                           BlocListener<EditprofileBloc, EditProfileState>(
-                            listener: (context, state) {
+                            listener: (context, state) async{
                               if (state is EditProfileUserNameErrorState) {
+                                circularLoadingBar.remove();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(state.ErrorMessage),
                                   ),
                                 );
                               } else if (state is EditProfileMessageSuccessState) {
+
+                                circularLoadingBar.remove();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(state.SuccessMessage),
                                   ),
                                 );
+                                BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: state.uid));
+                                await Future.delayed(const Duration(milliseconds: 200));
+                                Navigator.pop(context);
                               } else if (state is EditProfileSuccessState) {
                                 if (imageFile == null) {
 
-                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2(url!, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2(url!, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim()),);
 
                                 } else {
 
-                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim()),);
 
                                 }
                               }
                             },
                             child: ElevatedButton(
                                 onPressed: ()  {
-                                  if (_editprofilekey.currentState!.validate()) {
+                                if (_editprofilekey.currentState!.validate()) {
+                                    circularLoadingBar = _createCircularLoadingBar();
+                                    Overlay.of(context).insert(circularLoadingBar);
                                       print("phela if 1");
-                                      BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),),
-                                      );
+                                      BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),url!,_nameController.text.toString().trim(),_bioController.text.toString().trim(),));
                                   }
                                 },
                               child: const Text("submit"),
@@ -227,7 +239,7 @@ class _EditProfileState extends State<EditProfile> {
                                         ? FileImage(imageFile!)
                                         : null,
                                     child: (imageFile == null)
-                                        ? Icon(Icons.person)
+                                        ? const Icon(Icons.person)
                                         : null),
                                 Positioned(
                                   top: 62.sp,
@@ -286,23 +298,28 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           const SizedBox(height: 40),
                           BlocListener<EditprofileBloc,EditProfileState>(
-                            listener: (context, state) {
+                            listener: (context, state) async{
                               if (state is EditProfileUserNameErrorState) {
+                                circularLoadingBar.remove();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(state.ErrorMessage),
                                   ),
                                 );
                               } else if (state is EditProfileMessageSuccessState) {
+                                circularLoadingBar.remove();
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.SuccessMessage),),);
+                                BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: state.uid));
+                                await Future.delayed(const Duration(milliseconds: 200));
+                                Navigator.pop(context);
                               } else if (state is EditProfileSuccessState) {
                                 if (imageFile == null) {
                                   print("phela if 3  from listrener");
-                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim()),);
 
                                 } else {
                                   print("phela if 4 listerner");
-                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim()),);
 
                                 }
                               }
@@ -310,9 +327,10 @@ class _EditProfileState extends State<EditProfile> {
                             child: ElevatedButton(
                               onPressed: ()  {
                                 if (_editprofilekey.currentState!.validate()) {
+                                  circularLoadingBar = _createCircularLoadingBar();
+                                  Overlay.of(context).insert(circularLoadingBar);
                                   print("phela if 1");
-                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),),
-                                  );
+                                  BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),"",_nameController.text.toString().trim(),_bioController.text.toString().trim(),));
                                 }
 
                               },
@@ -352,7 +370,7 @@ class _EditProfileState extends State<EditProfile> {
                                     ? FileImage(imageFile!)
                                     : null,
                                 child: (imageFile == null)
-                                    ? Icon(Icons.person)
+                                    ? const Icon(Icons.person)
                                     : null,
                               ),
                               Positioned(
@@ -412,27 +430,34 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         const SizedBox(height: 40),
                         BlocListener<EditprofileBloc, EditProfileState>(
-                          listener: (context, state) {
+                          listener: (context, state) async{
                             if (state is EditProfileUserNameErrorState) {
+                              circularLoadingBar.remove();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(state.ErrorMessage),
                                 ),
                               );
-                            } else if (state is EditProfileMessageSuccessState) {
+                            }
+                            else if (state is EditProfileMessageSuccessState) {
+                              circularLoadingBar.remove();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(state.SuccessMessage),
                                 ),
                               );
-                            } else if (state is EditProfileSuccessState) {
+                              BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: state.uid));
+                              await Future.delayed(const Duration(milliseconds: 200));
+                              Navigator.pop(context);
+                            }
+                            else if (state is EditProfileSuccessState) {
                               if (imageFile == null) {
                                 print("phela if 3  from listrener");
-                                BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+                                BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent2("", _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim()),);
 
                               } else {
                                 print("phela if 4 listerner");
-                                BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim(),),);
+                                BlocProvider.of<EditprofileBloc>(context).add(EditProfileDataPassEvent(imageFile, _usernameController.text.toString().trim(), _nameController.text.toString().trim(), _bioController.text.toString().trim()),);
 
                               }
                             }
@@ -440,11 +465,11 @@ class _EditProfileState extends State<EditProfile> {
                           child: ElevatedButton(
                             onPressed: ()  {
                               if (_editprofilekey.currentState!.validate()) {
+                                circularLoadingBar = _createCircularLoadingBar();
+                                Overlay.of(context).insert(circularLoadingBar);
                                 print("phela if 1");
-                                BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),),
-                                );
+                                BlocProvider.of<EditprofileBloc>(context).add(EditProfilUserNameCheckEvent(_usernameController.text.toString().trim(),"",_nameController.text.toString().trim(),_bioController.text.toString().trim(),));
                               }
-
                             },
                             child: const Text("submit"),
                           ),
@@ -454,6 +479,18 @@ class _EditProfileState extends State<EditProfile> {
               ));
         }
       },
+    );
+  }
+  OverlayEntry _createCircularLoadingBar() {
+    return OverlayEntry(
+      builder: (context) => Center(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: const CircularProgressIndicator.adaptive(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ),
+      ),
     );
   }
   void showOptionsDialog(BuildContext context) async {

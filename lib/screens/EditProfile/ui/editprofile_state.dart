@@ -14,7 +14,8 @@ class EditProfileUserNameErrorState extends EditProfileState{
 class EditProfileMessageSuccessState extends EditProfileState{
   String SuccessMessage;
   String Usernameeee;
-  EditProfileMessageSuccessState(this.SuccessMessage,this.Usernameeee);
+  String uid;
+  EditProfileMessageSuccessState(this.SuccessMessage,this.Usernameeee,this.uid);
 }
 
 class GetUserAllDataState extends EditProfileState{
