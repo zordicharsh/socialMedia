@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmedia/screens/search_user/searchui/anotherprofile.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_bloc.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_event.dart';
@@ -17,7 +18,19 @@ class SearchUser extends StatefulWidget {
 
 class _SearchUserState extends State<SearchUser> {
   TextEditingController search = TextEditingController();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    search.dispose();
+  }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<SearchBloc>(context).add(SearchUsersIntialEvent());
+  }
   @override
   Widget build(BuildContext context) {
     log("Calling Search widget");
@@ -31,9 +44,7 @@ class _SearchUserState extends State<SearchUser> {
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
                   ),
                   Expanded(
@@ -90,34 +101,51 @@ class _SearchUserState extends State<SearchUser> {
                 builder: (context, state) {
                   if (state is EmittheUSers) {
                     print("emmitingus");
-                    return ListView.builder(
-                      itemCount: state.users.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          onTap: () {
-                            if(FirebaseAuth.instance.currentUser!.uid == state.users[index].Uid.toString()){
-                              Navigator.push(context,  MaterialPageRoute(builder: (context) => ProfilePage(),));
-                            }
-                            else{
-                              print("anotherscreen");
-                            }
-                          },
-                          leading: CircleAvatar(
-                              maxRadius: 20,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: state.users[index].Profileurl != ""
-                                  ? NetworkImage(state.users[index].Profileurl.toString()) : NetworkImage("https://imgs.search.brave.com/S4Q092Ic9VDPZIPUc2EqH8Bvx0XVvLNErkxgHy8FpjA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9idWZm/ZXIuY29tL2xpYnJh/cnkvY29udGVudC9p/bWFnZXMvMjAyMi8w/My9hbWluYS5wbmc")
-                          ),
-                          title: Text(
-                            state.users[index].Username.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          subtitle: Text(
-                            state.users[index].Uid.toString(),
-                            style: const TextStyle(color: Colors.white70),
-                          ),
-                        );
-                      },
+                    return StreamBuilder(
+                        stream: state.UserLists,
+                        builder: (context, snapshot) {
+                          if(snapshot.hasData){
+                            log(snapshot.data!.docs[0]['username'].toString());
+                            return ListView.builder(
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  onTap: () {
+                                    if(FirebaseAuth.instance.currentUser!.uid == state.users[index].Uid.toString()){
+                                      Navigator.push(context,  MaterialPageRoute(builder: (context) => ProfilePage(),));
+                                    }
+                                    else{
+                                      print("anotherscreen");
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnotherUserProfile(uid:snapshot.data!.docs[index]['uid'].toString()),));
+                                    }
+                                  },
+                                  leading: CircleAvatar(
+                                    maxRadius: 20,
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage: snapshot.data!.docs[index]['profileurl'].toString() != "" && snapshot.data!.docs[index]['profileurl'] != null
+                                        ? NetworkImage(snapshot.data!.docs[index]['profileurl'].toString())
+                                        : null, // Set backgroundImage to null if URL is null or empty
+                                    child: snapshot.data!.docs[index]['profileurl'].toString() != "" && snapshot.data!.docs[index]['profileurl'] != null
+                                        ? null
+                                        : Icon(Icons.person, size: 40, color: Colors.white),
+                                  ),
+
+                                  title: Text(
+                                    snapshot.data!.docs[index]['username'].toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  subtitle: Text(
+                                    snapshot.data!.docs[index]['uid'].toString(),
+                                    style: const TextStyle(color: Colors.white70),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          else{
+                            return Text("data");
+                          }
+                        }
                     );
                   } else if (state is NouserAvailable) {
                     print("nouseravailable");
