@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -102,7 +103,7 @@ class _EditProfileState extends State<EditProfile> {
                                      ? FileImage(imageFile!)
                                      : null,
                                  child: (imageFile == null)
-                                     ? ClipOval(child: Image.network(url!, fit: BoxFit.cover, height: 120,width: 120, ),)
+                                     ? ClipOval(child: CachedNetworkImage(imageUrl: url!, fit: BoxFit.cover, height: 120,width: 120,filterQuality: FilterQuality.low, ),)
                                      : null,),
                                 Positioned(
                                   top: 62.sp,

@@ -1,14 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class PostCard extends StatefulWidget {
-  const PostCard(
-      {super.key,
-      required this.currentImageIndex,
-      required this.username,
-      required this.profileimage, required this.likes, required this.caption, required this.uploadtime});
+  const PostCard({super.key,
+    required this.currentImageIndex,
+    required this.username,
+    required this.profileimage, required this.likes, required this.caption, required this.uploadtime});
 
   final String currentImageIndex;
   final String username;
@@ -33,10 +33,14 @@ class _PostCardState extends State<PostCard> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        leading: ModalRoute.of(context)?.canPop == true
+        leading: ModalRoute
+            .of(context)
+            ?.canPop == true
             ? IconButton(
-                onPressed: Navigator.of(context).pop,
-                icon: const Icon(Icons.keyboard_backspace))
+            onPressed: Navigator
+                .of(context)
+                .pop,
+            icon: const Icon(Icons.keyboard_backspace))
             : null,
         iconTheme: const IconThemeData(
           color: Colors.white,
@@ -54,32 +58,37 @@ class _PostCardState extends State<PostCard> {
         children: [
           Padding(
             padding:
-                const EdgeInsets.only(top: 0.0, bottom: 4, right: 8, left: 12),
+            const EdgeInsets.only(top: 0.0, bottom: 4, right: 8, left: 12),
             child: SizedBox(
               width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                 Row(
+                  Row(
                     children: [
                       widget.profileimage != "" ?
-                      CircleAvatar(
-                        radius: 14.1,
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage:
-                          NetworkImage(widget.profileimage),
-                          radius: 14,
-                        ),
-                      ):
+                      CachedNetworkImage(
+                        imageUrl: widget.profileimage,
+                        imageBuilder: (context, imageProvider) =>
+                            CircleAvatar(
+                              radius: 14.1,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                backgroundImage:
+                                imageProvider,
+                                radius: 14,
+                              ),
+                            ),
+                      ) :
                       CircleAvatar(
                         radius: 14.1,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
                           backgroundColor: Colors.black.withOpacity(0.8),
                           radius: 14,
-                         child: Icon(Icons.person,color: Colors.black.withOpacity(0.5)),
+                          child: Icon(Icons.person, color: Colors.black
+                              .withOpacity(0.5)),
                         ),
                       ),
                       const SizedBox(
@@ -107,7 +116,9 @@ class _PostCardState extends State<PostCard> {
             ),
           ),
           SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.45,
+              height: MediaQuery
+                  .sizeOf(context)
+                  .height * 0.45,
               width: double.infinity,
               child: ZoomOverlay(
                 modalBarrierColor: Colors.black12,
@@ -129,7 +140,7 @@ class _PostCardState extends State<PostCard> {
                 child: Image(
                     fit: BoxFit.cover,
                     filterQuality: FilterQuality.high,
-                    image: NetworkImage(
+                    image: CachedNetworkImageProvider(
                       widget.currentImageIndex,
                     )),
               )),
@@ -177,84 +188,99 @@ class _PostCardState extends State<PostCard> {
           ),
           Padding(
             padding:
-                const EdgeInsets.only(top: 0.0, bottom: 4, left: 16, right: 16),
+            const EdgeInsets.only(top: 0.0, bottom: 4, left: 16, right: 16),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    for (int i = 0; i < randomImages.length; i++)
-                      Align(
-                        widthFactor: 0.59,
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.black,
-                          child: CircleAvatar(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+            Row(
+            children: [
+            for (int i = 0; i < randomImages.length; i++)
+            Align(
+            widthFactor: 0.59,
+            child: CircleAvatar(
+              radius: 12,
+              backgroundColor: Colors.black,
+              child: CachedNetworkImage(
+                filterQuality: FilterQuality.low,
+                placeholder: (context, url) =>
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundColor: Colors.black,
+                      child:CircleAvatar(
+                        radius: 10,
+                        backgroundColor: Colors.grey.withOpacity(0.4),
+                      ) ,
+                    ),
+                      imageUrl: randomImages[i],
+                      imageBuilder: (context, imageProvider) =>
+                          CircleAvatar(
                             radius: 10,
-                            backgroundImage: NetworkImage(randomImages[i]),
+                            backgroundImage: imageProvider,
                           ),
+                    ),
+              ),
+            ),
+
+            ],
+          ),
+          Row(
+            children: [
+              RichText(
+                  text: const TextSpan(
+                      style: TextStyle(color: Colors.white),
+                      children: [
+                        TextSpan(
+                          text: "   Liked by",
                         ),
-                      )
-                  ],
-                ),
-                Row(
-                  children: [
-                    RichText(
-                        text: const TextSpan(
-                            style: TextStyle(color: Colors.white),
-                            children: [
-                          TextSpan(
-                            text: "   Liked by",
-                          ),
-                          TextSpan(
-                            text: " naman2811",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(
-                            text: " and",
-                          ),
-                          TextSpan(
-                            text: " 36 others",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )
-                        ]))
+                        TextSpan(
+                          text: " naman2811",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(
+                          text: " and",
+                        ),
+                        TextSpan(
+                          text: " 36 others",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      ]))
 //   Text("Liked by naman2811 and 36 others")
-                  ],
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
-            child: RichText(
-              text: TextSpan(
-                  style: const TextStyle(color: Colors.white),
-                  children: [
-                    TextSpan(
-                      text: widget.username,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                      text:widget.caption,
-                    ),
-                  ]),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
-            child: GestureDetector(
-              onTap: () {},
-              child: const Text("View all 20 comments",
-                  style: TextStyle(color: Colors.white60)),
-            ),
-          ),
-           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
-            child: Text(DateFormat.d().add_yMMM().format(widget.uploadtime.toDate()),
-                style: const TextStyle(color: Colors.white60)),
-          ),
+            ],
+          )
         ],
       ),
+    ),
+    Padding(
+    padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
+    child: RichText(
+    text: TextSpan(
+    style: const TextStyle(color: Colors.white),
+    children: [
+    TextSpan(
+    text: widget.username,
+    style: const TextStyle(fontWeight: FontWeight.bold),
+    ),
+    TextSpan(
+    text:widget.caption,
+    ),
+    ]),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+    child: GestureDetector(
+    onTap: () {},
+    child: const Text("View all 20 comments",
+    style: TextStyle(color: Colors.white60)),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
+    child: Text(DateFormat.d().add_yMMM().format(widget.uploadtime.toDate()),
+    style: const TextStyle(color: Colors.white60)),
+    ),
+    ],
+    ),
     );
   }
 }

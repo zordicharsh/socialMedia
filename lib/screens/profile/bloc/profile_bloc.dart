@@ -26,7 +26,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   FutureOr<void> profilePageFetchUserPostEvent(
       ProfilePageFetchUserPostEvent event, Emitter<ProfileState> emit) {
     Stream<QuerySnapshot<Map<String, dynamic>>> postdata =
-        _getCurrentUserPosts(event.userid);
+    _getCurrentUserPosts(event.userid);
     log("emitting ProfilePageFetchUserPostSuccessState(postdata: postdata)");
     emit(ProfilePageFetchUserPostSuccessState(event.postlength,postdata: postdata));
   }
@@ -51,12 +51,12 @@ _getCurrentUserPosts(String? uid) {
 
 Future<AggregateQuerySnapshot> _getCurrentUserPostsLength(String? uid)async {
   log("uid in gallery1 $uid");
-AggregateQuerySnapshot posts = await FirebaseFirestore.instance
+  AggregateQuerySnapshot posts = await FirebaseFirestore.instance
       .collection("UserPost")
       .where("uid", isEqualTo: uid.toString()).count().get();
   //var postlength =  posts.toString();
- log("aa rha hun mein");
- //log(postlength.toString());
+  log("aa rha hun mein");
+  //log(postlength.toString());
   return posts;
 }
 

@@ -34,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
     //var uid = cuser?.uid;
     log("uid while refreshing :-------------------------------------------------- $uid");
     BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: uid));
-    // await Future.delayed(const Duration(milliseconds: 500));
+     await Future.delayed(const Duration(milliseconds: 1000));
     //  refreshController.refreshCompleted();
     //setState(() {});
   }
@@ -104,31 +104,31 @@ class _ProfilePageState extends State<ProfilePage> {
           color: Colors.grey.withOpacity(0.15),
           backgroundColor: Colors.white.withOpacity(0.65),
           animSpeedFactor:1.5,
-          borderWidth: 0.5,
-          height: 76,
-          springAnimationDurationInMilliseconds:300,
+          borderWidth: 1,
+          height: 70,
+          springAnimationDurationInMilliseconds:150,
           showChildOpacityTransition: false,
-          child: DefaultTabController(
-            length: 3,
-            animationDuration: const Duration(milliseconds: 800),
-            child: NestedScrollView(
-                headerSliverBuilder: (context, _) {
-                  return [
-                    SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          const ProfileHeader(),
-                        ],
-                      ),
+          child: NestedScrollView(
+              headerSliverBuilder: (context, _) {
+                return [
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        const ProfileHeader(),
+                      ],
                     ),
-                  ];
-                },
-                body: Column(
+                  ),
+                ];
+              },
+              body: DefaultTabController(
+                length: 3,
+                animationDuration: const Duration(milliseconds: 800),
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
-                      height: 4,
+                      height: 12,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -194,30 +194,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     )
                   ],
-                )),
-          ),
+                ),
+              )),
         ));
-  }
-}
-
-class CustomLoadingBar extends StatelessWidget {
-  const CustomLoadingBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 150,
-      height: 150,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-          strokeWidth: 10,
-        ),
-      ),
-    );
   }
 }
