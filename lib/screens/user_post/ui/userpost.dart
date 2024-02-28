@@ -104,7 +104,10 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           }
           else if(state is RemovePhotoOrVideoState){
             Check = null;
-            videoPlayerController!.dispose();
+            if(videoPlayerController != null)
+              {
+                videoPlayerController!.dispose();
+              }
             return Column(
               children: [
                 TextField(
