@@ -61,6 +61,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
             datetime:  Timestamp.now(),
           Profileurl: "",
           Bio: "",
+          Acctype: "public"
         );
         var res = await FirebaseFirestore.instance
             .collection("RegisteredUsers")

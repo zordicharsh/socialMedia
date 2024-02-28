@@ -15,6 +15,7 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     on<EditProfilUserNameCheckEvent>(editProfilUserNameCheckEvent);
     on<ShowingNullProfile>(showingNullProfile);
   }
+
   //////////////////////////////////////////////////  UserName check Kerne vala Methode /////////////////////////////////
   Future<void> editProfilUserNameCheckEvent(EditProfilUserNameCheckEvent event,
       Emitter<EditProfileState> emit) async {
@@ -23,29 +24,28 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         .collection('RegisteredUsers')
         .where('username', isEqualTo: event.Username.trim())
         .get();
-    String?  kk;
-    String? UID ;
+    String? kk;
+    String? UID;
     if (response.docs.isNotEmpty) {
       for (var value in response.docs) {
         kk = value['username'].toString();
         UID = value['uid'].toString();
       }
     }
-    if(event.Username == kk && uuid == UID)
-      {
-        emit(EditProfileSuccessState());
+    if (event.Username == kk && uuid == UID) {
+      emit(EditProfileSuccessState());
+    }
+    else if (event.Username == kk && uuid != UID) {
+      if (event.UrLL == "") {
+        emit(EditProfileUserNameErrorState("This Username Already exist"));
+        emit(IfUserProfilePicIsNull(event.naam, event.Username, event.BIO));
+      } else {
+        emit(EditProfileUserNameErrorState("This Username Already exist"));
+        emit(GetUserAllDataState(
+            event.naam, event.Username, event.BIO, event.UrLL));
       }
-    else if (event.Username == kk  && uuid != UID)
-      {
-        if(event.UrLL==""){
-          emit(EditProfileUserNameErrorState("This Username Already exist"));
-        }else{
-          emit(EditProfileUserNameErrorState("This Username Already exist"));
-          emit(GetUserAllDataState(event.naam,event.Username,event.BIO,event.UrLL));
-        }
-
-      }
-    else{
+    }
+    else {
       emit(EditProfileSuccessState());
     }
   }
@@ -56,14 +56,17 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     var pathimage = event.imageFile.toString();
     var temp = pathimage.lastIndexOf('/');
     var result = pathimage.substring(temp + 1);
-    final ref = FirebaseStorage.instance.ref().child("Profile_Images").child(result);
+    final ref = FirebaseStorage.instance.ref().child("Profile_Images").child(
+        result);
     var response = await ref.putFile(event.imageFile!);
     print("update $response");
     var imageUrl = await ref.getDownloadURL();
-    UpdateProfile(imageUrl, event.name.toString(), event.username.toString(), event.bio.toString());
+    UpdateProfile(imageUrl, event.name.toString(), event.username.toString(),
+        event.bio.toString());
   }
 
-  void UpdateProfile(String url, String name, String username, String bio) async {
+  void UpdateProfile(String url, String name, String username,
+      String bio) async {
     print("UNDER DOWNLOD Successsssssssssssssssssssssssssssssssssss");
     var uid = FirebaseAuth.instance.currentUser?.uid;
     await FirebaseFirestore.instance
@@ -75,24 +78,25 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       "name": name,
       "username": username
     });
-    UdateUsernameInPostCollection(username.toString().trim(),url.toString().trim());
+    UdateUsernameInPostCollection(username.toString().trim(), url.toString().trim());
     print("UNDER DOWNLOD Successsssssssssssssssssssssssssssssssssss");
-    emit(EditProfileMessageSuccessState("Success upload",username,uid!));
+    emit(EditProfileMessageSuccessState("Success upload", username, uid!));
   }
 
   ////////////////////////////////////////  PostCollection Me UserName Change Kerne vala Method /////////////////////////////////
-  void UdateUsernameInPostCollection(String PostUsername,String url) async {
+  void UdateUsernameInPostCollection(String PostUsername, String url) async {
     await FirebaseFirestore.instance
         .collection('UserPost')
-        .where('uid', isEqualTo:FirebaseAuth.instance.currentUser?.uid)
+        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
         .get().then((value) {
       for (var i in value.docs) {
-        i.reference.update({'username': PostUsername });
-        i.reference.update({'profileurl': url });
+        i.reference.update({'username': PostUsername});
+        i.reference.update({'profileurl': url});
       }
     },
     );
   }
+
 /////////////////////////////////////////////////////// URL NULL VALA METHODE ////////////////////////////////////////////////////
 
   Future<void> editProfileDataPassEvent2(EditProfileDataPassEvent2 event,
@@ -107,15 +111,15 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       "name": event.name,
       "username": event.username
     });
-    UdateUsernameInPostCollection(event.username.toString().trim(),event.kuchnahi.toString());
+    UdateUsernameInPostCollection(
+        event.username.toString().trim(), event.kuchnahi.toString());
     print("nullllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
-    emit(EditProfileMessageSuccessState("Successfull uploaded",event.username.toString(),uid!));
-    if(event.kuchnahi.toString() != "")
-      {
-        emit(GetUserAllDataState(event.name.toString(),event.username.toString(), event.bio.toString(),event.kuchnahi.toString()));
-      }
-
-
+    emit(EditProfileMessageSuccessState(
+        "Successfull uploaded", event.username.toString(), uid!));
+    if (event.kuchnahi.toString() != "") {
+      emit(GetUserAllDataState(event.name.toString(), event.username.toString(),
+          event.bio.toString(), event.kuchnahi.toString()));
+    }
   }
 
 ////////////////////////// fetching user data ////////////////////////////////
@@ -139,17 +143,21 @@ class EditprofileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         Url = value['profileurl'].toString();
       }
     }
-    if(Url == ""){
+    if (Url == "") {
       print("URlllllllllllllllllllllllllllllll");
       emit(IfUserProfilePicIsNull(naam, use, bio));
     }
-    else{
+    else {
       print("MotNullUrllllllllllllllllllllllllllllllllll");
       emit(GetUserAllDataState(naam, use, bio, Url));
     }
   }
 
-  FutureOr<void> showingNullProfile(ShowingNullProfile event, Emitter<EditProfileState> emit) {
-      emit(IfUserProfilePicIsNull(event.name.toString(), event.username.toString(), event.bio.toString()));
+  FutureOr<void> showingNullProfile(ShowingNullProfile event,
+      Emitter<EditProfileState> emit) {
+    emit(IfUserProfilePicIsNull(
+        event.name.toString(), event.username.toString(),
+        event.bio.toString()));
   }
+
 }

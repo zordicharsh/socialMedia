@@ -11,19 +11,23 @@ import 'package:video_player/video_player.dart';
 
 class ImageUploadScreen extends StatefulWidget {
   const ImageUploadScreen({Key? key}) : super(key: key);
+
   @override
   _ImageUploadScreenState createState() => _ImageUploadScreenState();
 }
+
 class _ImageUploadScreenState extends State<ImageUploadScreen> {
   TextEditingController caption = TextEditingController();
   VideoPlayerController? videoPlayerController;
-  File? Check ;
+  File? Check;
   var CheckWhichState = "";
+
   @override
   void dispose() {
     videoPlayerController?.dispose();
     super.dispose();
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -32,8 +36,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       body: BlocBuilder<UserpostBloc, UserPostStates>(
         builder: (context, state) {
           if (state is SuccessFullySelectedImage) {
-            Check=state.sentimage;
-            CheckWhichState='image';
+            Check = state.sentimage;
+            CheckWhichState = 'image';
             return Center(
               child: SingleChildScrollView(
                 child: Column(
@@ -57,9 +61,10 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 ),
               ),
             );
-          } else if (state is SuccessFullySelectedVideo) {
-            Check= state.sentvideo;
-            CheckWhichState='video';
+          }
+          else if (state is SuccessFullySelectedVideo) {
+            Check = state.sentvideo;
+            CheckWhichState = 'video';
             videoPlayerController = VideoPlayerController.file(state.sentvideo)
               ..initialize()
               ..play()
@@ -88,7 +93,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             );
           } else if (state is UnSuccessFullySelectedImage) {
             Check = null;
-            CheckWhichState="";
+            CheckWhichState = "";
             return const Center(child: Text("Image can't be uploaded"));
           } else if (state is LoadingComeState) {
             videoPlayerController?.dispose();
@@ -99,15 +104,14 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           } else if (state is AbletoUplaodImage) {
             videoPlayerController?.dispose();
             Check = null;
-            CheckWhichState="";
+            CheckWhichState = "";
             return const Center(child: Text("Successfully uploaded"));
-          }
-          else if(state is RemovePhotoOrVideoState){
+          } else if (state is RemovePhotoOrVideoState) {
             Check = null;
-            if(videoPlayerController != null)
-              {
-                videoPlayerController!.dispose();
-              }
+            if (videoPlayerController != null) {
+              videoPlayerController!.dispose();
+            }
+          } else {
             return Column(
               children: [
                 TextField(
@@ -122,76 +126,56 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               ],
             );
           }
-          else {
-            return Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Write a caption",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  controller: caption,
-                ),
-              ],
-            );
-          }
+          return SizedBox();
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomAppBar(
-        child: BlocListener<UserpostBloc, UserPostStates>(
-          listener: (context, state) {},
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  showOptionsDialog(context);
-                },
-                icon: const Icon(Icons.camera),
-              ),
-              BlocBuilder<GlobalBloc, GlobalState>(
-                builder: (context, state) {
-                  var listen;
-                  if (state is GetUserDataFromGlobalBlocState) {
-                    listen = state.userData[0].Profileurl;
-                    return ElevatedButton(
-                      onPressed: () {
-                        if(Check != null && CheckWhichState == 'image') {
-                          BlocProvider.of<UserpostBloc>(context).add(UserClickonPostbtn(profileurl: listen, caption: caption.text.trim(),),);
-                        }
-                        else if(Check != null && CheckWhichState == 'video')
-                          {
-                            BlocProvider.of<UserpostBloc>(context).add(UserVideoPost(caption.text.trim(),listen));
-                          }
-                        else{
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("First Select Image or Reel"),duration:Duration(seconds: 1),));
-                        }
-                      },
-                      child: const Text('Upload Image'),
-                    );
-                  } else {
-                    return ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                                "Check line number 109 in userpost.dart //coded by dipak"),
+        color: Colors.blueAccent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () {
+                showOptionsDialog(context);
+              },
+              icon: const Icon(Icons.camera),
+            ),
+            BlocBuilder<UserpostBloc,UserPostStates>(
+              builder: (context, state) {
+                if(state is SuccessFullySelectedVideo || state is SuccessFullySelectedImage){
+                  return ElevatedButton(
+                    onPressed: () {
+                      if (Check != null && CheckWhichState == 'image') {
+                        BlocProvider.of<UserpostBloc>(context).add(
+                          UserClickonPostbtn(
+                            caption: caption.text.trim(),
                           ),
                         );
-                      },
-                      child: const Text('Upload Image'),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
+                      } else if (Check != null && CheckWhichState == 'video') {
+                        BlocProvider.of<UserpostBloc>(context)
+                            .add(UserVideoPost(caption.text.trim()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("First Select Image or Reel"),
+                          duration: Duration(seconds: 1),
+                        ));
+                      }
+                    },
+                    child: const Text('Upload Image'),
+                  );
+                }else{
+                  return SizedBox();
+                }
+
+              },
+            )
+          ],
         ),
       ),
     );
   }
+
 
   void showOptionsDialog(BuildContext context) async {
     showDialog<void>(
@@ -222,7 +206,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 ),
                 ListTile(
                   onTap: () {
-                    BlocProvider.of<UserpostBloc>(context).add(UserRemoveViedoOrImageEvent());
+                    BlocProvider.of<UserpostBloc>(context)
+                        .add(UserRemoveViedoOrImageEvent());
                     Navigator.of(context).pop();
                   },
                   leading: const Icon(Icons.delete),

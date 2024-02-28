@@ -12,6 +12,8 @@ class UserModel {
   String? Bio;
   String? Name;
 
+   String? Acctype;
+
   UserModel(
       {required this.Uid,
       required this.Username,
@@ -22,7 +24,8 @@ class UserModel {
       required this.datetime,
       required this.Profileurl,
       required this.Bio,
-      required this.Name,});
+      required this.Name,
+      required this.Acctype });
 
   Map<String, dynamic> toMap() {
     return {
@@ -36,6 +39,8 @@ class UserModel {
       'profileurl': Profileurl,
       'bio': Bio,
       'name': Name,
+      'acctype':Acctype,
+
     };
   }
 
@@ -53,6 +58,7 @@ class UserModel {
       datetime: data["datetime"],
       Bio: data["bio"],
       Name: data["name"],
+      Acctype:data["acctype"],
     );
   }
 }
