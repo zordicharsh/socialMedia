@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:socialmedia/model/user_model.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_event.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_state.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../../model/user_post__picture_model.dart';
 
@@ -44,14 +45,14 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
   Future<void> userGetVideo(UserGetVideo event, Emitter<UserPostStates> emit) async {
     final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
     if (pickedFile != null) {
-        image = File(pickedFile.path);
+      image = File(pickedFile.path);
       //  VideoCompresss(File(pickedFile.path));
-        emit(SuccessFullySelectedVideo(image));
+      emit(SuccessFullySelectedVideo(image));
     }
     else
-      {
-        emit(UnSuccessFullySelectedImage());
-      }
+    {
+      emit(UnSuccessFullySelectedImage());
+    }
   }
 /////////////////////////  Image Croperrrrr /////////////////////
   Future<void> ImageCropMethod(File file)
@@ -60,29 +61,29 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         sourcePath: file.path,
         compressQuality: 20,
         aspectRatioPresets: [
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9,
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9,
         ],
         uiSettings: [
-        AndroidUiSettings(
-        toolbarTitle: 'Crop Image',
-        toolbarColor: Colors.blue,
-        toolbarWidgetColor: Colors.white,
-        cropFrameColor: Colors.blue.withOpacity(0.7),
-    cropGridColor: Colors.blue.withOpacity(0.4),
-    showCropGrid: true,
-    initAspectRatio: CropAspectRatioPreset.original,
-    lockAspectRatio: false,
-    ),
-    ]);
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: Colors.blue,
+            toolbarWidgetColor: Colors.white,
+            cropFrameColor: Colors.blue.withOpacity(0.7),
+            cropGridColor: Colors.blue.withOpacity(0.4),
+            showCropGrid: true,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+          ),
+        ]);
     if(croppedImage != null)
-      {
-        image = File(croppedImage.path);
-        emit(SuccessFullySelectedImage(image));
-      }
+    {
+      image = File(croppedImage.path);
+      emit(SuccessFullySelectedImage(image));
+    }
     else{
       emit(UnSuccessFullySelectedImage());
     }
@@ -121,20 +122,22 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         print(downloadURL.toString());
         final Firebasesnapshot = await FirebaseFirestore.instance
             .collection("RegisteredUsers").where('uid' ,isEqualTo: UserAuth!.uid).get();
-       /* late String Url;
+        late String Url;
+        late String typess;
         if (Firebasesnapshot.docs.isNotEmpty) {
           for (var value in Firebasesnapshot.docs) {
             Url = value['profileurl'].toString();
+            typess = value['acctype'].toString();
           }
-        }*/
+        }
         final userdata = Firebasesnapshot.docs.map((e) => UserModel.fromSnapshot(e)).single;
         print("6");
 
         await uploadTask.whenComplete(() async{
           var res = await FirebaseFirestore.instance.collection("UserPost")
               .doc();
-           UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: event.caption,ProfileUrl: event.profileurl,Types: 'image');
-              res.set(userPostImageModel.tomap());
+          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: event.caption,ProfileUrl: Url,Types: 'image',Thumbnail: '',Acctype: typess);
+          res.set(userPostImageModel.tomap());
         });
         emit(LoadingGoState());
         print("7");
@@ -142,7 +145,7 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         image!.delete();
         emit(AbletoUplaodImage());
       } else {
-        emit(UnabletoUplaodImage());
+        // emit(UnabletoUplaodImage());
         print('No image to upload.');
       }
     }
@@ -155,7 +158,7 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
 
 
   Future<void> userVideoPost(UserVideoPost event, Emitter<UserPostStates> emit) async {
-   // final pickedddd =  VideoCompress.compressVideo(image!.path,quality: VideoQuality.LowQuality);
+    // final pickedddd =  VideoCompress.compressVideo(image!.path,quality: VideoQuality.LowQuality);
     print("ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
     print("Under VIDEOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO PPPPPPPOOOOOOOOOOOOOOOOSSSSSSTTTTTTTTTTTTTTTT");
     print(image.toString());
@@ -164,13 +167,19 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
       if(image != null) {
         emit(LoadingComeState());
         final UserAuth = FirebaseAuth.instance.currentUser;
-
+        final tubm2 = await VideoThumbnail.thumbnailFile(video: image!.path, imageFormat: ImageFormat.PNG);
+// Upload the thumbnail to Firebase Storage
+        final thumbnailFileName = 'thumbnail_${DateTime.now().millisecondsSinceEpoch}.png'; // Generate a unique filename for the thumbnail
+        Reference thumbnailReference = FirebaseStorage.instance.ref().child('thumbnails/$thumbnailFileName');
+        UploadTask thumbnailUploadTask = thumbnailReference.putFile(File(tubm2!));
+// Wait for the upload to complete
+        TaskSnapshot thumbnailUploadSnapshot = await thumbnailUploadTask;
+// Get the download URL of the uploaded thumbnail
+        String thumbnailDownloadURL = await thumbnailUploadSnapshot.ref.getDownloadURL();
         String fileName = Path.basename(image!.path);
         log(fileName.toString());
-
         Reference storageReference = await FirebaseStorage.instance.ref().child('Postimages/$fileName');
         log(storageReference.toString());
-
         UploadTask uploadTask = storageReference.putFile(image!);
         // Future.delayed(Duration(seconds: 2));
         TaskSnapshot snapshot =await uploadTask;
@@ -181,17 +190,19 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         print(downloadURL.toString());
         final Firebasesnapshot = await FirebaseFirestore.instance.collection("RegisteredUsers").where('uid' ,isEqualTo: UserAuth!.uid).get();
         late String Url;
-       /* if (Firebasesnapshot.docs.isNotEmpty) {
+        late String typeee;
+        if (Firebasesnapshot.docs.isNotEmpty) {
           for (var value in Firebasesnapshot.docs) {
             Url = value['profileurl'].toString();
+            typeee = value['acctype'].toString();
           }
-        }*/
+        }
         final userdata = Firebasesnapshot.docs.map((e) => UserModel.fromSnapshot(e)).single;
         print("6");
 
         await uploadTask.whenComplete(() async{
           var res = await FirebaseFirestore.instance.collection("UserPost").doc();
-          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: event.caption,ProfileUrl:event.profileurl,Types:'video');
+          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: event.caption,ProfileUrl:Url,Types:'video',Thumbnail: thumbnailDownloadURL,Acctype: typeee);
           res.set(userPostImageModel.tomap());
         });
         emit(LoadingGoState());
@@ -200,7 +211,7 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         image!.delete();
         emit(AbletoUplaodImage());
       } else {
-        emit(UnabletoUplaodImage());
+        // emit(UnabletoUplaodImage());
         print('No image to upload.');
       }
     }
@@ -211,6 +222,6 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
   }
 
   FutureOr<void> userRemoveViedoOrImageEvent(UserRemoveViedoOrImageEvent event, Emitter<UserPostStates> emit) {
-   emit(RemovePhotoOrVideoState());
+    emit(RemovePhotoOrVideoState());
   }
 }

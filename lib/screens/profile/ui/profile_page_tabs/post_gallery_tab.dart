@@ -28,7 +28,7 @@ class _PostGalleryState extends State<PostGallery> {
   void initState() {
     super.initState();
   }
-  VideoPlayerController? videoPlayerController;
+
 
   @override
   Widget build(BuildContext context) {
@@ -150,9 +150,7 @@ class _PostGalleryState extends State<PostGallery> {
                         );
                       }
                     else
-                      {  videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(posts.docs[index]['posturl'].toString()))
-                        ..initialize()
-                        ..pause();
+                      {
                       return Container(
                         color: Colors.grey.withOpacity(0.2),
                         child: GestureDetector(
@@ -175,12 +173,12 @@ class _PostGalleryState extends State<PostGallery> {
                                 Navigator.push(
                                     context,
                                     CustomPageRouteRightToLeft(
-                                        child: PostCard(
+                                        child: PostCardVideo(
                                             currentImageIndex: posts.docs[index]['posturl'].toString(),username: posts.docs[index]['username'].toString(),profileimage: widget.profileimage,likes: posts.docs[index]['likes'].toString(),caption: posts.docs[index]['caption'].toString(),uploadtime: posts.docs[index]['uploadtime'])));
                               }
                             },
-                            child:VideoPlayer(videoPlayerController!)),
-                      );
+                            child:Image.network(posts.docs[index]['thumbnail'].toString(),fit: BoxFit.cover,),
+                      ));
 
                       }
                     

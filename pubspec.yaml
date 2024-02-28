@@ -55,6 +55,8 @@ dependencies:
   shimmer_animation: ^2.1.0+1
   intl: ^0.18.1
   video_player: ^2.8.2
+  video_thumbnail: ^0.5.3
+  lite_rolling_switch: ^1.0.1
 
 
 

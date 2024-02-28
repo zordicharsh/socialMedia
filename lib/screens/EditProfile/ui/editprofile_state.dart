@@ -31,7 +31,7 @@ class IfUserProfilePicIsNull extends EditProfileState{
   String naam;
   String Usernaam;
   String Bio;
-
   IfUserProfilePicIsNull(this.naam, this.Usernaam, this.Bio);
 
 }
+
