@@ -13,3 +13,15 @@ class UsergetImage extends UserpostEvents{
   //
   // UsergetImage(this.Image);
 }
+class UserGetVideo extends UserpostEvents{
+
+}
+class UserVideoPost extends UserpostEvents{
+  String profileurl;
+  String caption;
+
+  UserVideoPost(this.caption,this.profileurl);
+}
+class UserRemoveViedoOrImageEvent extends UserpostEvents {
+
+}

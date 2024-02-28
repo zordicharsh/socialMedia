@@ -4,12 +4,12 @@ import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
-class PostCard extends StatefulWidget {
-  const PostCard(
+class PostCardVideo extends StatefulWidget {
+  const PostCardVideo(
       {super.key,
-      required this.currentImageIndex,
-      required this.username,
-      required this.profileimage, required this.likes, required this.caption, required this.uploadtime});
+        required this.currentImageIndex,
+        required this.username,
+        required this.profileimage, required this.likes, required this.caption, required this.uploadtime});
 
   final String currentImageIndex;
   final String username;
@@ -19,26 +19,36 @@ class PostCard extends StatefulWidget {
   final Timestamp uploadtime;
 
   @override
-  State<PostCard> createState() => _PostCardState();
+  State<PostCardVideo> createState() => _PostCardVideoState();
 }
 
-class _PostCardState extends State<PostCard> {
+class _PostCardVideoState extends State<PostCardVideo> {
   List randomImages = [
     "https://i.pinimg.com/474x/db/c7/63/dbc7636bb173ffb38acb503d8ee44995.jpg",
     "https://i.pinimg.com/474x/a7/e8/89/a7e889effe08ecbede2ddaafbecdbd66.jpg",
     "https://i.pinimg.com/236x/21/ea/de/21eade75b326b412dbff2aa320f571c8.jpg",
   ];
+ @override
+  void dispose() {
+   videoPlayerController?.dispose();
+    super.dispose();
+  }
 
+  VideoPlayerController? videoPlayerController;
 
   @override
   Widget build(BuildContext context) {
+     videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.currentImageIndex))
+      ..initialize()
+      ..play()
+    ..setLooping(true);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         leading: ModalRoute.of(context)?.canPop == true
             ? IconButton(
-                onPressed: Navigator.of(context).pop,
-                icon: const Icon(Icons.keyboard_backspace))
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.keyboard_backspace))
             : null,
         iconTheme: const IconThemeData(
           color: Colors.white,
@@ -51,18 +61,18 @@ class _PostCardState extends State<PostCard> {
         ),
         centerTitle: false,
       ),
-      body:Column(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding:
-                const EdgeInsets.only(top: 0.0, bottom: 4, right: 8, left: 12),
+            const EdgeInsets.only(top: 0.0, bottom: 4, right: 8, left: 12),
             child: SizedBox(
               width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                 Row(
+                  Row(
                     children: [
                       widget.profileimage != "" ?
                       CircleAvatar(
@@ -81,7 +91,7 @@ class _PostCardState extends State<PostCard> {
                         child: CircleAvatar(
                           backgroundColor: Colors.black.withOpacity(0.8),
                           radius: 14,
-                         child: Icon(Icons.person,color: Colors.black.withOpacity(0.5)),
+                          child: Icon(Icons.person,color: Colors.black.withOpacity(0.5)),
                         ),
                       ),
                       const SizedBox(
@@ -128,12 +138,7 @@ class _PostCardState extends State<PostCard> {
 // optional VoidCallback
                 onScaleStop: () {},
 // optional VoidCallback
-                child: Image(
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.high,
-                    image: NetworkImage(
-                      widget.currentImageIndex,
-                    )),
+                child: VideoPlayer(videoPlayerController!)
               )),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 0),
@@ -179,7 +184,7 @@ class _PostCardState extends State<PostCard> {
           ),
           Padding(
             padding:
-                const EdgeInsets.only(top: 0.0, bottom: 4, left: 16, right: 16),
+            const EdgeInsets.only(top: 0.0, bottom: 4, left: 16, right: 16),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -205,21 +210,21 @@ class _PostCardState extends State<PostCard> {
                         text: const TextSpan(
                             style: TextStyle(color: Colors.white),
                             children: [
-                          TextSpan(
-                            text: "   Liked by",
-                          ),
-                          TextSpan(
-                            text: " naman2811",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(
-                            text: " and",
-                          ),
-                          TextSpan(
-                            text: " 36 others",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )
-                        ]))
+                              TextSpan(
+                                text: "   Liked by",
+                              ),
+                              TextSpan(
+                                text: " naman2811",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(
+                                text: " and",
+                              ),
+                              TextSpan(
+                                text: " 36 others",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )
+                            ]))
 //   Text("Liked by naman2811 and 36 others")
                   ],
                 )
@@ -250,7 +255,7 @@ class _PostCardState extends State<PostCard> {
                   style: TextStyle(color: Colors.white60)),
             ),
           ),
-           Padding(
+          Padding(
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
             child: Text(DateFormat.d().add_yMMM().format(widget.uploadtime.toDate()),
                 style: const TextStyle(color: Colors.white60)),

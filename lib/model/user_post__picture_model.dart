@@ -9,6 +9,7 @@ class UserPostImageModel {
   String PostUrl;
   Timestamp datetime;
   String ProfileUrl;
+  String Types ;
 
   UserPostImageModel(
       {required this.Postid,
@@ -16,7 +17,8 @@ class UserPostImageModel {
       required this.Uid,
       required this.Likes,
       required this.Caption,
-      required this.PostUrl,required this.datetime,required this.ProfileUrl});
+      required this.PostUrl,required this.datetime,required this.ProfileUrl,
+       required this.Types});
 
   Map<String, dynamic> tomap() {
     return {
@@ -28,6 +30,7 @@ class UserPostImageModel {
       'posturl': PostUrl,
       'uploadtime':datetime,
       'profileurl':ProfileUrl,
+      'type':Types
     };
   }
 

@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:socialmedia/screens/profile/ui/widgets/Post_card_video.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../../../common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import '../../../navigation_handler/bloc/navigation_bloc.dart';
@@ -16,6 +18,7 @@ class PostGallery extends StatefulWidget {
 
   final String profileimage;
 
+
   @override
   State<PostGallery> createState() => _PostGalleryState();
 }
@@ -25,6 +28,7 @@ class _PostGalleryState extends State<PostGallery> {
   void initState() {
     super.initState();
   }
+  VideoPlayerController? videoPlayerController;
 
   @override
   Widget build(BuildContext context) {
@@ -110,38 +114,76 @@ class _PostGalleryState extends State<PostGallery> {
                       mainAxisSpacing: 2,
                       childAspectRatio: 1),
                   itemBuilder: (context, index) {
-                    return Container(
-                      color: Colors.grey.withOpacity(0.2),
-                      child: GestureDetector(
-                          onLongPress: () {
-                            popupDialog = _createPopupDialog(
-                                posts.docs[index]['posturl'].toString(),
-                                posts.docs[index]['profileurl'].toString(),
-                                posts.docs[index]['username']);
-                            Overlay.of(context).insert(popupDialog);
-                          },
-                          onLongPressEnd: (details) => popupDialog.remove(),
-                          onTap: () {
-                            if(widget.profileimage != ""){
-                              Navigator.push(
-                                  context,
-                                  CustomPageRouteRightToLeft(
-                                      child: PostCard(
-                                          currentImageIndex: posts.docs[index]['posturl'].toString(),username: posts.docs[index]['username'].toString(),profileimage: widget.profileimage,likes: posts.docs[index]['likes'].toString(),caption: posts.docs[index]['caption'].toString(),uploadtime: posts.docs[index]['uploadtime'])));
-                            }else{
-                              Navigator.push(
-                                  context,
-                                  CustomPageRouteRightToLeft(
-                                      child: PostCard(
-                                          currentImageIndex: posts.docs[index]['posturl'].toString(),username: posts.docs[index]['username'].toString(),profileimage: widget.profileimage,likes: posts.docs[index]['likes'].toString(),caption: posts.docs[index]['caption'].toString(),uploadtime: posts.docs[index]['uploadtime'])));
-                            }
+                    if( posts.docs[index]['type'] == 'image')
+                      {
+                        return Container(
+                          color: Colors.grey.withOpacity(0.2),
+                          child: GestureDetector(
+                              onLongPress: () {
+                                popupDialog = _createPopupDialog(
+                                    posts.docs[index]['posturl'].toString(),
+                                    posts.docs[index]['profileurl'].toString(),
+                                    posts.docs[index]['username']);
+                                Overlay.of(context).insert(popupDialog);
+                              },
+                              onLongPressEnd: (details) => popupDialog.remove(),
+                              onTap: () {
+                                if(widget.profileimage != ""){
+                                  Navigator.push(
+                                      context,
+                                      CustomPageRouteRightToLeft(
+                                          child: PostCard(
+                                              currentImageIndex: posts.docs[index]['posturl'].toString(),username: posts.docs[index]['username'].toString(),profileimage: widget.profileimage,likes: posts.docs[index]['likes'].toString(),caption: posts.docs[index]['caption'].toString(),uploadtime: posts.docs[index]['uploadtime'])));
+                                }else{
+                                  Navigator.push(
+                                      context,
+                                      CustomPageRouteRightToLeft(
+                                          child: PostCard(
+                                              currentImageIndex: posts.docs[index]['posturl'].toString(),username: posts.docs[index]['username'].toString(),profileimage: widget.profileimage,likes: posts.docs[index]['likes'].toString(),caption: posts.docs[index]['caption'].toString(),uploadtime: posts.docs[index]['uploadtime'])));
+                                }
 
-                          },
-                          child: Image.network(
-                            posts.docs[index]['posturl'].toString(),
-                            fit: BoxFit.cover,
-                          )),
-                    );
+                              },
+                              child: Image.network(
+                                posts.docs[index]['posturl'].toString(),
+                                fit: BoxFit.cover,
+                              )),
+                        );
+                      }
+                    else
+                      {  videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(posts.docs[index]['posturl'].toString()))
+                        ..initialize()
+                        ..pause();
+                      return Container(
+                        color: Colors.grey.withOpacity(0.2),
+                        child: GestureDetector(
+                            onLongPress: (){
+                              popupDialog = _createPopupDialog(
+                                  posts.docs[index]['posturl'].toString(),
+                                  posts.docs[index]['profileurl'].toString(),
+                                  posts.docs[index]['username']);
+                              Overlay.of(context).insert(popupDialog);
+                            },
+                            onLongPressEnd: (details) => popupDialog.remove(),
+                            onTap: () {
+                              if(widget.profileimage != ""){
+                                Navigator.push(
+                                    context,
+                                    CustomPageRouteRightToLeft(
+                                        child: PostCardVideo(
+                                            currentImageIndex: posts.docs[index]['posturl'].toString(),username: posts.docs[index]['username'].toString(),profileimage: widget.profileimage,likes: posts.docs[index]['likes'].toString(),caption: posts.docs[index]['caption'].toString(),uploadtime: posts.docs[index]['uploadtime'])));
+                              }else{
+                                Navigator.push(
+                                    context,
+                                    CustomPageRouteRightToLeft(
+                                        child: PostCard(
+                                            currentImageIndex: posts.docs[index]['posturl'].toString(),username: posts.docs[index]['username'].toString(),profileimage: widget.profileimage,likes: posts.docs[index]['likes'].toString(),caption: posts.docs[index]['caption'].toString(),uploadtime: posts.docs[index]['uploadtime'])));
+                              }
+                            },
+                            child:VideoPlayer(videoPlayerController!)),
+                      );
+
+                      }
+                    
                   },
                 );
               }
@@ -264,7 +306,7 @@ class _PostGalleryState extends State<PostGallery> {
           ),
         ),
         title: Text(
- username,
+          username,
          // "hi",
           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
