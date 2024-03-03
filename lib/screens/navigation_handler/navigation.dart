@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmedia/screens/explorescreen/ui/explorescreen.dart';
 import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';
 import 'package:socialmedia/screens/search_user/searchui/searchui.dart';
@@ -31,7 +32,7 @@ List<BottomNavigationBarItem> bottomNavItems =  <BottomNavigationBarItem>[
 
 const List<Widget> bottomNavScreen = <Widget>[
   Text('Index 0: Home'),
-  SearchUser(),
+  AllUserPosts(),
   ImageUploadScreen(),
   Text('Index 3: Reels'),
   ProfilePage(),

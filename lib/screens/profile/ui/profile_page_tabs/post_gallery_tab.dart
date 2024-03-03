@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-
 import '../../../../common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import '../../../navigation_handler/bloc/navigation_bloc.dart';
 import '../../bloc/profile_bloc.dart';
@@ -276,10 +275,7 @@ class _PostGalleryState extends State<PostGallery> {
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Icon(
-              Icons.favorite_border,
-              color: Colors.white,
-            ),
+            Icon(Icons.favorite_border_rounded,color: Colors.white,),
             Icon(
               Icons.chat_bubble_outline_outlined,
               color: Colors.white,

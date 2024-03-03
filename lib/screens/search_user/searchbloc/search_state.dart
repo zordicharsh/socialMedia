@@ -12,3 +12,4 @@ class EmittheUSers extends SearchState{
 }
 
 class NouserAvailable extends SearchState{}
+
