@@ -28,6 +28,14 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("object");
+
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -112,18 +120,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               videoPlayerController!.dispose();
             }
           } else {
-            return Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Write a caption",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  controller: caption,
-                ),
-              ],
+            return Center(
+                child: Text("Select Photo")
             );
           }
           return SizedBox();
@@ -135,15 +133,26 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              onPressed: () {
-                showOptionsDialog(context);
-              },
-              icon: const Icon(Icons.camera),
-            ),
             BlocBuilder<UserpostBloc,UserPostStates>(
               builder: (context, state) {
-                if(state is SuccessFullySelectedVideo || state is SuccessFullySelectedImage){
+                if(state is LoadingComeState){
+                  return SizedBox();
+                }
+                else{
+                  return IconButton(
+                    onPressed: () {
+                      showOptionsDialog(context);
+                    },
+                    icon: const Icon(Icons.camera),
+                  );
+                }
+
+              },
+            ),
+            BlocBuilder<UserpostBloc, UserPostStates>(
+              builder: (context, state) {
+                if (state is SuccessFullySelectedVideo ||
+                    state is SuccessFullySelectedImage) {
                   return ElevatedButton(
                     onPressed: () {
                       if (Check != null && CheckWhichState == 'image') {
@@ -156,18 +165,18 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                         BlocProvider.of<UserpostBloc>(context)
                             .add(UserVideoPost(caption.text.trim()));
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("First Select Image or Reel"),
-                          duration: Duration(seconds: 1),
-                        ));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("First Select Image or Reel"),
+                              duration: Duration(seconds: 1),
+                            ));
                       }
                     },
                     child: const Text('Upload Image'),
                   );
-                }else{
+                } else {
                   return SizedBox();
                 }
-
               },
             )
           ],

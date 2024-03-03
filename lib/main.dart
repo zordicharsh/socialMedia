@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/firebase_options.dart';
+import 'package:socialmedia/screens/Drawer/drawer_bloc.dart';
 import 'package:socialmedia/screens/SplashScreeenUI.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
@@ -59,6 +60,9 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(
             create: (context) => ExploreBloc(),
           ),
+          BlocProvider(
+            create: (context) => DrawerBloc(),
+          )
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
