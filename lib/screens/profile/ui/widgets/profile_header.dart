@@ -36,7 +36,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                     if (userdata[0].Profileurl.toString() != "") {
                       return CircleAvatar(
                         backgroundColor: Colors.grey.withOpacity(0.4),
-                        backgroundImage: NetworkImage(userdata[0].Profileurl.toString()),
+                        backgroundImage:
+                            NetworkImage(userdata[0].Profileurl.toString()),
                         radius: 36.sp,
                       );
                     } else {
