@@ -32,6 +32,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("object");
+
   }
 
   Widget build(BuildContext context) {

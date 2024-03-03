@@ -137,7 +137,7 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         await uploadTask.whenComplete(() async{
           var res = await FirebaseFirestore.instance.collection("UserPost")
               .doc();
-          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: event.caption,ProfileUrl: Url,Types: 'image',Thumbnail: '',AccType: AccType);
+          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: event.caption,ProfileUrl: Url,Types: 'image',Thumbnail: '',Acctype: AccType);
           res.set(userPostImageModel.tomap());
         });
         emit(LoadingGoState());
@@ -203,7 +203,7 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
         print("6");
         await uploadTask.whenComplete(() async{
           var res = await FirebaseFirestore.instance.collection("UserPost").doc();
-          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: event.caption,ProfileUrl:Url,Types:'video',Thumbnail: thumbnailDownloadURL,AccType: AccType);
+          UserPostImageModel userPostImageModel = await UserPostImageModel(Postid: res.id,Username: userdata.Username.toString(), Uid: UserAuth.uid.toString(), Likes: [], PostUrl: downloadURL,datetime: Timestamp.now(),Caption: event.caption,ProfileUrl:Url,Types:'video',Thumbnail: thumbnailDownloadURL,Acctype: AccType);
           res.set(userPostImageModel.tomap());
         });
         emit(LoadingGoState());
