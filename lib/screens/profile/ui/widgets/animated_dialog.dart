@@ -26,8 +26,13 @@ class AnimatedDialogState extends State<AnimatedDialog>
         CurvedAnimation(parent: controller, curve: Curves.easeOutExpo);
     opacityAnimation = Tween<double>(begin: 0.0, end: 0.6).animate(
         CurvedAnimation(parent: controller, curve: Curves.easeOutExpo));
-    controller.addListener(() => setState(() {}));
     controller.forward();
+  }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+
   }
 
   @override
@@ -36,7 +41,7 @@ class AnimatedDialogState extends State<AnimatedDialog>
       color: Colors.black.withOpacity(opacityAnimation.value),
       child: Center(
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5,sigmaY:5 ,tileMode: TileMode.repeated),
+          filter: ImageFilter.blur(sigmaX: 5,sigmaY:5),
           child: FadeTransition(
             opacity: scaleAnimation,
             child: ScaleTransition(

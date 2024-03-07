@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -34,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
     //var uid = cuser?.uid;
     log("uid while refreshing :-------------------------------------------------- $uid");
     BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: uid));
-     await Future.delayed(const Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 1000));
     //  refreshController.refreshCompleted();
     //setState(() {});
   }
@@ -103,10 +104,10 @@ class _ProfilePageState extends State<ProfilePage> {
           onRefresh: _handleRefresh,
           color: Colors.grey.withOpacity(0.15),
           backgroundColor: Colors.white.withOpacity(0.65),
-          animSpeedFactor:1.5,
+          animSpeedFactor: 1.5,
           borderWidth: 1,
           height: 70,
-          springAnimationDurationInMilliseconds:150,
+          springAnimationDurationInMilliseconds: 150,
           showChildOpacityTransition: false,
           child: NestedScrollView(
               headerSliverBuilder: (context, _) {
@@ -157,13 +158,13 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             Tab(
                               child: Icon(
+                                size: 28,
                                 Icons.movie_filter_outlined,
                               ),
                             ),
                             Tab(
                               child: Icon(
-                                Icons.perm_contact_cal_outlined,
-                              ),
+                                  size: 28, CupertinoIcons.person_crop_square),
                             ),
                           ]),
                     ),
@@ -174,22 +175,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 0.0, horizontal: 4),
-                        child: TabBarView(children: [
-                          BlocBuilder<GlobalBloc, GlobalState>(
-                              builder: (context, state) {
-                            if (state is GetUserDataFromGlobalBlocState) {
-                              return PostGallery(
-                                profileimage:
-                                    state.userData[0].Profileurl.toString(),
-                              );
-                            } else {
-                              return const PostGallery(
-                                profileimage: "",
-                              );
-                            }
-                          }),
-                          const ProfileReelSection(),
-                          const ProfileTagSection(),
+                        child: const TabBarView(children: [
+                          PostGallery(),
+                          ProfileReelSection(),
+                          ProfileTagSection(),
                         ]),
                       ),
                     )

@@ -27,3 +27,11 @@ class SignOutState extends ProfileState {}
 class ProfilePageFetchUserDataLoadingState extends ProfileState {}
 
 class ProfilePageRefreshActionState extends ProfileActionState {}
+/*
+class ProfilePagePopUpDialogPostLikedActionState extends ProfileActionState {
+  final bool isHeartAnimating;
+  final bool isLiked;
+
+  ProfilePagePopUpDialogPostLikedActionState(
+      this.isHeartAnimating, this.isLiked);
+}*/

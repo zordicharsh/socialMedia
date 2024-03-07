@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfilePageInitialEvent>(profilePageInitialEvent);
     on<ProfilePageFetchUserPostEvent>(profilePageFetchUserPostEvent);
     on<ProfilePageFetchUserPostLengthEvent>(profilePageFetchUserPostLengthEvent);
+/*    on<ProfilePagePopUpDialogLikedOnPostEvent>(profilePagePopUpDialogLikedOnPostEvent);*/
     on<SignOutEvent>(signOutEvent);
   }
 
@@ -38,8 +38,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(ProfilePageFetchUserPostLengthSuccessState(postlength: currentUserPostLength.count));
     add(ProfilePageFetchUserPostEvent(currentUserPostLength.count,userid:event.userid));
   }
-}
-
 _getCurrentUserPosts(String? uid) {
   log("uid in gallery2 $uid");
   Stream<QuerySnapshot<Map<String, dynamic>>> posts =  FirebaseFirestore.instance
@@ -48,6 +46,8 @@ _getCurrentUserPosts(String? uid) {
       .snapshots();
   return posts;
 }
+
+
 
 Future<AggregateQuerySnapshot> _getCurrentUserPostsLength(String? uid)async {
   log("uid in gallery1 $uid");
@@ -65,4 +65,4 @@ FutureOr<void> signOutEvent(
   var auth = FirebaseAuth.instance;
   await auth.signOut();
   emit(SignOutState());
-}
+}}

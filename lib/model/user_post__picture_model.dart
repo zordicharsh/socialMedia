@@ -9,6 +9,8 @@ class UserPostImageModel {
   String PostUrl;
   Timestamp datetime;
   String ProfileUrl;
+  int TotalComments;
+  int TotalLikes;
 
   UserPostImageModel(
       {required this.Postid,
@@ -16,7 +18,7 @@ class UserPostImageModel {
       required this.Uid,
       required this.Likes,
       required this.Caption,
-      required this.PostUrl,required this.datetime,required this.ProfileUrl});
+      required this.PostUrl,required this.datetime,required this.ProfileUrl,required this.TotalComments,required this.TotalLikes});
 
   Map<String, dynamic> tomap() {
     return {
@@ -28,18 +30,8 @@ class UserPostImageModel {
       'posturl': PostUrl,
       'uploadtime':datetime,
       'profileurl':ProfileUrl,
+      'totalcomments':TotalComments,
+      'totallikes':TotalLikes,
     };
   }
-
-  // factory UserPostImageModel.fromSnapshot(
-  //     DocumentSnapshot<Map<String, dynamic>> document){
-  //   final data = document.data()!;
-  //   return UserPostImageModel(
-  //     Username: ,
-  //     Uid: ,
-  //     Likes: ,
-  //     PostUrl: ,
-  //   );
-  // }
-
 }

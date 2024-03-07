@@ -3,10 +3,14 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+
+import '../../../../common_widgets/like_animation_widget/like_animation_widget.dart';
 import '../../../../common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import '../../../navigation_handler/bloc/navigation_bloc.dart';
+import '../../bloc/heart_animation_bloc/heart_bloc.dart';
 import '../../bloc/profile_bloc.dart';
 import '../widgets/animated_dialog.dart';
 import '../widgets/post_card.dart';
@@ -14,10 +18,8 @@ import '../widgets/post_card.dart';
 class PostGallery extends StatefulWidget {
   const PostGallery({
     super.key,
-    required this.profileimage,
   });
 
-  final String profileimage;
 
   @override
   State<PostGallery> createState() => _PostGalleryState();
@@ -28,6 +30,8 @@ class _PostGalleryState extends State<PostGallery> {
   final like = GlobalKey<TooltipState>();
   final comment = GlobalKey<TooltipState>();
   final share = GlobalKey<TooltipState>();
+  bool isLiked = false;
+  bool isHeartAnimating = false;
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +108,7 @@ class _PostGalleryState extends State<PostGallery> {
                               log("user comment the post from else if(108)");
                               comment.currentState?.ensureTooltipVisible();
                               log("making comment tooltip visible");
-                            }
-                            else if ((details.globalPosition.dx >= 285 &&
+                            } else if ((details.globalPosition.dx >= 285 &&
                                     details.globalPosition.dx <= 325) &&
                                 (details.globalPosition.dy >= 660 &&
                                     details.globalPosition.dy <= 680)) {
@@ -118,45 +121,36 @@ class _PostGalleryState extends State<PostGallery> {
                                   : log("no tooltip inside widget tree");
                             }
                           },
-                          onLongPressEnd: (details) => popupDialog.remove(),
-                          onTap: () {
-                            if (widget.profileimage != "") {
-                              Navigator.push(
-                                  context,
-                                  CustomPageRouteRightToLeft(
-                                      child: PostCard(
-                                          currentImageIndex: posts.docs[index]
-                                                  ['posturl']
-                                              .toString(),
-                                          username: posts.docs[index]
-                                                  ['username']
-                                              .toString(),
-                                          profileimage: widget.profileimage,
-                                          likes: posts.docs[index]['likes']
-                                              .toString(),
-                                          caption: posts.docs[index]['caption']
-                                              .toString(),
-                                          uploadtime: posts.docs[index]
-                                              ['uploadtime'])));
+                          onLongPressEnd: (details) async {
+                            Tooltip.dismissAllToolTips();
+                            if ((details.globalPosition.dx >= 85 &&
+                                    details.globalPosition.dx <= 150) &&
+                                (details.globalPosition.dy >= 660 &&
+                                    details.globalPosition.dy <= 680)) {
+                              HapticFeedback.vibrate();
+                              BlocProvider.of<HeartBloc>(context).add(
+                                  ProfilePagePopUpDialogLikedAnimOnPostEvent(
+                                      isHeartAnimating, isLiked));
+                              if (!isLiked) {
+                                await Future.delayed(
+                                    const Duration(milliseconds: 1000));
+                              } else {
+                                await Future.delayed(
+                                    const Duration(milliseconds: 300));
+                              }
+                              popupDialog.remove();
                             } else {
+                              popupDialog.remove();
+                            }
+                          },
+                          onTap: (){
                               Navigator.push(
                                   context,
                                   CustomPageRouteRightToLeft(
                                       child: PostCard(
-                                          currentImageIndex: posts.docs[index]
-                                                  ['posturl']
-                                              .toString(),
-                                          username: posts.docs[index]
-                                                  ['username']
-                                              .toString(),
-                                          profileimage: widget.profileimage,
-                                          likes: posts.docs[index]['likes']
-                                              .toString(),
-                                          caption: posts.docs[index]['caption']
-                                              .toString(),
-                                          uploadtime: posts.docs[index]
-                                              ['uploadtime'])));
-                            }
+                                          currentImageIndex:index
+                                              ,),));
+
                           },
                           child: CachedNetworkImage(
                             imageUrl: posts.docs[index]['posturl'].toString(),
@@ -251,14 +245,65 @@ class _PostGalleryState extends State<PostGallery> {
             children: [
               _createPhotoTitle(profileurl, username),
               Container(
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.415,
-                  color: Colors.black,
-                  child: CachedNetworkImage(
-                    imageUrl: url,
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.high,
-                  )),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.415,
+                color: Colors.black,
+                child: Stack(alignment: Alignment.center, children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: CachedNetworkImage(
+                      imageUrl: url,
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
+                    ),
+                  ),
+                  BlocBuilder<HeartBloc, HeartState>(
+                    buildWhen: (previous, current) {
+                      if (current
+                          is ProfilePagePopUpDialogPostLikedActionState) {
+                        setState(() {
+                          log("current.isLiked : ${current.isLiked}/isLiked : $isLiked,,,,,current.isHeart : ${current.isHeartAnimating}/isHeart : $isHeartAnimating");
+                          isLiked = current.isLiked;
+                          isHeartAnimating = current.isHeartAnimating;
+                        });
+                        return true;
+                      } else {
+                        return false;
+                      }
+                    },
+                    builder: (context, state) {
+                      return AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: isHeartAnimating ? 1 : 0,
+                        child: HeartAnimationWidget(
+                          duration: const Duration(milliseconds: 200),
+                          onEnd: () {
+                            setState(() {
+                              log("making  isHeartAnimating = false from onend");
+                              isHeartAnimating = false;
+                            });
+                          },
+                          isAnimating: isHeartAnimating,
+                          child: Icon(
+                            Icons.favorite_rounded,
+                            color: Colors.white,
+                            size: 100,
+                            semanticLabel: 'You Liked A Post',
+                            shadows: [
+                              BoxShadow(
+                                  blurRadius: 50,
+                                  spreadRadius: 200,
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurStyle: BlurStyle.normal,
+                                  offset: const Offset(1, -3))
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ]),
+              ),
               _createActionBar(),
             ],
           ),
@@ -269,14 +314,14 @@ class _PostGalleryState extends State<PostGallery> {
       width: double.infinity,
       color: Colors.grey[900],
       child: ListTile(
-        leading: widget.profileimage != ""
+        leading: profileurl != ""
             ? CircleAvatar(
                 radius: 14.1,
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   backgroundColor: Colors.grey,
                   backgroundImage:
-                      CachedNetworkImageProvider(widget.profileimage),
+                      CachedNetworkImageProvider(profileurl),
                   radius: 14,
                 ),
               )
@@ -299,57 +344,101 @@ class _PostGalleryState extends State<PostGallery> {
       ));
 
   Widget _createActionBar() => Container(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        padding: EdgeInsets.zero,
         color: Colors.grey[900],
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-           Tooltip(
+            Tooltip(
               key: like,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.8),
-              ),
-             textStyle: const TextStyle(color: Colors.white),
+                  color: Colors.black, borderRadius: BorderRadius.circular(4)),
+              textStyle: const TextStyle(color: Colors.white),
               preferBelow: false,
               verticalOffset: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
               showDuration: const Duration(seconds: 0),
               enableFeedback: true,
-              message: "Like",
-              child: const Icon(
-                Icons.favorite_border,
-                color: Colors.white,
+              message: isLiked ? "Unlike" : "Like",
+              child: BlocBuilder<HeartBloc, HeartState>(
+                builder: (context, state) {
+                  return HeartAnimationWidget(
+                    isAnimating: isLiked,
+                    alwaysAnimate: true,
+                    duration: const Duration(milliseconds: 150),
+                    onEnd: () {
+                      if (isLiked) {
+                        setState(() {
+                          isHeartAnimating = false;
+                        });
+                      }
+                    },
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      highlightColor: Colors.transparent,
+                      onPressed: () {
+                        /*   setState(() {
+                          if (!isLiked) {
+                            isHeartAnimating = true;
+                          }
+                          isLiked = !isLiked;
+                        });*/
+                      },
+                      icon: Icon(
+                        isLiked
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        color: isLiked ? Colors.red : Colors.white,
+                        size: 26,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             Tooltip(
               key: comment,
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
                 color: Colors.black.withOpacity(0.8),
               ),
-              textStyle: const TextStyle(color: Colors.white),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
+              textStyle: const TextStyle(
+                color: Colors.white,
+              ),
               preferBelow: false,
               verticalOffset: 40,
               showDuration: const Duration(seconds: 0),
               enableFeedback: true,
               message: "Comment",
-              child: const Icon(
-                Icons.chat_bubble_outline_outlined,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.chat_bubble_outline_outlined,
+                  size: 26,
+                ),
                 color: Colors.white,
+                onPressed: () {},
               ),
             ),
             Tooltip(
               key: share,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.8),
-              ),
+                  color: Colors.black.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(4)),
               textStyle: const TextStyle(color: Colors.white),
               preferBelow: false,
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
               verticalOffset: 40,
               showDuration: const Duration(seconds: 0),
               enableFeedback: true,
               message: "Share",
-              child: const Icon(
-                Icons.send,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.send,
+                  size: 26,
+                ),
                 color: Colors.white,
+                onPressed: () {},
               ),
             ),
           ],
