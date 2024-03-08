@@ -2,14 +2,20 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
-import 'package:socialmedia/screens/exploreimage/exploreimagepage.dart';
+import 'package:socialmedia/screens/exploreimage/ui/exploreimagepage.dart';
+import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart';
 import 'package:socialmedia/screens/search_user/explorebloc/explore_bloc.dart';
 import 'package:socialmedia/screens/search_user/searchui/searchui.dart';
+import 'package:socialmedia/screens/videoscreen/ui/videopage.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../profile/ui/widgets/animated_dialog.dart';
 class AllUserPosts extends StatefulWidget {
   const AllUserPosts({super.key});
 
@@ -120,6 +126,8 @@ class _AllUserPostsState extends State<AllUserPosts> {
 
   @override
   Widget build(BuildContext context) {
+
+    List<DocumentSnapshot> sufflist=[];
     return  Scaffold(
       appBar: AppBar(title: const Text("name of explaorepage"),surfaceTintColor: Colors.black,actions:[IconButton(onPressed: (){
         Navigator.push(context,CustomPageRouteRightToLeft(child: const SearchUser()));
@@ -127,7 +135,7 @@ class _AllUserPostsState extends State<AllUserPosts> {
       body:
       FutureBuilder(
         future: FirebaseFirestore.instance
-            .collection("UserPost").where('acctype',isEqualTo: 'public')
+            .collection("UserPost").where('acctype',isEqualTo: 'public').where('uid', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
             .get(),
         builder: (context, snapshot) {
           if(snapshot.hasData){
@@ -136,6 +144,9 @@ class _AllUserPostsState extends State<AllUserPosts> {
                 SliverGrid(
                     delegate: SliverChildBuilderDelegate(
                             (context, index) {
+                              // sufflist = snapshot.data!.docs;
+                              // sufflist.shuffle();
+                              // print(sufflist[index]['username'].toString()+"heeeeeee");
                           if (snapshot.data!.docs[index]['type'] ==
                               "image") {
                             return GestureDetector(
@@ -150,126 +161,145 @@ class _AllUserPostsState extends State<AllUserPosts> {
                                   popupDialog!.remove();
                                 },
                                 onLongPress: () {
-                                  popupDialog = OverlayEntry(
-                                    builder: (context) {
-                                      return Dialog(
-                                        backgroundColor: Colors.black,
-                                        child: Container(
-                                          constraints:
-                                          const BoxConstraints(
-                                              maxWidth: 600,
-                                              maxHeight:
-                                              650),
-                                          child: Column(
-                                            mainAxisSize:
-                                            MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .start,
-                                                children: [
-                                                  CircleAvatar(
-                                                    backgroundImage: NetworkImage(
-                                                        snapshot.data!.docs[index]['profileurl']
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                      snapshot.data!.docs[index]['username']
-                                                  )
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width:
-                                                double.infinity,
-                                                height:
-                                                400, // Example height
-                                                child:Image.network
-                                                  (
-                                                  snapshot.data!.docs[index]['posturl'],
-                                                  fit: BoxFit
-                                                      .cover, // Adjust the fit as per your requirement
-                                                ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceEvenly,
-                                                children: [
-                                                  IconButton(
-                                                    tooltip:
-                                                    "Send message",
-                                                    onPressed:
-                                                        () {
-                                                      print(context
-                                                          .toString());
-                                                    },
-                                                    icon: const Icon(
-                                                        Icons
-                                                            .favorite_border_rounded), // Example IconButton
-                                                  ),
-                                                  IconButton(
-                                                    tooltip:
-                                                    "Send message",
-                                                    onPressed: () {},
-                                                    icon: const Icon(Icons
-                                                        .person), // Example IconButton
-                                                  ),
-                                                  IconButton(
-                                                    tooltip:
-                                                    "Send message",
-                                                    onPressed: () {},
-                                                    icon: const Icon(Icons
-                                                        .send_sharp), // Example IconButton
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                  Overlay.of(context)
-                                      .insert(popupDialog!);
+                                  popupDialog = _createPopupDialog(
+                                      snapshot.data!.docs[index]['posturl'].toString(),
+                                      snapshot.data!.docs[index]['profileurl'].toString(),
+                                      snapshot.data!.docs[index]['username']);
+                                  Overlay.of(context).insert(popupDialog!);
+                                  // popupDialog = OverlayEntry(
+                                  //   builder: (context) {
+                                  //     return Dialog(
+                                  //       backgroundColor: Colors.black,
+                                  //       child: Container(
+                                  //         constraints:
+                                  //         const BoxConstraints(
+                                  //             maxWidth: 600,
+                                  //             maxHeight:
+                                  //             650),
+                                  //         child: Column(
+                                  //           mainAxisSize:
+                                  //           MainAxisSize.min,
+                                  //           children: [
+                                  //             Row(
+                                  //               mainAxisAlignment:
+                                  //               MainAxisAlignment
+                                  //                   .start,
+                                  //               children: [
+                                  //                 CircleAvatar(
+                                  //                   backgroundImage: NetworkImage(
+                                  //                       snapshot.data!.docs[index]['profileurl']
+                                  //                   ),
+                                  //                 ),
+                                  //                 Text(
+                                  //                     snapshot.data!.docs[index]['username']
+                                  //                 )
+                                  //               ],
+                                  //             ),
+                                  //             SizedBox(
+                                  //               width:
+                                  //               double.infinity,
+                                  //               height:
+                                  //               400, // Example height
+                                  //               child:Image.network
+                                  //                 (
+                                  //                 snapshot.data!.docs[index]['posturl'],
+                                  //                 fit: BoxFit
+                                  //                     .cover, // Adjust the fit as per your requirement
+                                  //               ),
+                                  //             ),
+                                  //             Row(
+                                  //               mainAxisAlignment:
+                                  //               MainAxisAlignment
+                                  //                   .spaceEvenly,
+                                  //               children: [
+                                  //                 IconButton(
+                                  //                   tooltip:
+                                  //                   "Send message",
+                                  //                   onPressed:
+                                  //                       () {
+                                  //                     print(context
+                                  //                         .toString());
+                                  //                   },
+                                  //                   icon: const Icon(
+                                  //                       Icons
+                                  //                           .favorite_border_rounded), // Example IconButton
+                                  //                 ),
+                                  //                 IconButton(
+                                  //                   tooltip:
+                                  //                   "Send message",
+                                  //                   onPressed: () {},
+                                  //                   icon: const Icon(Icons
+                                  //                       .person), // Example IconButton
+                                  //                 ),
+                                  //                 IconButton(
+                                  //                   tooltip:
+                                  //                   "Send message",
+                                  //                   onPressed: () {},
+                                  //                   icon: const Icon(Icons
+                                  //                       .send_sharp), // Example IconButton
+                                  //                 ),
+                                  //               ],
+                                  //             ),
+                                  //           ],
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  // );
+                                  // Overlay.of(context)
+                                  //     .insert(popupDialog!);
                                 },
                                 child: ClipRRect(
                                     borderRadius:
                                     BorderRadius.circular(8.0),
-                                    child: Image.network(
-                                      snapshot.data!.docs[index]['posturl'],
+                                    child:CachedNetworkImage(imageUrl:
+                                    snapshot.data!.docs[index]['posturl'],
                                       fit: BoxFit.cover,
                                       filterQuality: FilterQuality.low,
                                       width: double.infinity,
                                       height: double.infinity,
-                                    )));
+                                      placeholder: (context, url) =>Shimmer(child: Container()),
+                                    )
+
+                                    ));
                           }
                           else
                           {
                             return
-                              Stack(
-                                children: [
-                                  ClipRRect(
-                                      borderRadius:
-                                      BorderRadius.circular(8.0),
-                                      child: Image.network(
-                                        snapshot.data!.docs[index]['thumbnail'],
-                                        fit: BoxFit.cover,
-                                        filterQuality: FilterQuality.low,
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                      )),
-                                  const Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: Icon(
-                                      Icons
-                                          .tv_sharp, // Replace Icons.close with your desired icon
-                                      color: Colors.black,
-                                      size: 24.0,
+                              GestureDetector(
+                                onTap: (){
+                                  // Navigator.push(context,CustomPageRouteRightToLeft(child: VideoPage(uid: "luii",postid: "huii",)));
+                                  // VideoPage(uid: "luii",postid: "huii",);
+                                  // BlocProvider.of<NavigationBloc>(context).add(
+                                  //     TabChangedEvent(tabIndex: 3));
+
+                                },
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(8.0),
+                                        child: CachedNetworkImage(
+                                          imageUrl: snapshot.data!.docs[index]['thumbnail'],
+                                          fit: BoxFit.cover,
+                                          filterQuality: FilterQuality.low,
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                            placeholder: (context, url) =>Shimmer(child: Container())
+
+                                        )),
+                                    const Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: Icon(
+                                        Icons
+                                            .video_camera_back, // Replace Icons.close with your desired icon
+                                        color: Colors.white,
+                                        size: 24.0,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               );
                             ClipRRect(
                                 borderRadius:
@@ -476,4 +506,90 @@ class _AllUserPostsState extends State<AllUserPosts> {
       ),
     );
   }
+
+
+
+  OverlayEntry _createPopupDialog(
+      String url, String profileurl, String username) {
+    return OverlayEntry(
+      builder: (context) =>
+          AnimatedDialog(child: _createPopupContent(url, profileurl, username)),
+    );
+  }
+
+  Widget _createPopupContent(String url, String profileurl, String username) =>
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _createPhotoTitle(profileurl, username),
+              Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.415,
+                  color: Colors.black,
+                  child: Image.network(url, fit: BoxFit.cover,filterQuality: FilterQuality.high,)),
+              _createActionBar(),
+            ],
+          ),
+        ),
+      );
+
+  Widget _createPhotoTitle(String profileurl, String username) => Container(
+      width: double.infinity,
+      color: Colors.grey[900],
+      child:  ListTile(
+        leading: profileurl != "" ?
+        CircleAvatar(
+          radius: 14.1,
+          backgroundColor: Colors.white,
+          child: CircleAvatar(
+            backgroundColor: Colors.grey,
+            backgroundImage:
+            NetworkImage(profileurl),
+            radius: 14,
+          ),
+        ):
+        CircleAvatar(
+          radius: 14.1,
+          backgroundColor: Colors.white,
+          child: CircleAvatar(
+            backgroundColor: Colors.black.withOpacity(0.8),
+            radius: 14,
+            child: Icon(Icons.person,color: Colors.black.withOpacity(0.5)),
+          ),
+        ),
+        title: Text(
+          username,
+          // "hi",
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ));
+
+  Widget _createActionBar() => Container(
+    padding: const EdgeInsets.symmetric(vertical: 10.0),
+    color: Colors.grey[900],
+    child: const Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Icon(
+          Icons.favorite_border,
+          color: Colors.white,
+        ),
+        Icon(
+          Icons.chat_bubble_outline_outlined,
+          color: Colors.white,
+        ),
+        Icon(
+          Icons.send,
+          color: Colors.white,
+        ),
+      ],
+    ),
+  );
+
+
+
 }

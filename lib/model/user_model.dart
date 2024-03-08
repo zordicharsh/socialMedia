@@ -13,6 +13,7 @@ class UserModel {
   String? Name;
 
    String? Acctype;
+   List Followrequest;
 
   UserModel(
       {required this.Uid,
@@ -25,7 +26,8 @@ class UserModel {
       required this.Profileurl,
       required this.Bio,
       required this.Name,
-      required this.Acctype });
+      required this.Acctype ,
+      required this. Followrequest});
 
   Map<String, dynamic> toMap() {
     return {
@@ -40,6 +42,7 @@ class UserModel {
       'bio': Bio,
       'name': Name,
       'acctype':Acctype,
+      'followrequest': Followrequest
 
     };
   }
@@ -59,6 +62,7 @@ class UserModel {
       Bio: data["bio"],
       Name: data["name"],
       Acctype:data["acctype"],
+      Followrequest: data['followrequest']
     );
   }
 }

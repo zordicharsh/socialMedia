@@ -33,7 +33,6 @@ class _PostGalleryState extends State<PostGallery> {
   @override
   Widget build(BuildContext context) {
     late OverlayEntry popupDialog;
-
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         if (state is ProfilePageFetchUserPostSuccessState) {

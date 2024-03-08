@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile.dart';
+import 'package:socialmedia/screens/follow_request_screen/followreuestscreen.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
 
@@ -238,17 +239,13 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         text: "Edit profile",
                         height: 32,
                         width: 160.sp,
-                        onTap: () => Navigator.push(
-                            context,
-                            CustomPageRouteRightToLeft(
-                              child: EditProfile(),
-                            ))),
+                        onTap: () => Navigator.push(context, CustomPageRouteRightToLeft(child: EditProfile(),))),
                     ProfileManipulationButton(
                         text: "Share profile",
                         height: 32,
                         width: 160.sp,
-                        onTap: () => log("share button tapped from profile")),
-                  ],
+                        onTap: () => Navigator.push(context, CustomPageRouteRightToLeft(child: Request(),)),
+                    )],
                 ),
               )
             ])),
