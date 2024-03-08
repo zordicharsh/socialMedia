@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:socialmedia/screens/exploreimage/exploreimagepage.dart';
+import 'package:socialmedia/screens/exploreimage/ui/exploreimagepage.dart';
 import 'package:socialmedia/screens/search_user/explorebloc/explore_bloc.dart';
 import 'package:socialmedia/screens/search_user/searchui/anotherprofile.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';

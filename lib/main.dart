@@ -6,6 +6,7 @@ import 'package:socialmedia/firebase_options.dart';
 import 'package:socialmedia/screens/Drawer/drawer_bloc.dart';
 import 'package:socialmedia/screens/SplashScreeenUI.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
+import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
@@ -62,6 +63,8 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider(
             create: (context) => DrawerBloc(),
+          ),BlocProvider(
+            create: (context) => exploreimageBloc(),
           )
         ],
         child: MaterialApp(

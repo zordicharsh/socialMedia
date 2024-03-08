@@ -5,6 +5,7 @@ import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart
 import 'package:socialmedia/screens/profile/ui/profile.dart';
 import 'package:socialmedia/screens/search_user/searchui/searchui.dart';
 import 'package:socialmedia/screens/user_post/ui/userpost.dart';
+import 'package:socialmedia/screens/videoscreen/ui/videopage.dart';
 
 
 List<BottomNavigationBarItem> bottomNavItems =  <BottomNavigationBarItem>[
@@ -34,7 +35,7 @@ const List<Widget> bottomNavScreen = <Widget>[
   Text('Index 0: Home'),
   AllUserPosts(),
   ImageUploadScreen(),
-  Text('Index 3: Reels'),
+  VideoPage(),
   ProfilePage(),
 
 ];
