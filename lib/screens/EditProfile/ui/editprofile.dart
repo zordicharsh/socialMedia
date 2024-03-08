@@ -77,6 +77,7 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
     return BlocBuilder<EditprofileBloc, EditProfileState>(
       builder: (context, state) {
         if (state is GetUserAllDataState) {
@@ -93,7 +94,7 @@ class _EditProfileState extends State<EditProfile> {
               body: Form(
                 key: _editprofilekey,
                 child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 28),
                     child: Column(
                       children: [
                         GestureDetector(
@@ -142,6 +143,15 @@ class _EditProfileState extends State<EditProfile> {
                             ],
                           ),
                         ),
+                        SizedBox(height: 12.sp),
+                        Text(
+                          "Edit Picture",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: deviceWidth* .036,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 12.sp),
                         TextFormField(
                           controller: _nameController,
                           validator: (value) {
@@ -153,10 +163,12 @@ class _EditProfileState extends State<EditProfile> {
                           },
                           decoration: const InputDecoration(labelText: 'Name'),
                         ),
+                        SizedBox(height: 12.sp),
                         TextFormField(
                           controller: _bioController,
                           decoration: const InputDecoration(labelText: 'Bio'),
                         ),
+                        SizedBox(height: 12.sp),
                         TextFormField(
                           controller: _usernameController,
                           validator: (value) {
@@ -173,8 +185,7 @@ class _EditProfileState extends State<EditProfile> {
                           decoration:
                               const InputDecoration(labelText: 'Username'),
                         ),
-
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 44),
                         BlocListener<EditprofileBloc, EditProfileState>(
                           listener: (context, state) async {
                             if (state is EditProfileUserNameErrorState) {
@@ -237,7 +248,14 @@ class _EditProfileState extends State<EditProfile> {
                                 ));
                               }
                             },
-                            child: const Text("submit"),
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: Size(328.sp, 40),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(9),
+                                ),
+                                backgroundColor: Colors.blue,
+                              ),
+                            child: const Text("Submit" , style: TextStyle(color: Colors.white),),
                           ),
                         )
                       ],
@@ -299,6 +317,15 @@ class _EditProfileState extends State<EditProfile> {
                               ],
                             ),
                           ),
+                          SizedBox(height: 12.sp),
+                          Text(
+                            "Edit Picture",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: deviceWidth* .036,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 12.sp),
                           TextFormField(
                             controller: _nameController,
                             validator: (value) {
@@ -311,10 +338,12 @@ class _EditProfileState extends State<EditProfile> {
                             decoration:
                                 const InputDecoration(labelText: 'Name'),
                           ),
+                          SizedBox(height: 12.sp),
                           TextFormField(
                             controller: _bioController,
                             decoration: const InputDecoration(labelText: 'Bio'),
                           ),
+                          SizedBox(height: 12.sp),
                           TextFormField(
                             controller: _usernameController,
                             validator: (value) {
@@ -331,7 +360,7 @@ class _EditProfileState extends State<EditProfile> {
                             decoration:
                                 const InputDecoration(labelText: 'Username'),
                           ),
-                          const SizedBox(height: 40),
+                          const SizedBox(height: 44),
                           BlocListener<EditprofileBloc, EditProfileState>(
                             listener: (context, state) async {
                               if (state is EditProfileUserNameErrorState) {
@@ -341,8 +370,7 @@ class _EditProfileState extends State<EditProfile> {
                                     content: Text(state.ErrorMessage),
                                   ),
                                 );
-                              } else if (state
-                                  is EditProfileMessageSuccessState) {
+                              } else if (state is EditProfileMessageSuccessState) {
                                 circularLoadingBar.remove();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -397,7 +425,14 @@ class _EditProfileState extends State<EditProfile> {
                                   ));
                                 }
                               },
-                              child: const Text("submit"),
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: Size(328.sp, 40),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(9),
+                                ),
+                                backgroundColor: Colors.blue,
+                              ),
+                              child: const Text("Submit" , style: TextStyle(color: Colors.white),),
                             ),
                           )
                         ],
@@ -414,7 +449,7 @@ class _EditProfileState extends State<EditProfile> {
               body: Form(
                 key: _editprofilekey,
                 child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 28),
                     child: Column(
                       children: [
                         GestureDetector(
@@ -456,6 +491,15 @@ class _EditProfileState extends State<EditProfile> {
                             ],
                           ),
                         ),
+                        SizedBox(height: 12.sp),
+                        Text(
+                          "Edit Picture",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: deviceWidth* .036,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 12.sp),
                         TextFormField(
                           controller: _nameController,
                           validator: (value) {
@@ -467,10 +511,12 @@ class _EditProfileState extends State<EditProfile> {
                           },
                           decoration: const InputDecoration(labelText: 'Name'),
                         ),
+                        SizedBox(height: 12.sp),
                         TextFormField(
                           controller: _bioController,
                           decoration: const InputDecoration(labelText: 'Bio'),
                         ),
+                        SizedBox(height: 12.sp),
                         TextFormField(
                           controller: _usernameController,
                           validator: (value) {
@@ -487,7 +533,7 @@ class _EditProfileState extends State<EditProfile> {
                           decoration:
                               const InputDecoration(labelText: 'Username'),
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 44),
                         BlocListener<EditprofileBloc, EditProfileState>(
                           listener: (context, state) async {
                             if (state is EditProfileUserNameErrorState) {
@@ -552,7 +598,14 @@ class _EditProfileState extends State<EditProfile> {
                                 ));
                               }
                             },
-                            child: const Text("submit"),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(328.sp, 40),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              backgroundColor: Colors.blue,
+                            ),
+                            child: const Text("Submit" , style: TextStyle(color: Colors.white),),
                           ),
                         )
                       ],
