@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/firebase_options.dart';
 import 'package:socialmedia/screens/Drawer/drawer_bloc.dart';
+import 'package:socialmedia/screens/FollowingsAndFollowers/followers_following_bloc.dart';
 import 'package:socialmedia/screens/SplashScreeenUI.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
 import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_bloc.dart';
@@ -64,11 +65,15 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider(
             create: (context) => DrawerBloc(),
-          ),BlocProvider(
+          ),
+          BlocProvider(
             create: (context) => exploreimageBloc(),
           ),
           BlocProvider(
             create: (context) => RequestBloc(),
+          ),
+          BlocProvider(
+            create: (context) => FollowingFollowerBloc(),
           )
         ],
         child: MaterialApp(
