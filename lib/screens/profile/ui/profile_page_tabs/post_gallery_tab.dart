@@ -141,7 +141,6 @@ class _PostGalleryState extends State<PostGallery> {
                                     ProfilePagePopUpDialogLikedAnimOnPostEvent(
                                         isHeartAnimating, isLiked)
                                 );
-                                if(!context.mounted) return;
                                 BlocProvider.of<HeartBloc>(context).add(ProfilePagePostCardOnPressedLikedAnimOnPostEvent(
                                     posts.docs[index]['postid']));
                                 if (!isLiked) {
@@ -247,11 +246,13 @@ class _PostGalleryState extends State<PostGallery> {
                             },
                             onLongPressEnd: (details) async {
                               Tooltip.dismissAllToolTips();
+                              await Future.delayed(const Duration(milliseconds: 60));
                               if ((details.globalPosition.dx >= 85 &&
                                       details.globalPosition.dx <= 150) &&
                                   (details.globalPosition.dy >= 760 &&
                                       details.globalPosition.dy <= 780)) {
                                 HapticFeedback.vibrate();
+                                if(!context.mounted) return;
                                 BlocProvider.of<HeartBloc>(context).add(
                                     ProfilePagePopUpDialogLikedAnimOnPostEvent(
                                         isHeartAnimating, isLiked));
@@ -272,6 +273,7 @@ class _PostGalleryState extends State<PostGallery> {
                                       details.globalPosition.dy <= 780)) {
                                 HapticFeedback.vibrate();
                                 popupDialog.remove();
+                                if(!context.mounted) return;
                                 showModalBottomSheet(
                                   isScrollControlled: true,
                                   elevation: 0,
