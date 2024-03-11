@@ -130,26 +130,64 @@ class _PostGalleryState extends State<PostGallery> {
                             },
                             onLongPressEnd: (details) async {
                               Tooltip.dismissAllToolTips();
+                              await Future.delayed(const Duration(milliseconds: 60));
                               if ((details.globalPosition.dx >= 85 &&
                                       details.globalPosition.dx <= 150) &&
                                   (details.globalPosition.dy >= 660 &&
                                       details.globalPosition.dy <= 680)) {
                                 HapticFeedback.vibrate();
+                                if(!context.mounted) return;
                                 BlocProvider.of<HeartBloc>(context).add(
                                     ProfilePagePopUpDialogLikedAnimOnPostEvent(
                                         isHeartAnimating, isLiked)
                                 );
+                                if(!context.mounted) return;
                                 BlocProvider.of<HeartBloc>(context).add(ProfilePagePostCardOnPressedLikedAnimOnPostEvent(
                                     posts.docs[index]['postid']));
                                 if (!isLiked) {
                                   await Future.delayed(
-                                      const Duration(milliseconds: 1000));
+                                      const Duration(milliseconds: 600));
                                 } else {
                                   await Future.delayed(
-                                      const Duration(milliseconds: 300));
+                                      const Duration(milliseconds: 150));
                                 }
                                 popupDialog.remove();
-                              } else {
+                              }
+                              else if ((details.globalPosition.dx >= 180 &&
+                                  details.globalPosition.dx <= 225) &&
+                                  (details.globalPosition.dy >= 660 &&
+                                      details.globalPosition.dy <= 680)){
+                                HapticFeedback.vibrate();
+                                popupDialog.remove();
+                                if(!context.mounted) return;
+                              showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  elevation: 0,
+                                  backgroundColor: Colors.transparent,
+                                  context: context,
+                                  builder: (context) {
+                                    return DraggableScrollableSheet(
+                                        snap: true,
+                                        snapSizes: const [0.71, 0.72],
+                                        maxChildSize: 0.96,
+                                        initialChildSize: 0.96,
+                                        minChildSize: 0.4,
+                                        builder: (context, scrollController) =>
+                                            CommentSection(
+                                              postId: posts.docs[index]
+                                              ['postid'],
+                                              scrollController: scrollController,
+                                              profileImage: posts
+                                                  .docs[index]['profileurl'],
+                                              username: posts.docs[index]
+                                              ['username'],
+                                              uidofpostuploader:
+                                              posts.docs[index]['uid'],
+                                            ));
+                                  },
+                                );
+                              }
+                              else {
                                 popupDialog.remove();
                               }
                             },
@@ -221,10 +259,10 @@ class _PostGalleryState extends State<PostGallery> {
                                     posts.docs[index]['postid']));
                                 if (!isLiked) {
                                   await Future.delayed(
-                                      const Duration(milliseconds: 1000));
+                                      const Duration(milliseconds: 600));
                                 } else {
                                   await Future.delayed(
-                                      const Duration(milliseconds: 300));
+                                      const Duration(milliseconds: 150));
                                 }
                                 popupDialog.remove();
                               }
