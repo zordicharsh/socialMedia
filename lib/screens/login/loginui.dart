@@ -1,17 +1,18 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_state.dart';
+import 'package:socialmedia/screens/navigation_handler/navigation.dart';
 import 'package:socialmedia/screens/registration/registrationui/registration.dart';
 import 'package:text_divider/text_divider.dart';
-import 'package:socialmedia/global_Bloc/global_bloc.dart';
-import '../profile/ui/profile.dart';
+import '../../global_Bloc/global_bloc.dart';
+import '../navigation_handler/bloc/navigation_bloc.dart';
 
 class LoginUi extends StatefulWidget {
   const LoginUi({Key? key}) : super(key: key);
@@ -178,8 +179,7 @@ class LoginUiState extends State<LoginUi> {
                                     ),
                                   ),
                                   errorStyle: const TextStyle(
-                                    color: Colors
-                                        .red, // Customize the color of the error text
+                                    color: Colors.red, // Customize the color of the error text
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(9),
@@ -231,13 +231,13 @@ class LoginUiState extends State<LoginUi> {
                                     SnackBar(content: Text(state.message)));
                               } else if (state is LoginSuccessState) {
                                 circularLoadingBar.remove();
-                                BlocProvider.of<GlobalBloc>(context)
-                                    .add(GetUserIDEvent(uid: state.uid));
+                                BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: state.uid));
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationInitialEvent(tabIndex: 0));
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (newContext) =>
-                                        const ProfilePage()));
+                                        const LandingPage()));
                               }
                             },
                             child: BlocBuilder<LoginBloc, LoginState>(
@@ -250,14 +250,9 @@ class LoginUiState extends State<LoginUi> {
                                         String email = emailController.text;
                                         String password =
                                             passwordController.text;
-                                        BlocProvider.of<LoginBloc>(context).add(
-                                            LoginValidationError(
-                                                Email: email,
-                                                Password: password));
-                                        circularLoadingBar =
-                                            _createCircularLoadingBar();
-                                        Overlay.of(context)
-                                            .insert(circularLoadingBar);
+                                        BlocProvider.of<LoginBloc>(context).add(LoginValidationError(Email: email, Password: password));
+                                        circularLoadingBar = _createCircularLoadingBar();
+                                        Overlay.of(context).insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -284,10 +279,8 @@ class LoginUiState extends State<LoginUi> {
                                             LoginValidationError(
                                                 Email: email,
                                                 Password: password));
-                                        circularLoadingBar =
-                                            _createCircularLoadingBar();
-                                        Overlay.of(context)
-                                            .insert(circularLoadingBar);
+                                        circularLoadingBar = _createCircularLoadingBar();
+                                        Overlay.of(context).insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -351,7 +344,7 @@ class LoginUiState extends State<LoginUi> {
                           ),
                           const SizedBox(width: 6),
                           InkWell(
-                            onTap: () => Navigator.push(
+                            onTap: () => Navigator.pushReplacement(
                                 context,
                                 CustomPageRouteRightToLeft(
                                     child: const SignUp())),
@@ -375,7 +368,6 @@ class LoginUiState extends State<LoginUi> {
       ),
     );
   }
-
   OverlayEntry _createCircularLoadingBar() {
     return OverlayEntry(
       builder: (context) => Center(

@@ -12,18 +12,22 @@ class UserModel {
   String? Bio;
   String? Name;
 
-  UserModel({
-    required this.Uid,
-    required this.Username,
-    required this.Email,
-    required this.Password,
-    required this.Follower,
-    required this.Following,
-    required this.datetime,
-    this.Profileurl,
-    this.Bio,
-    this.Name,
-  });
+   String? Acctype;
+   List Followrequest;
+
+  UserModel(
+      {required this.Uid,
+      required this.Username,
+      required this.Email,
+      required this.Password,
+      required this.Follower,
+      required this.Following,
+      required this.datetime,
+      required this.Profileurl,
+      required this.Bio,
+      required this.Name,
+      required this.Acctype ,
+      required this. Followrequest});
 
   Map<String, dynamic> toMap() {
     return {
@@ -37,6 +41,9 @@ class UserModel {
       'profileurl': Profileurl,
       'bio': Bio,
       'name': Name,
+      'acctype':Acctype,
+      'followrequest': Followrequest
+
     };
   }
 
@@ -54,6 +61,8 @@ class UserModel {
       datetime: data["datetime"],
       Bio: data["bio"],
       Name: data["name"],
+      Acctype:data["acctype"],
+      Followrequest: data['followrequest']
     );
   }
 }

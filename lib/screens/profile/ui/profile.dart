@@ -1,13 +1,23 @@
 import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:socialmedia/global_Bloc/global_bloc.dart';
+import 'package:socialmedia/screens/Drawer/drawer.dart';
+import 'package:socialmedia/screens/Drawer/drawer_bloc.dart';
+import 'package:socialmedia/screens/Drawer/drawer_event.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/reels_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/tags_tab.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/profile_header.dart';
-import'package:socialmedia/model/user_model.dart';
+
+import '../../../model/user_model.dart';
 import '../../login/loginui.dart';
 import '../../navigation_handler/bloc/navigation_bloc.dart';
 
@@ -19,59 +29,76 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final photosList = [
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpYTOlv2wcTRyNd1Ebq0C24UoX8ysKqCK94E0oxAaC2h53Jz4_4kQfV0IxUrRYx6QtN5o&usqp=CAU",
-    "https://media.istockphoto.com/id/1281804798/photo/very-closeup-view-of-amazing-domestic-pet-in-mirror-round-fashion-sunglasses-is-isolated-on.jpg?s=612x612&w=0&k=20&c=oMoz9rUr-rDhMGNmEepCkr7F1g3AXs9416hvVnT_4CI=",
-    "https://t4.ftcdn.net/jpg/05/72/79/19/360_F_572791996_K9b6rBflENxOXgome76NzXyDq2zmIC9Y.jpg",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9dUYzr3f1ACgjAFMqT4OL3an2E1z2LTtyfxwr2FXiJw&s",
-    "https://steamuserimages-a.akamaihd.net/ugc/1644340994747007967/853B20CD7694F5CF40E83AAC670572A3FE1E3D35/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpYTOlv2wcTRyNd1Ebq0C24UoX8ysKqCK94E0oxAaC2h53Jz4_4kQfV0IxUrRYx6QtN5o&usqp=CAU",
-  ];
-
   @override
   void initState() {
     BlocProvider.of<ProfileBloc>(context).add(ProfilePageInitialEvent());
     super.initState();
   }
 
+  Future<void> _handleRefresh() async {
+    var uid = FirebaseAuth.instance.currentUser?.uid;
+    BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: uid));
+    await Future.delayed(const Duration(milliseconds: 1000));
+  }
+
+  String? profileImageUrl;
+  String? name;
+  String? joindate;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.black,
       appBar: AppBar(
+        surfaceTintColor: Colors.black,
+        elevation: 2,
         actions: [
           IconButton(
             icon: const Icon(
               Icons.add_box_outlined,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              BlocProvider.of<NavigationBloc>(context)
+                  .add(TabChangedEvent(tabIndex: 2));
+            },
           ),
           IconButton(
             icon: const Icon(
               Icons.menu,
               color: Colors.white,
             ),
-            onPressed: () {
-              BlocProvider.of<ProfileBloc>(context).add(SignOutEvent());
+            onPressed: () async {
+              BlocProvider.of<DrawerBloc>(context).add(FirstCheckAccTypeEvent());
+              await Future.delayed(Duration(milliseconds: 200),(){
+                _scaffoldKey.currentState?.openEndDrawer();
+              });
+            /*  BlocProvider.of<ProfileBloc>(context).add(SignOutEvent());
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const LoginUi()));
-              BlocProvider.of<NavigationBloc>(context).add(NavigationInitialEvent(tabIndex: 0));
+                  MaterialPageRoute(builder: (context) => const LoginUi()));*/
             },
           )
         ],
         leading: ModalRoute.of(context)?.canPop == true
-            ? IconButton(
+            ? null /*IconButton(
                 onPressed: Navigator.of(context).pop,
-                icon: const Icon(Icons.keyboard_backspace))
+                icon: const Icon(Icons.keyboard_backspace))*/
             : null,
         backgroundColor: Colors.black,
         title: BlocBuilder<GlobalBloc, GlobalState>(
           builder: (context, state) {
             if (state is GetUserDataFromGlobalBlocState) {
               List<UserModel> userdata = state.userData;
+              BlocProvider.of<ProfileBloc>(context).add(
+                  ProfilePageFetchUserPostLengthEvent(
+                      userid: state.userData[0].Uid));
               log("userdata in profile:- ${userdata.length.toString()}");
+              profileImageUrl = userdata[0].Profileurl;
+              name = userdata[0].Name;
+              joindate = DateFormat('dd-MMM-yyyy').format(
+                  DateTime.parse(userdata[0].datetime.toDate().toString()));
               return Text(
                 userdata[0].Username,
                 style: const TextStyle(
@@ -88,9 +115,16 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         centerTitle: false,
       ),
-      body: DefaultTabController(
-        length: 3,
-        animationDuration: const Duration(milliseconds: 800),
+      endDrawer: MyDrawer(profileImageUrl, name, joindate),
+      body: LiquidPullToRefresh(
+        onRefresh: _handleRefresh,
+        color: Colors.grey.withOpacity(0.15),
+        backgroundColor: Colors.white.withOpacity(0.65),
+        animSpeedFactor: 1.5,
+        borderWidth: 1,
+        height: 70,
+        springAnimationDurationInMilliseconds: 150,
+        showChildOpacityTransition: false,
         child: NestedScrollView(
             headerSliverBuilder: (context, _) {
               return [
@@ -103,64 +137,69 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ];
             },
-            body: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 16,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0.0, horizontal: 2),
-                  child: TabBar(
-                      physics: const BouncingScrollPhysics(),
-                      dividerColor: Colors.white.withOpacity(0.1),
-                      indicatorColor: Colors.white,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorWeight: 1.5,
-                      unselectedLabelColor: Colors.grey,
-                      labelColor: Colors.white,
-                      splashFactory: NoSplash.splashFactory,
-                      overlayColor: MaterialStateProperty.resolveWith(
-                        (Set states) {
-                          return states.contains(MaterialState.focused)
-                              ? null
-                              : Colors.transparent;
-                        },
-                      ),
-                      tabs: const [
-                        Tab(
-                          child: Icon(
-                            Icons.grid_on_rounded,
-                          ),
-                        ),
-                        Tab(
-                          child: Icon(
-                            Icons.movie_filter_outlined,
-                          ),
-                        ),
-                        Tab(
-                          child: Icon(
-                            Icons.perm_contact_cal_outlined,
-                          ),
-                        ),
-                      ]),
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                const Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 4),
-                    child: TabBarView(children: [
-                      PostGallery(),
-                      ProfileReelSection(),
-                      ProfileTagSection(),
-                    ]),
+            body: DefaultTabController(
+              length: 3,
+              animationDuration: const Duration(milliseconds: 600),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 12,
                   ),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 0.0, horizontal: 2),
+                    child: TabBar(
+                        physics: const BouncingScrollPhysics(),
+                        dividerColor: Colors.white.withOpacity(0.1),
+                        indicatorColor: Colors.white,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicatorWeight: 1.5,
+                        unselectedLabelColor: Colors.grey,
+                        labelColor: Colors.white,
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: MaterialStateProperty.resolveWith(
+                          (Set states) {
+                            return states.contains(MaterialState.focused)
+                                ? null
+                                : Colors.transparent;
+                          },
+                        ),
+                        tabs: const [
+                          Tab(
+                            child: Icon(
+                              Icons.grid_on_rounded,
+                            ),
+                          ),
+                          Tab(
+                            child: Icon(
+                              size: 28,
+                              Icons.video_library_outlined,
+                            ),
+                          ),
+                          Tab(
+                            child: Icon(
+                                size: 28, CupertinoIcons.person_crop_square),
+                          ),
+                        ]),
+                  ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  const Expanded(
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 4),
+                      child: TabBarView(children: [
+                        PostGallery(),
+                        ProfileReelSection(),
+                        ProfileTagSection(),
+                      ]),
+                    ),
+                  )
+                ],
+              ),
             )),
       ),
     );

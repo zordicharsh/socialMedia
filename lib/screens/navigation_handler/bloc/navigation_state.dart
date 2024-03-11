@@ -10,4 +10,3 @@ abstract class NavigationState {
 class NavigationInitial extends NavigationState {
   NavigationInitial({required super.tabindex});
 }
-

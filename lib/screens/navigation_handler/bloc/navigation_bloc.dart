@@ -9,7 +9,7 @@ part 'navigation_state.dart';
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc() : super(NavigationInitial(tabindex: 0)) {
     on<NavigationInitialEvent>(navigationInitialEvent);
-  on<TabChangedEvent>(tabChangedEvent);
+    on<TabChangedEvent>(tabChangedEvent);
   }
 
   FutureOr<void> tabChangedEvent(TabChangedEvent event, Emitter<NavigationState> emit) {

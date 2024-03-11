@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class UserPostImageModel {
   String Postid;
   String Username;
@@ -9,14 +8,22 @@ class UserPostImageModel {
   String? Caption;
   String PostUrl;
   Timestamp datetime;
+  String Thumbnail;
+  String ProfileUrl;
+  String Types ;
+  String Acctype ;
+  int TotalComments;
+  int TotalLikes;
 
   UserPostImageModel(
       {required this.Postid,
         required this.Username,
-      required this.Uid,
-      required this.Likes,
-      this.Caption,
-      required this.PostUrl,required this.datetime});
+        required this.Uid,
+        required this.Likes,
+        required this.Caption,
+        required this.PostUrl,required this.datetime,required this.ProfileUrl,
+        required this.Types,required this.Thumbnail,
+      required this.Acctype,required this.TotalComments,required this.TotalLikes});
 
   Map<String, dynamic> tomap() {
     return {
@@ -26,19 +33,13 @@ class UserPostImageModel {
       'likes': Likes,
       'caption': Caption,
       'posturl': PostUrl,
-      'uploadtime':datetime
+      'thumbnail':Thumbnail,
+      'uploadtime':datetime,
+      'profileurl':ProfileUrl,
+      'type':Types,
+      'acctype' : Acctype,
+      'totallikes': TotalLikes,
+      'totalcomments': TotalComments,
     };
   }
-
-  // factory UserPostImageModel.fromSnapshot(
-  //     DocumentSnapshot<Map<String, dynamic>> document){
-  //   final data = document.data()!;
-  //   return UserPostImageModel(
-  //     Username: ,
-  //     Uid: ,
-  //     Likes: ,
-  //     PostUrl: ,
-  //   );
-  // }
-
 }
