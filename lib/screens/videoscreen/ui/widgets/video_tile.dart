@@ -21,8 +21,6 @@ class _VideoTileState extends State<VideoTile> {
     _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.video));
     _initializeVideoPlayer  = _videoPlayerController.initialize();
     _videoPlayerController.setLooping(true);
-
-
     super.initState();
   }
 

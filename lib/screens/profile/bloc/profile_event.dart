@@ -21,3 +21,11 @@ class OnEditButtonTappedEvent extends ProfileEvent{}
 class SignOutEvent extends ProfileEvent {}
 
 class ProfilePageOnRefreshEvent extends ProfileEvent {}
+
+/*
+class ProfilePagePopUpDialogLikedOnPostEvent extends ProfileEvent {
+   bool isHeartAnimating;
+ bool isLiked;
+
+  ProfilePagePopUpDialogLikedOnPostEvent(this.isHeartAnimating, this.isLiked);
+}*/

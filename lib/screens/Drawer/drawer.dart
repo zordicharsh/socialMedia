@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,13 +22,13 @@ class _MyDrawerState extends State<MyDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       width:220.sp,
-     
       child: Container(
         color:const Color(0xff212121),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
              DrawerHeader(
+               curve: Curves.easeInOut,
               decoration: const BoxDecoration(
                 color: Color(0xff212121),
               ),
@@ -35,16 +36,16 @@ class _MyDrawerState extends State<MyDrawer> {
                 children: [
                   CircleAvatar(
                     backgroundImage:widget.Url != null
-                        ? NetworkImage(widget.Url)
+                        ? CachedNetworkImageProvider(widget.Url)
                         : null,
                     backgroundColor:Colors.grey.withOpacity(0.4),
                     radius: 36.sp,
                   ),
                  SizedBox(height:6.sp,),
-                 Text(widget.Name,style: const TextStyle(fontWeight: FontWeight.w600),),
+                 Text(widget.Name,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14.sp),),
                   Text(
                     "Join Date: ${widget.date}",
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style:  TextStyle(fontWeight: FontWeight.w200,fontSize: 12.sp ),
                   ),
                 ],
               ),
@@ -65,8 +66,8 @@ class _MyDrawerState extends State<MyDrawer> {
                         colorOff: Colors.black,
                         textOnColor: Colors.white,
                         textOffColor: Colors.white,
-                        iconOn: CupertinoIcons.lock_fill,
-                        iconOff:CupertinoIcons.lock_open_fill,
+                        iconOn: Icons.lock,
+                        iconOff:Icons.lock_open,
                         value: state.CheckState,
                         animationDuration: const Duration(milliseconds:60),
                         onChanged: (value) {
@@ -92,8 +93,8 @@ class _MyDrawerState extends State<MyDrawer> {
                         colorOn: Colors.black,
                         colorOff: Colors.black,
                         value: state.CheckState,
-                        iconOn: CupertinoIcons.lock_fill,
-                        iconOff:CupertinoIcons.lock_open_fill,
+                        iconOn: Icons.lock,
+                        iconOff:Icons.lock_open,
                         animationDuration: const Duration(milliseconds: 60),
                         onChanged: (value) {
                           BlocProvider.of<DrawerBloc>(context).add(PublicPrivateTrueEvent(false));
@@ -116,8 +117,8 @@ class _MyDrawerState extends State<MyDrawer> {
                         textOffColor: Colors.white,
                         colorOn: Colors.black,
                         colorOff: Colors.black,
-                        iconOn: CupertinoIcons.lock_fill,
-                        iconOff:CupertinoIcons.lock_open_fill,
+                        iconOn: Icons.lock,
+                        iconOff:Icons.lock_open,
                         animationDuration: const Duration(milliseconds: 60),
                         onChanged: (value) {
                           BlocProvider.of<DrawerBloc>(context)

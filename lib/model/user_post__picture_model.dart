@@ -12,6 +12,8 @@ class UserPostImageModel {
   String ProfileUrl;
   String Types ;
   String Acctype ;
+  int TotalComments;
+  int TotalLikes;
 
   UserPostImageModel(
       {required this.Postid,
@@ -21,7 +23,7 @@ class UserPostImageModel {
         required this.Caption,
         required this.PostUrl,required this.datetime,required this.ProfileUrl,
         required this.Types,required this.Thumbnail,
-      required this.Acctype});
+      required this.Acctype,required this.TotalComments,required this.TotalLikes});
 
   Map<String, dynamic> tomap() {
     return {
@@ -35,19 +37,9 @@ class UserPostImageModel {
       'uploadtime':datetime,
       'profileurl':ProfileUrl,
       'type':Types,
-      'acctype' : Acctype
+      'acctype' : Acctype,
+      'totallikes': TotalLikes,
+      'totalcomments': TotalComments,
     };
   }
-
-// factory UserPostImageModel.fromSnapshot(
-//     DocumentSnapshot<Map<String, dynamic>> document){
-//   final data = document.data()!;
-//   return UserPostImageModel(
-//     Username: ,
-//     Uid: ,
-//     Likes: ,
-//     PostUrl: ,
-//   );
-// }
-
 }

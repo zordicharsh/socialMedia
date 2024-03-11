@@ -89,6 +89,14 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                   // Post image or video
                                   postType == "image"
                                       ? ZoomOverlay(
+                                    modalBarrierColor: Colors.black12,
+                                    minScale: 0.5,
+                                    maxScale: 3.0,
+                                    animationCurve: Curves.fastOutSlowIn,
+                                    animationDuration: const Duration(milliseconds: 300),
+                                    twoTouchOnly: true,
+                                    onScaleStart: () {},
+                                    onScaleStop: () {},
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(12),

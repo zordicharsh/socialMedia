@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +9,6 @@ import 'package:socialmedia/screens/FollowingsAndFollowers/Followings.dart';
 import 'package:socialmedia/screens/follow_request_screen/followreuestscreen.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
-
 import '../../../../global_Bloc/global_bloc.dart';
 import '../../../../model/user_model.dart';
 
@@ -37,11 +35,11 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   if (state is GetUserDataFromGlobalBlocState) {
                     List<UserModel> userdata = state.userData;
                     if (userdata[0].Profileurl.toString() != "") {
-                      return CircleAvatar(
-                        backgroundColor: Colors.grey.withOpacity(0.4),
-                        backgroundImage:
-                            NetworkImage(userdata[0].Profileurl.toString()),
-                        radius: 36.sp,
+                      return CachedNetworkImage(
+                        imageUrl: userdata[0].Profileurl.toString(),
+                        filterQuality: FilterQuality.low,
+                        placeholder: (context, url) => CircleAvatar(backgroundColor: Colors.grey.withOpacity(0.3),radius: 36.sp,),
+                        imageBuilder: (context, imageProvider) => CircleAvatar(backgroundColor: Colors.grey.withOpacity(0.4),backgroundImage: imageProvider,radius: 36.sp,),
                       );
                     } else {
                       return GestureDetector(
@@ -127,7 +125,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                               builder: (context, state) {
                             if (state is ProfilePageFetchUserPostSuccessState) {
                               return buildStatColumn(state.postlength, "Posts");
-                            } else if (state is ProfilePageFetchUserPostLengthSuccessState) {
+                            } else if (state
+                                is ProfilePageFetchUserPostLengthSuccessState) {
                               return buildStatColumn(state.postlength, "Posts");
                             } else {
                               return buildStatColumn(0, "Posts");
@@ -136,20 +135,32 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           const SizedBox(
                             width: 16,
                           ),
-                           GestureDetector(
-                               child: buildStatColumn(userdata[0].Follower.length, "Followers"),
-                             onTap: () {
-                               Navigator.push(context, MaterialPageRoute(builder: (context) => Followers(userdata[0].Uid),));
-                                  }, ),
+                          GestureDetector(
+                            child: buildStatColumn(
+                                userdata[0].Follower.length, "Followers"),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Followers(userdata[0].Uid),
+                                  ));
+                            },
+                          ),
                           const SizedBox(
                             width: 16,
                           ),
                           GestureDetector(
-                             child: buildStatColumn(
+                            child: buildStatColumn(
                                 userdata[0].Following.length, "Following"),
-                            onTap:() {
-                               userdata[0].Uid;
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>  Following(userdata[0].Uid),));
+                            onTap: () {
+                              userdata[0].Uid;
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Following(userdata[0].Uid),
+                                  ));
                             },
                           ),
                         ],
@@ -249,13 +260,22 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         text: "Edit profile",
                         height: 32,
                         width: 160.sp,
-                        onTap: () => Navigator.push(context, CustomPageRouteRightToLeft(child: const EditProfile(),))),
+                        onTap: () => Navigator.push(
+                            context,
+                            CustomPageRouteRightToLeft(
+                              child: const EditProfile(),
+                            ))),
                     ProfileManipulationButton(
-                        text: "Share profile",
-                        height: 32,
-                        width: 160.sp,
-                        onTap: () => Navigator.push(context, CustomPageRouteRightToLeft(child: const Request(),)),
-                    )],
+                      text: "Share profile",
+                      height: 32,
+                      width: 160.sp,
+                      onTap: () => Navigator.push(
+                          context,
+                          CustomPageRouteRightToLeft(
+                            child: const Request(),
+                          )),
+                    )
+                  ],
                 ),
               )
             ])),
@@ -280,6 +300,5 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 fontWeight: FontWeight.normal))
       ],
     );
-
   }
 }

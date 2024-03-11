@@ -11,11 +11,12 @@ import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_bloc.dart
 import 'package:socialmedia/screens/follow_request_screen/request_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart';
+import 'package:socialmedia/screens/profile/bloc/comment_bloc/comment_bloc.dart';
+import 'package:socialmedia/screens/profile/bloc/heart_animation_bloc/heart_bloc.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/search_user/explorebloc/explore_bloc.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_bloc.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
-
 import 'global_Bloc/global_bloc.dart';
 
 void main() async {
@@ -59,6 +60,12 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider(
             create: (context) => ProfileBloc(),
+          ),
+          BlocProvider(
+            create: (context) => CommentBloc(),
+          ),
+          BlocProvider(
+            create: (context) => HeartBloc(),
           ),
           BlocProvider(
             create: (context) => ExploreBloc(),
