@@ -23,6 +23,7 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
     on<UserVideoPost>(userVideoPost);
     on<UserGetVideo>(userGetVideo);
     on<UserRemoveViedoOrImageEvent>(userRemoveViedoOrImageEvent);
+    on<UserPostInitEvent>(initevents);
   }
 
   File? image;
@@ -223,5 +224,9 @@ class UserpostBloc extends Bloc<UserpostEvents, UserPostStates> {
 
   FutureOr<void> userRemoveViedoOrImageEvent(UserRemoveViedoOrImageEvent event, Emitter<UserPostStates> emit) {
     emit(RemovePhotoOrVideoState());
+  }
+
+  FutureOr<void> initevents(UserPostInitEvent event, Emitter<UserPostStates> emit) {
+    emit(UserPostinitState());
   }
 }

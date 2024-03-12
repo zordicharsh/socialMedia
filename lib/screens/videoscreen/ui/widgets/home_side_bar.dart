@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
 
 class HomeSideBar extends StatefulWidget {
-  const HomeSideBar({super.key, required this.likes, required this.profileUrl, required this.PostId, required this.UploaderUid});
+  const HomeSideBar({super.key, required this.likes, required this.profileUrl, required this.PostId, required this.UploaderUid,required this.username,required this.noofcomments});
   final List likes;
   // final String comments;
   final String profileUrl;
   final String PostId;
   final String UploaderUid;
+  final String username;
+  final int noofcomments;
   
   @override
   State<HomeSideBar> createState() => _HomeSideBarState();
@@ -25,10 +28,48 @@ class _HomeSideBarState extends State<HomeSideBar> {
       children: [
         _profileImageButton(),
         _sideBarItemForLike(Icons.favorite_outline, widget.likes.length.toString(), style,isliked,widget.PostId),
-        _sideBarItem(Icons.comment_outlined, '123', style),
+        _sideBarForComment(Icons.comment_outlined, widget.noofcomments.toString(), style),
         _sideBarItem(Icons.send_sharp, 'share', style)
       ],
     );
+  }
+
+
+  _sideBarForComment(IconData iconName,String label,TextStyle style){
+    return Column(
+      children: [
+        GestureDetector(
+            onTap: (){
+              showModalBottomSheet(
+                isScrollControlled: true,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                context: context,
+                builder: (context) {
+                  return DraggableScrollableSheet(
+                      snap: true,
+                      snapSizes: const [0.71, 0.72],
+                      maxChildSize: 0.96,
+                      initialChildSize: 0.96,
+                      minChildSize: 0.4,
+                      builder: (context, scrollController) =>
+                          CommentSection(
+                            postId: widget.PostId,
+                            scrollController: scrollController,
+                            profileImage: widget.profileUrl,
+                            username: widget.username,
+                            uidofpostuploader:
+                            widget.UploaderUid,
+                          ));
+                },
+              );
+            },
+            child: Icon(iconName,size: 28)),
+        const SizedBox(height: 5,),
+        Text(label,style: style,)
+      ],
+    );
+
   }
 
 
@@ -108,9 +149,14 @@ class _HomeSideBarState extends State<HomeSideBar> {
                 if(isfollowing==true){
                   return Positioned(bottom: -8,
                       child: Container(
-
                       ));
-                }else{
+                }
+                else if(widget.UploaderUid == FirebaseAuth.instance.currentUser!.uid){
+                  return Positioned(bottom: -8,
+                      child: Container(
+                      ));
+                }
+                else{
                   return Positioned(bottom: -8,
                       child: GestureDetector(
                         onTap: (){

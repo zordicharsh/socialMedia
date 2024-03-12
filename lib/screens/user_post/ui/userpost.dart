@@ -32,7 +32,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("object");
+    BlocProvider.of<UserpostBloc>(context).add(UserPostInitEvent());
 
   }
 
@@ -107,6 +107,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             videoPlayerController?.dispose();
             return const Center(child: CircularProgressIndicator());
           } else if (state is LoadingGoState) {
+            caption.dispose();
             videoPlayerController?.dispose();
             return const Center(child: Text("Picture has been uploaded"));
           } else if (state is AbletoUplaodImage) {
@@ -172,7 +173,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                             ));
                       }
                     },
-                    child: const Text('Upload Image'),
+                    child: const Text('Post'),
                   );
                 } else {
                   return SizedBox();

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/exploreimage/ui/exploreimagepage.dart';
@@ -129,7 +130,9 @@ class _AllUserPostsState extends State<AllUserPosts> {
 
     List<DocumentSnapshot> sufflist=[];
     return  Scaffold(
-      appBar: AppBar(title: const Text("name of explaorepage"),surfaceTintColor: Colors.black,actions:[IconButton(onPressed: (){
+      appBar: AppBar(title: const Text("RizzExplore",style: TextStyle(
+        color: Colors.red
+      )),surfaceTintColor: Colors.black,actions:[IconButton(onPressed: (){
         Navigator.push(context,CustomPageRouteRightToLeft(child: const SearchUser()));
       },icon: const Icon(Icons.search),)]),
       body:
@@ -139,220 +142,227 @@ class _AllUserPostsState extends State<AllUserPosts> {
             .get(),
         builder: (context, snapshot) {
           if(snapshot.hasData){
-            return CustomScrollView(
-              slivers: [
-                SliverGrid(
-                    delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              // sufflist = snapshot.data!.docs;
-                              // sufflist.shuffle();
-                              // print(sufflist[index]['username'].toString()+"heeeeeee");
-                          if (snapshot.data!.docs[index]['type'] ==
-                              "image") {
-                            return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      CustomPageRouteRightToLeft(child: ExplorePageImage(
-                                          uid: snapshot.data!.docs[index]['uid'], postuid: snapshot.data!.docs[index]['postid']))
-                                  );
-                                },
-                                onLongPressEnd: (details) async {
-                                  popupDialog!.remove();
-                                },
-                                onLongPress: () {
-                                  popupDialog = _createPopupDialog(
-                                      snapshot.data!.docs[index]['posturl'].toString(),
-                                      snapshot.data!.docs[index]['profileurl'].toString(),
-                                      snapshot.data!.docs[index]['username']);
-                                  Overlay.of(context).insert(popupDialog!);
-                                  // popupDialog = OverlayEntry(
-                                  //   builder: (context) {
-                                  //     return Dialog(
-                                  //       backgroundColor: Colors.black,
-                                  //       child: Container(
-                                  //         constraints:
-                                  //         const BoxConstraints(
-                                  //             maxWidth: 600,
-                                  //             maxHeight:
-                                  //             650),
-                                  //         child: Column(
-                                  //           mainAxisSize:
-                                  //           MainAxisSize.min,
-                                  //           children: [
-                                  //             Row(
-                                  //               mainAxisAlignment:
-                                  //               MainAxisAlignment
-                                  //                   .start,
-                                  //               children: [
-                                  //                 CircleAvatar(
-                                  //                   backgroundImage: NetworkImage(
-                                  //                       snapshot.data!.docs[index]['profileurl']
-                                  //                   ),
-                                  //                 ),
-                                  //                 Text(
-                                  //                     snapshot.data!.docs[index]['username']
-                                  //                 )
-                                  //               ],
-                                  //             ),
-                                  //             SizedBox(
-                                  //               width:
-                                  //               double.infinity,
-                                  //               height:
-                                  //               400, // Example height
-                                  //               child:Image.network
-                                  //                 (
-                                  //                 snapshot.data!.docs[index]['posturl'],
-                                  //                 fit: BoxFit
-                                  //                     .cover, // Adjust the fit as per your requirement
-                                  //               ),
-                                  //             ),
-                                  //             Row(
-                                  //               mainAxisAlignment:
-                                  //               MainAxisAlignment
-                                  //                   .spaceEvenly,
-                                  //               children: [
-                                  //                 IconButton(
-                                  //                   tooltip:
-                                  //                   "Send message",
-                                  //                   onPressed:
-                                  //                       () {
-                                  //                     print(context
-                                  //                         .toString());
-                                  //                   },
-                                  //                   icon: const Icon(
-                                  //                       Icons
-                                  //                           .favorite_border_rounded), // Example IconButton
-                                  //                 ),
-                                  //                 IconButton(
-                                  //                   tooltip:
-                                  //                   "Send message",
-                                  //                   onPressed: () {},
-                                  //                   icon: const Icon(Icons
-                                  //                       .person), // Example IconButton
-                                  //                 ),
-                                  //                 IconButton(
-                                  //                   tooltip:
-                                  //                   "Send message",
-                                  //                   onPressed: () {},
-                                  //                   icon: const Icon(Icons
-                                  //                       .send_sharp), // Example IconButton
-                                  //                 ),
-                                  //               ],
-                                  //             ),
-                                  //           ],
-                                  //         ),
-                                  //       ),
-                                  //     );
-                                  //   },
-                                  // );
-                                  // Overlay.of(context)
-                                  //     .insert(popupDialog!);
-                                },
-                                child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(8.0),
-                                    child:CachedNetworkImage(imageUrl:
-                                    snapshot.data!.docs[index]['posturl'],
-                                      fit: BoxFit.cover,
-                                      filterQuality: FilterQuality.low,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      placeholder: (context, url) =>Shimmer(child: Container()),
-                                    )
+            return LiquidPullToRefresh(
+              color: Colors.grey.withOpacity(0.15),
+              backgroundColor: Colors.white.withOpacity(0.65),
+              animSpeedFactor: 1.5,
+              borderWidth: 1,
+              height: 70,
+              springAnimationDurationInMilliseconds: 150,
+              showChildOpacityTransition: false,
+              onRefresh: _refresh,
+              child: CustomScrollView(
+                slivers: [
+                  SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                // sufflist = snapshot.data!.docs;
+                                // sufflist.shuffle();
+                                // print(sufflist[index]['username'].toString()+"heeeeeee");
+                            if (snapshot.data!.docs[index]['type'] ==
+                                "image") {
+                              return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CustomPageRouteRightToLeft(child: ExplorePageImage(
+                                            uid: snapshot.data!.docs[index]['uid'], postuid: snapshot.data!.docs[index]['postid']))
+                                    );
+                                  },
+                                  onLongPressEnd: (details) async {
+                                    popupDialog!.remove();
+                                  },
+                                  onLongPress: () {
+                                    popupDialog = _createPopupDialog(
+                                        snapshot.data!.docs[index]['posturl'].toString(),
+                                        snapshot.data!.docs[index]['profileurl'].toString(),
+                                        snapshot.data!.docs[index]['username']);
+                                    Overlay.of(context).insert(popupDialog!);
+                                    // popupDialog = OverlayEntry(
+                                    //   builder: (context) {
+                                    //     return Dialog(
+                                    //       backgroundColor: Colors.black,
+                                    //       child: Container(
+                                    //         constraints:
+                                    //         const BoxConstraints(
+                                    //             maxWidth: 600,
+                                    //             maxHeight:
+                                    //             650),
+                                    //         child: Column(
+                                    //           mainAxisSize:
+                                    //           MainAxisSize.min,
+                                    //           children: [
+                                    //             Row(
+                                    //               mainAxisAlignment:
+                                    //               MainAxisAlignment
+                                    //                   .start,
+                                    //               children: [
+                                    //                 CircleAvatar(
+                                    //                   backgroundImage: NetworkImage(
+                                    //                       snapshot.data!.docs[index]['profileurl']
+                                    //                   ),
+                                    //                 ),
+                                    //                 Text(
+                                    //                     snapshot.data!.docs[index]['username']
+                                    //                 )
+                                    //               ],
+                                    //             ),
+                                    //             SizedBox(
+                                    //               width:
+                                    //               double.infinity,
+                                    //               height:
+                                    //               400, // Example height
+                                    //               child:Image.network
+                                    //                 (
+                                    //                 snapshot.data!.docs[index]['posturl'],
+                                    //                 fit: BoxFit
+                                    //                     .cover, // Adjust the fit as per your requirement
+                                    //               ),
+                                    //             ),
+                                    //             Row(
+                                    //               mainAxisAlignment:
+                                    //               MainAxisAlignment
+                                    //                   .spaceEvenly,
+                                    //               children: [
+                                    //                 IconButton(
+                                    //                   tooltip:
+                                    //                   "Send message",
+                                    //                   onPressed:
+                                    //                       () {
+                                    //                     print(context
+                                    //                         .toString());
+                                    //                   },
+                                    //                   icon: const Icon(
+                                    //                       Icons
+                                    //                           .favorite_border_rounded), // Example IconButton
+                                    //                 ),
+                                    //                 IconButton(
+                                    //                   tooltip:
+                                    //                   "Send message",
+                                    //                   onPressed: () {},
+                                    //                   icon: const Icon(Icons
+                                    //                       .person), // Example IconButton
+                                    //                 ),
+                                    //                 IconButton(
+                                    //                   tooltip:
+                                    //                   "Send message",
+                                    //                   onPressed: () {},
+                                    //                   icon: const Icon(Icons
+                                    //                       .send_sharp), // Example IconButton
+                                    //                 ),
+                                    //               ],
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     );
+                                    //   },
+                                    // );
+                                    // Overlay.of(context)
+                                    //     .insert(popupDialog!);
+                                  },
+                                  child: ClipRRect(
+                                      borderRadius:
+                                      BorderRadius.circular(8.0),
+                                      child:CachedNetworkImage(imageUrl:
+                                      snapshot.data!.docs[index]['posturl'],
+                                        fit: BoxFit.cover,
+                                        filterQuality: FilterQuality.low,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        placeholder: (context, url) =>Shimmer(child: Container()),
+                                      )
 
-                                    ));
-                          }
-                          else
-                          {
-                            return
-                              GestureDetector(
-                                onTap: (){
-                                  // Navigator.push(context,CustomPageRouteRightToLeft(child: VideoPage(uid: "luii",postid: "huii",)));
-                                  // VideoPage(uid: "luii",postid: "huii",);
-                                  // BlocProvider.of<NavigationBloc>(context).add(
-                                  //     TabChangedEvent(tabIndex: 3));
+                                      ));
+                            }
+                            else
+                            {
+                              return
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.push(context,MaterialPageRoute( builder: (context) => VideoPage(uid: snapshot.data!.docs[index]['uid'],postid: snapshot.data!.docs[index]['postid'],)));
 
-                                },
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                        borderRadius:
-                                        BorderRadius.circular(8.0),
-                                        child: CachedNetworkImage(
-                                          imageUrl: snapshot.data!.docs[index]['thumbnail'],
-                                          fit: BoxFit.cover,
-                                          filterQuality: FilterQuality.low,
-                                          width: double.infinity,
-                                          height: double.infinity,
-                                            placeholder: (context, url) =>Shimmer(child: Container())
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(8.0),
+                                          child: CachedNetworkImage(
+                                            imageUrl: snapshot.data!.docs[index]['thumbnail'],
+                                            fit: BoxFit.cover,
+                                            filterQuality: FilterQuality.low,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                              placeholder: (context, url) =>Shimmer(child: Container())
 
-                                        )),
-                                    const Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: Icon(
-                                        Icons
-                                            .video_camera_back, // Replace Icons.close with your desired icon
-                                        color: Colors.white,
-                                        size: 24.0,
+                                          )),
+                                      const Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Icon(
+                                          Icons
+                                              .video_collection_outlined, // Replace Icons.close with your desired icon
+                                          color: Colors.white,
+                                          size: 20.0,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            ClipRRect(
-                                borderRadius:
-                                BorderRadius.circular(8.0),
-                                child: Image.network(
-                                  _userdata[index].get("thumbnail"),
-                                  fit: BoxFit.cover,
-                                  filterQuality: FilterQuality.low,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                ));
-                            // return Center(child: const Text("this is Video Player"));
-                            //   controller =
-                            //   VideoPlayerController.networkUrl(
-                            //       Uri.parse(snapshot
-                            //           .data!.docs[index]
-                            //           .get("posturl")))
-                            //     ..initialize()
-                            //     ..pause();
-                            //   return Stack(
-                            //     children: [
-                            //       ClipRRect(
-                            //         borderRadius:
-                            //         BorderRadius.circular(8.0),
-                            //         child: VideoPlayer(controller!),
-                            //       ),
-                            //       const Positioned(
-                            //         top: 0,
-                            //         right: 0,
-                            //         child: Icon(
-                            //           Icons
-                            //               .tv_sharp, // Replace Icons.close with your desired icon
-                            //           color: Colors.white,
-                            //           size: 24.0,
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   );
-                          }
-                        }, childCount: snapshot.data!.size),
-                    gridDelegate: SliverQuiltedGridDelegate(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 3,
-                        crossAxisSpacing: 3,
-                        pattern: [
-                          const QuiltedGridTile(2, 1),
-                          const QuiltedGridTile(2, 2),
-                          const QuiltedGridTile(1, 1),
-                          const QuiltedGridTile(1, 1),
-                          const QuiltedGridTile(1, 1),
-                        ])),
-                SliverToBoxAdapter(child: isloading ? const Center(child: CircularProgressIndicator(color: Colors.white)):const SizedBox())
-              ],
+                                    ],
+                                  ),
+                                );
+                              ClipRRect(
+                                  borderRadius:
+                                  BorderRadius.circular(8.0),
+                                  child: Image.network(
+                                    _userdata[index].get("thumbnail"),
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.low,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  ));
+                              // return Center(child: const Text("this is Video Player"));
+                              //   controller =
+                              //   VideoPlayerController.networkUrl(
+                              //       Uri.parse(snapshot
+                              //           .data!.docs[index]
+                              //           .get("posturl")))
+                              //     ..initialize()
+                              //     ..pause();
+                              //   return Stack(
+                              //     children: [
+                              //       ClipRRect(
+                              //         borderRadius:
+                              //         BorderRadius.circular(8.0),
+                              //         child: VideoPlayer(controller!),
+                              //       ),
+                              //       const Positioned(
+                              //         top: 0,
+                              //         right: 0,
+                              //         child: Icon(
+                              //           Icons
+                              //               .tv_sharp, // Replace Icons.close with your desired icon
+                              //           color: Colors.white,
+                              //           size: 24.0,
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   );
+                            }
+                          }, childCount: snapshot.data!.size),
+                      gridDelegate: SliverQuiltedGridDelegate(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 3,
+                          crossAxisSpacing: 3,
+                          pattern: [
+                            const QuiltedGridTile(2, 1),
+                            const QuiltedGridTile(2, 2),
+                            const QuiltedGridTile(1, 1),
+                            const QuiltedGridTile(1, 1),
+                            const QuiltedGridTile(1, 1),
+                          ])),
+                  SliverToBoxAdapter(child: isloading ? const Center(child: CircularProgressIndicator(color: Colors.white)):const SizedBox())
+                ],
+              ),
             );
           }
           else{
@@ -592,4 +602,11 @@ class _AllUserPostsState extends State<AllUserPosts> {
 
 
 
+
+  Future<void> _refresh() {
+    setState(() {
+
+    });
+    return Future.delayed(Duration(seconds: 2));
+  }
 }

@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmedia/screens/videoscreen/bloc/refresh_bloc.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/home_side_bar.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/video_details.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/video_tile.dart';
@@ -21,20 +21,25 @@ class _VideoPageState extends State<VideoPage> {
   bool IsFollowingSelected = false;
   int _snappedPageIndex=0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    if (widget.postid == null && widget.uid == null) {
-      return Scaffold(
+    return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
           elevation: 0,
           backgroundColor: Colors.transparent,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
               GestureDetector(onTap: (){
                 setState(() {
                   IsFollowingSelected = true;
@@ -48,54 +53,90 @@ class _VideoPageState extends State<VideoPage> {
               },child: Text("For you",style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: IsFollowingSelected ?14:18,color: IsFollowingSelected?Colors.grey:Colors.white))),
             ],
           ),
+          leading: null,
         ),
         body:StreamBuilder(
-          stream: FirebaseFirestore.instance.collection("UserPost").where('type',isEqualTo: "video").where('acctype',isEqualTo: "public").snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection("UserPost")
+              .where('type', isEqualTo: "video")
+              .where('acctype', isEqualTo: "public")
+              .snapshots(),
           builder: (context, snapshot) {
-            if(snapshot.hasData){
+            if (snapshot.hasData) {
+              List<DocumentSnapshot> filteredList = [];
+              List<DocumentSnapshot> otherVideos = [];
+              snapshot.data!.docs.forEach((doc) {
+                if (doc['postid'] == widget.postid && doc['uid'] == widget.uid) {
+                  print("loduuu");
+                  filteredList.add(doc);
+                } else {
+                  otherVideos.add(doc);
+                }
+              });
+              // Concatenate the filtered list with other videos
+              filteredList.addAll(otherVideos);
               return PageView.builder(
-                onPageChanged: (int page)=>{
-                  setState((){
-                    log(page.toString());
+                onPageChanged: (int page) {
+                  setState(() {
                     _snappedPageIndex = page;
-                  })
+                  });
                 },
                 scrollDirection: Axis.vertical,
-                itemCount: snapshot.data!.size,
+                itemCount: filteredList.length,
                 itemBuilder: (context, index) {
                   return Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
-                      VideoTile(video: snapshot.data!.docs[index]['posturl'],currentIndex: index,snappedPageIndex: _snappedPageIndex),
+                      VideoTile(
+                        video: filteredList[index]['posturl'],
+                        currentIndex: index,
+                        snappedPageIndex: _snappedPageIndex,
+                      ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Expanded(flex: 3,
-                              child: Container(
-                                height: MediaQuery.of(context).size.height/4,
-                                child: VideoDetails(username: snapshot.data!.docs[index]['username'],caption: snapshot.data!.docs[index]['caption'],UploaderUid: snapshot.data!.docs[index]['uid']),
-                              )),
-                          Expanded(child: Container(height: MediaQuery.of(context).size.height/1.75,
-                            child: HomeSideBar(likes: snapshot.data!.docs[index]['likes'],profileUrl: snapshot.data!.docs[index]['profileurl'],PostId: snapshot.data!.docs[index]['postid'],UploaderUid: snapshot.data!.docs[index]['uid']),
-                          ))
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              height: MediaQuery.of(context).size.height / 4,
+                              child: VideoDetails(
+                                username: filteredList[index]['username'],
+                                caption: filteredList[index]['caption'],
+                                UploaderUid: filteredList[index]['uid'],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: MediaQuery.of(context).size.height / 1.75,
+                              child: HomeSideBar(
+                                likes: filteredList[index]['likes'],
+                                profileUrl: filteredList[index]['profileurl'],
+                                PostId: filteredList[index]['postid'],
+                                UploaderUid: filteredList[index]['uid'],
+                                username:filteredList[index]['username'],
+                                noofcomments:filteredList[index]['totalcomments'],
+                              ),
+                            ),
+                          )
                         ],
                       )
                     ],
                   );
-                },);
+                },
+              );
+            } else {
+              return Container(
+                color: Colors.white,
+              );
             }
-            else{
-              return Container(color: Colors.white,);
-            }
-          }
+          },
         )
 
-      );
-    } else {
-      return Scaffold(
-        body: Center(child: Text("here ui  is get pass or post id also")),
-      );
-    }
-  }
+    );
 
+  }
 }
+
+
+

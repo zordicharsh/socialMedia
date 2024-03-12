@@ -23,3 +23,5 @@ class UserVideoPost extends UserpostEvents{
 class UserRemoveViedoOrImageEvent extends UserpostEvents {
 
 }
+
+class UserPostInitEvent extends UserpostEvents{}

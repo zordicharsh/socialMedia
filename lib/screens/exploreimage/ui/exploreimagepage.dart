@@ -8,6 +8,7 @@ import 'package:like_button/like_button.dart';
 import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_bloc.dart';
 import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_event.dart';
 import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_state.dart';
+import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class ExplorePageImage extends StatefulWidget {
@@ -65,7 +66,10 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                           final caption = postData['caption'];
                           final uploadTime = postData['uploadtime'];
                           List likes = postData['likes'];
+                          final upuid = postData['uid'];
+                          final noofcomments = postData['totalcomments'];
                           //this is main post
+
                           // Check if the current post matches the provided postuid
                           if (postID == widget.postuid) {
                             final islike = likes.contains(
@@ -147,6 +151,29 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                       ),
                                       IconButton(
                                         onPressed: () {
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            elevation: 0,
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            builder: (context) {
+                                              return DraggableScrollableSheet(
+                                                  snap: true,
+                                                  snapSizes: const [0.71, 0.72],
+                                                  maxChildSize: 0.96,
+                                                  initialChildSize: 0.96,
+                                                  minChildSize: 0.4,
+                                                  builder: (context, scrollController) =>
+                                                      CommentSection(
+                                                        postId: postID,
+                                                        scrollController: scrollController,
+                                                        profileImage: profileUrl,
+                                                        username: username,
+                                                        uidofpostuploader:
+                                                        upuid,
+                                                      ));
+                                            },
+                                          );
                                           // Implement comment functionality
                                         },
                                         icon: const Icon(Icons.chat_bubble_outline_outlined),
@@ -174,6 +201,36 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                     ),
                                   ),
                                   const SizedBox(height: 5),
+                                  GestureDetector(
+                                    onTap: (){
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        elevation: 0,
+                                        backgroundColor: Colors.transparent,
+                                        context: context,
+                                        builder: (context) {
+                                          return DraggableScrollableSheet(
+                                              snap: true,
+                                              snapSizes: const [0.71, 0.72],
+                                              maxChildSize: 0.96,
+                                              initialChildSize: 0.96,
+                                              minChildSize: 0.4,
+                                              builder: (context, scrollController) =>
+                                                  CommentSection(
+                                                    postId: postID,
+                                                    scrollController: scrollController,
+                                                    profileImage: profileUrl,
+                                                    username: username,
+                                                    uidofpostuploader:
+                                                    upuid,
+                                                  ));
+                                        },
+                                      );
+                                    },
+                                    child: Text("view ${noofcomments.toString()} comment",style: const TextStyle(
+                                      fontWeight: FontWeight.w200,
+                                    ),),
+                                  ),
                                   // Display post caption
                                   Row(
                                     children: [
@@ -218,6 +275,9 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                           final caption = postData['caption'];
                           final uploadTime = postData['uploadtime'];
                           final likes = postData['likes'];
+                          final upid = postData['uid'];
+                          final upuid = postData['uid'];
+                          final noofcomments = postData['totalcomments'];
                           // Check if the post is an image and not the main post
                           if (postID != widget.postuid && postType == "image") {
                             final islike = likes.contains(
@@ -292,6 +352,29 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                       IconButton(
                                         onPressed: () {
                                           // Implement comment functionality
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            elevation: 0,
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            builder: (context) {
+                                              return DraggableScrollableSheet(
+                                                  snap: true,
+                                                  snapSizes: const [0.71, 0.72],
+                                                  maxChildSize: 0.96,
+                                                  initialChildSize: 0.96,
+                                                  minChildSize: 0.4,
+                                                  builder: (context, scrollController) =>
+                                                      CommentSection(
+                                                        postId: postID,
+                                                        scrollController: scrollController,
+                                                        profileImage: profileUrl,
+                                                        username: username,
+                                                        uidofpostuploader:
+                                                        upid,
+                                                      ));
+                                            },
+                                          );
                                         },
                                         icon: const Icon(Icons.chat_bubble_outline_outlined),
                                       ),
@@ -320,6 +403,36 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                   ),
                                   const SizedBox(height: 5),
                                   // Display post caption
+                                  GestureDetector(
+                                    onTap: (){
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        elevation: 0,
+                                        backgroundColor: Colors.transparent,
+                                        context: context,
+                                        builder: (context) {
+                                          return DraggableScrollableSheet(
+                                              snap: true,
+                                              snapSizes: const [0.71, 0.72],
+                                              maxChildSize: 0.96,
+                                              initialChildSize: 0.96,
+                                              minChildSize: 0.4,
+                                              builder: (context, scrollController) =>
+                                                  CommentSection(
+                                                    postId: postID,
+                                                    scrollController: scrollController,
+                                                    profileImage: profileUrl,
+                                                    username: username,
+                                                    uidofpostuploader:
+                                                    upuid,
+                                                  ));
+                                        },
+                                      );
+                                    },
+                                    child: Text("view ${noofcomments.toString()} comment",style: const TextStyle(
+                                      fontWeight: FontWeight.w200,
+                                    ),),
+                                  ),
                                   Row(
                                     children: [
                                       Text(

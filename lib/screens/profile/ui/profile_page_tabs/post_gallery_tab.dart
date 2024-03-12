@@ -19,7 +19,6 @@ class PostGallery extends StatefulWidget {
   const PostGallery({
     super.key,
   });
-
   @override
   State<PostGallery> createState() => _PostGalleryState();
 }
