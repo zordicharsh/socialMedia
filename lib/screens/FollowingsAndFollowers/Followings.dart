@@ -59,12 +59,12 @@ class _FollowingState extends State<Following> {
                   }
                   else if(snapshot.hasError){
                     return const Center(
-                      child:  Text("No Followers"),
+                      child:  Text("No Following"),
                     );
                   }
                   else if(snapshot.hasData == false ){
                     return const Center(
-                      child:  Text("No Followers"),
+                      child:  Text("No Following"),
                     );
                   }
                   return Container();
@@ -73,13 +73,13 @@ class _FollowingState extends State<Following> {
             }
             else{
               return const Center(
-                child: Text("No Followers"),
+                child: Text("No Following"),
               );
             }
           }
           else if(snapshot.hasData == false ) {
             return const Center(
-              child: Text("No Followers"),
+              child: Text("No Following"),
             );
           }
           return Container();

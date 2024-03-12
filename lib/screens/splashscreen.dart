@@ -8,8 +8,6 @@ import 'package:socialmedia/screens/navigation_handler/navigation.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';
 import 'login/loginui.dart';
 class splservice{
-
-
   void isLogin(BuildContext context) {
     final auth = FirebaseAuth.instance.currentUser?.uid;
     if (auth != null) {

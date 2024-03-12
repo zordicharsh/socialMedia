@@ -47,8 +47,7 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
 
   @override
   void initState() {
-    isLiked = widget.postdata.docs[widget.index]['likes']
-        .contains(FirebaseAuth.instance.currentUser!.uid);
+    isLiked = widget.postdata.docs[widget.index]['likes'].contains(FirebaseAuth.instance.currentUser!.uid);
     videoPlayerController = VideoPlayerController.networkUrl(
         Uri.parse(widget.postdata.docs[widget.index]['posturl'].toString()),videoPlayerOptions: VideoPlayerOptions())
       ..initialize().then((_) => setState((){}))
