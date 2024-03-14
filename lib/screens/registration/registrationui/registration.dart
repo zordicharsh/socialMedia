@@ -94,6 +94,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+
     double deviceWidth = MediaQuery.of(context).size.width;
     return BlocProvider(
       create: (context) => RegistrationBloc(),

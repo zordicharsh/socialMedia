@@ -58,13 +58,13 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
             Password:  event.Password.trim(),
             Following:  [],
             Follower:  [],
-
             datetime:  Timestamp.now(),
           Profileurl: "",
           Bio: "",
           Acctype: "public",
           Followrequest: [],
-
+          Followrequestnotification: [],
+          TotalPosts: 0,
         );
         var res = await FirebaseFirestore.instance
             .collection("RegisteredUsers")

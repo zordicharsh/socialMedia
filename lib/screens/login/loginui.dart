@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
@@ -26,11 +25,11 @@ class LoginUiState extends State<LoginUi> {
   late OverlayEntry circularLoadingBar;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  var obscured = true;
 
 
   @override
   Widget build(BuildContext context) {
-    var obscured = true;
     double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
@@ -256,7 +255,7 @@ class LoginUiState extends State<LoginUi> {
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      minimumSize: Size(400.sp, 40),
+                                      minimumSize: Size(328.sp, 40),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(9),
                                       ),

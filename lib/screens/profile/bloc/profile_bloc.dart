@@ -13,7 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc() : super(ProfileInitialState()) {
     on<ProfilePageInitialEvent>(profilePageInitialEvent);
     on<ProfilePageFetchUserPostEvent>(profilePageFetchUserPostEvent);
-    on<ProfilePageFetchUserPostLengthEvent>(profilePageFetchUserPostLengthEvent);
+  //  on<ProfilePageFetchUserPostLengthEvent>(profilePageFetchUserPostLengthEvent);
 /*    on<ProfilePagePopUpDialogLikedOnPostEvent>(profilePagePopUpDialogLikedOnPostEvent);*/
     on<SignOutEvent>(signOutEvent);
   }
@@ -28,16 +28,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     Stream<QuerySnapshot<Map<String, dynamic>>> postdata =
     _getCurrentUserPosts(event.userid);
     log("emitting ProfilePageFetchUserPostSuccessState(postdata: postdata)");
-    emit(ProfilePageFetchUserPostSuccessState(event.postlength,postdata: postdata));
+    emit(ProfilePageFetchUserPostSuccessState(postdata: postdata));
   }
 
-  FutureOr<void> profilePageFetchUserPostLengthEvent(ProfilePageFetchUserPostLengthEvent event, Emitter<ProfileState> emit) async {
+  /*FutureOr<void> profilePageFetchUserPostLengthEvent(ProfilePageFetchUserPostLengthEvent event, Emitter<ProfileState> emit) async {
     AggregateQuerySnapshot currentUserPostLength =  await _getCurrentUserPostsLength(event.userid);
     log("post length ---------->${currentUserPostLength.count}");
     log("emitting ProfilePageFetchUserPostLengthSuccessState(postlength: currentUserPostLength)");
     emit(ProfilePageFetchUserPostLengthSuccessState(postlength: currentUserPostLength.count));
-    add(ProfilePageFetchUserPostEvent(currentUserPostLength.count,userid:event.userid));
-  }
+    add(ProfilePageFetchUserPostEvent(userid:event.userid));
+  }*/
 _getCurrentUserPosts(String? uid) {
   log("uid in gallery2 $uid");
   Stream<QuerySnapshot<Map<String, dynamic>>> posts =  FirebaseFirestore.instance

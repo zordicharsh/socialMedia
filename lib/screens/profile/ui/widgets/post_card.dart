@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/single(post_card)state.dart';
@@ -9,9 +6,10 @@ import '../../bloc/profile_bloc.dart';
 class PostCard extends StatefulWidget {
   const PostCard(
       {super.key,
-      required this.currentImageIndex,});
+      required this.currentImageIndex, required this.uid,});
 
 final int currentImageIndex;
+final String uid;
   @override
   State<PostCard> createState() => _PostCardState();
 }
@@ -19,7 +17,7 @@ final int currentImageIndex;
 class _PostCardState extends State<PostCard> {
 @override
   void initState() {
-    BlocProvider.of<ProfileBloc>(context).add(ProfilePageFetchUserPostLengthEvent(userid: FirebaseAuth.instance.currentUser!.uid));
+    BlocProvider.of<ProfileBloc>(context).add(ProfilePageFetchUserPostEvent(userid: widget.uid));
     super.initState();
   }
   @override

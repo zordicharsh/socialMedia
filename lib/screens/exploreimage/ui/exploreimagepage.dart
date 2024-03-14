@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:like_button/like_button.dart';
 import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_bloc.dart';
 import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_event.dart';
 import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_state.dart';
@@ -14,7 +13,9 @@ import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 class ExplorePageImage extends StatefulWidget {
   final uid;
   final postuid;
+
   const ExplorePageImage({super.key, required this.uid, required this.postuid});
+
   @override
   State<ExplorePageImage> createState() => _ExplorePageImageState();
 }
@@ -26,10 +27,6 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
     super.initState();
     BlocProvider.of<exploreimageBloc>(context).add(imagedisplayEvent());
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -85,22 +82,22 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                     leading: CircleAvatar(
                                       radius: 16,
                                       backgroundImage: NetworkImage(profileUrl),
-
                                     ),
                                     title: Text(username),
-                                    trailing: Icon(Icons.more_vert_sharp),
+                                    trailing: const Icon(Icons.more_vert_sharp),
                                   ),
                                   // Post image or video
                                   postType == "image"
                                       ? ZoomOverlay(
-                                    modalBarrierColor: Colors.black12,
-                                    minScale: 0.5,
-                                    maxScale: 3.0,
-                                    animationCurve: Curves.fastOutSlowIn,
-                                    animationDuration: const Duration(milliseconds: 300),
-                                    twoTouchOnly: true,
-                                    onScaleStart: () {},
-                                    onScaleStop: () {},
+                                          modalBarrierColor: Colors.black12,
+                                          minScale: 0.5,
+                                          maxScale: 3.0,
+                                          animationCurve: Curves.fastOutSlowIn,
+                                          animationDuration:
+                                              const Duration(milliseconds: 300),
+                                          twoTouchOnly: true,
+                                          onScaleStart: () {},
+                                          onScaleStop: () {},
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(12),
@@ -118,22 +115,22 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                       IconButton(
                                         onPressed: () {
                                           if (islike) {
-                                            DocumentReference _currentUserRef =
-                                            FirebaseFirestore.instance
-                                                .collection('UserPost')
-                                                .doc(postID);
-                                            _currentUserRef.update({
+                                            DocumentReference currentUserRef =
+                                                FirebaseFirestore.instance
+                                                    .collection('UserPost')
+                                                    .doc(postID);
+                                            currentUserRef.update({
                                               'likes': FieldValue.arrayRemove([
                                                 FirebaseAuth
                                                     .instance.currentUser!.uid
                                               ])
                                             });
                                           } else {
-                                            DocumentReference _currentUserRef =
-                                            FirebaseFirestore.instance
-                                                .collection('UserPost')
-                                                .doc(postID);
-                                            _currentUserRef.update({
+                                            DocumentReference currentUserRef =
+                                                FirebaseFirestore.instance
+                                                    .collection('UserPost')
+                                                    .doc(postID);
+                                            currentUserRef.update({
                                               'likes': FieldValue.arrayUnion([
                                                 FirebaseAuth
                                                     .instance.currentUser!.uid
@@ -143,11 +140,11 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                         },
                                         icon: islike
                                             ? const Icon(
-                                          Icons.favorite,
-                                          color: Colors.redAccent,
-                                        )
+                                                Icons.favorite,
+                                                color: Colors.redAccent,
+                                              )
                                             : const Icon(
-                                            Icons.favorite_outline),
+                                                Icons.favorite_outline),
                                       ),
                                       IconButton(
                                         onPressed: () {
@@ -163,20 +160,22 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                                   maxChildSize: 0.96,
                                                   initialChildSize: 0.96,
                                                   minChildSize: 0.4,
-                                                  builder: (context, scrollController) =>
+                                                  builder: (context,
+                                                          scrollController) =>
                                                       CommentSection(
                                                         postId: postID,
-                                                        scrollController: scrollController,
-                                                        profileImage: profileUrl,
+                                                        scrollController:
+                                                            scrollController,
                                                         username: username,
                                                         uidofpostuploader:
-                                                        upuid,
+                                                            upuid,
                                                       ));
                                             },
                                           );
                                           // Implement comment functionality
                                         },
-                                        icon: const Icon(Icons.chat_bubble_outline_outlined),
+                                        icon: const Icon(
+                                            Icons.chat_bubble_outline_outlined),
                                       ),
                                       IconButton(
                                         onPressed: () {
@@ -202,7 +201,7 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                   ),
                                   const SizedBox(height: 5),
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         elevation: 0,
@@ -215,21 +214,24 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                               maxChildSize: 0.96,
                                               initialChildSize: 0.96,
                                               minChildSize: 0.4,
-                                              builder: (context, scrollController) =>
+                                              builder: (context,
+                                                      scrollController) =>
                                                   CommentSection(
                                                     postId: postID,
-                                                    scrollController: scrollController,
-                                                    profileImage: profileUrl,
+                                                    scrollController:
+                                                        scrollController,
                                                     username: username,
-                                                    uidofpostuploader:
-                                                    upuid,
+                                                    uidofpostuploader: upuid,
                                                   ));
                                         },
                                       );
                                     },
-                                    child: Text("view ${noofcomments.toString()} comment",style: const TextStyle(
-                                      fontWeight: FontWeight.w200,
-                                    ),),
+                                    child: Text(
+                                      "view ${noofcomments.toString()} comment",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w200,
+                                      ),
+                                    ),
                                   ),
                                   // Display post caption
                                   Row(
@@ -240,7 +242,9 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      SizedBox(width: 8,),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
                                       Text(
                                         caption,
                                         style: const TextStyle(
@@ -294,11 +298,20 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                       backgroundImage: NetworkImage(profileUrl),
                                     ),
                                     title: Text(username),
-                                    trailing: Icon(Icons.more_vert_sharp),
+                                    trailing: const Icon(Icons.more_vert_sharp),
                                   ),
                                   // Post image or video
                                   postType == "image"
                                       ? ZoomOverlay(
+                                          modalBarrierColor: Colors.black12,
+                                          minScale: 0.5,
+                                          maxScale: 3.0,
+                                          animationCurve: Curves.fastOutSlowIn,
+                                          animationDuration:
+                                              const Duration(milliseconds: 300),
+                                          twoTouchOnly: true,
+                                          onScaleStart: () {},
+                                          onScaleStop: () {},
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(12),
@@ -318,22 +331,22 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                       IconButton(
                                         onPressed: () {
                                           if (islike) {
-                                            DocumentReference _currentUserRef =
+                                            DocumentReference currentUserRef =
                                                 FirebaseFirestore.instance
                                                     .collection('UserPost')
                                                     .doc(postID);
-                                            _currentUserRef.update({
+                                            currentUserRef.update({
                                               'likes': FieldValue.arrayRemove([
                                                 FirebaseAuth
                                                     .instance.currentUser!.uid
                                               ])
                                             });
                                           } else {
-                                            DocumentReference _currentUserRef =
+                                            DocumentReference currentUserRef =
                                                 FirebaseFirestore.instance
                                                     .collection('UserPost')
                                                     .doc(postID);
-                                            _currentUserRef.update({
+                                            currentUserRef.update({
                                               'likes': FieldValue.arrayUnion([
                                                 FirebaseAuth
                                                     .instance.currentUser!.uid
@@ -364,19 +377,20 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                                   maxChildSize: 0.96,
                                                   initialChildSize: 0.96,
                                                   minChildSize: 0.4,
-                                                  builder: (context, scrollController) =>
+                                                  builder: (context,
+                                                          scrollController) =>
                                                       CommentSection(
                                                         postId: postID,
-                                                        scrollController: scrollController,
-                                                        profileImage: profileUrl,
+                                                        scrollController:
+                                                            scrollController,
                                                         username: username,
-                                                        uidofpostuploader:
-                                                        upid,
+                                                        uidofpostuploader: upid,
                                                       ));
                                             },
                                           );
                                         },
-                                        icon: const Icon(Icons.chat_bubble_outline_outlined),
+                                        icon: const Icon(
+                                            Icons.chat_bubble_outline_outlined),
                                       ),
                                       IconButton(
                                         onPressed: () {
@@ -404,7 +418,7 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                   const SizedBox(height: 5),
                                   // Display post caption
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         elevation: 0,
@@ -417,21 +431,24 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                               maxChildSize: 0.96,
                                               initialChildSize: 0.96,
                                               minChildSize: 0.4,
-                                              builder: (context, scrollController) =>
+                                              builder: (context,
+                                                      scrollController) =>
                                                   CommentSection(
                                                     postId: postID,
-                                                    scrollController: scrollController,
-                                                    profileImage: profileUrl,
+                                                    scrollController:
+                                                        scrollController,
                                                     username: username,
-                                                    uidofpostuploader:
-                                                    upuid,
+                                                    uidofpostuploader: upuid,
                                                   ));
                                         },
                                       );
                                     },
-                                    child: Text("view ${noofcomments.toString()} comment",style: const TextStyle(
-                                      fontWeight: FontWeight.w200,
-                                    ),),
+                                    child: Text(
+                                      "view ${noofcomments.toString()} comment",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w200,
+                                      ),
+                                    ),
                                   ),
                                   Row(
                                     children: [
@@ -441,7 +458,9 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      SizedBox(width: 8,),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
                                       Text(
                                         caption,
                                         style: const TextStyle(

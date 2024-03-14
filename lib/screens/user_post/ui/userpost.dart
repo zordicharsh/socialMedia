@@ -1,8 +1,7 @@
 import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:socialmedia/global_Bloc/global_bloc.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_event.dart';
@@ -33,7 +32,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
     // TODO: implement initState
     super.initState();
     BlocProvider.of<UserpostBloc>(context).add(UserPostInitEvent());
-
   }
 
   Widget build(BuildContext context) {
@@ -69,8 +67,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 ),
               ),
             );
-          }
-          else if (state is SuccessFullySelectedVideo) {
+          } else if (state is SuccessFullySelectedVideo) {
             Check = state.sentvideo;
             CheckWhichState = 'video';
             videoPlayerController = VideoPlayerController.file(state.sentvideo)
@@ -114,6 +111,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             videoPlayerController?.dispose();
             Check = null;
             CheckWhichState = "";
+            BlocProvider.of<GlobalBloc>(context).add(
+                GetUserIDEvent(uid: FirebaseAuth.instance.currentUser!.uid));
             return const Center(child: Text("Successfully uploaded"));
           } else if (state is RemovePhotoOrVideoState) {
             Check = null;
@@ -121,11 +120,9 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               videoPlayerController!.dispose();
             }
           } else {
-            return Center(
-                child: Text("Select Photo")
-            );
+            return const Center(child: Text("Select Photo"));
           }
-          return SizedBox();
+          return const SizedBox();
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -134,12 +131,11 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            BlocBuilder<UserpostBloc,UserPostStates>(
+            BlocBuilder<UserpostBloc, UserPostStates>(
               builder: (context, state) {
-                if(state is LoadingComeState){
-                  return SizedBox();
-                }
-                else{
+                if (state is LoadingComeState) {
+                  return const SizedBox();
+                } else {
                   return IconButton(
                     onPressed: () {
                       showOptionsDialog(context);
@@ -147,7 +143,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     icon: const Icon(Icons.camera),
                   );
                 }
-
               },
             ),
             BlocBuilder<UserpostBloc, UserPostStates>(
@@ -166,17 +161,17 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                         BlocProvider.of<UserpostBloc>(context)
                             .add(UserVideoPost(caption.text.trim()));
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("First Select Image or Reel"),
-                              duration: Duration(seconds: 1),
-                            ));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("First Select Image or Reel"),
+                          duration: Duration(seconds: 1),
+                        ));
                       }
                     },
                     child: const Text('Post'),
                   );
                 } else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
               },
             )
@@ -185,7 +180,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       ),
     );
   }
-
 
   void showOptionsDialog(BuildContext context) async {
     showDialog<void>(

@@ -9,66 +9,88 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/screens/follow_request_screen/request_bloc.dart';
 import 'package:socialmedia/screens/follow_request_screen/request_event.dart';
 
-
 class Request extends StatefulWidget {
   const Request({super.key});
 
   @override
   State<Request> createState() => _RequestState();
-}class _RequestState extends State<Request> {
+}
+
+class _RequestState extends State<Request> {
   var UID;
+
   @override
   void initState() {
     UID = FirebaseAuth.instance.currentUser!.uid;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notification",style:TextStyle(fontWeight: FontWeight.w300),),
+        title: const Text(
+          "Notification",
+          style: TextStyle(fontWeight: FontWeight.w300),
+        ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("RegisteredUsers").doc(UID).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection("RegisteredUsers")
+            .doc(UID)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List follower = snapshot.data!.get('followrequest');
-            if(follower.isNotEmpty){
+            List follower = snapshot.data!.get('followrequestnotification');
+            if (follower.isNotEmpty) {
               return StreamBuilder(
-                stream: FirebaseFirestore.instance.collection("RegisteredUsers").where("uid",whereIn:follower).snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection("RegisteredUsers")
+                    .where("uid", whereIn: follower)
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
-                      itemCount:snapshot.data!.size,
+                      itemCount: snapshot.data!.size,
                       itemBuilder: (context, index) {
                         var FollowUserUid = snapshot.data!.docs[index]['uid'];
                         var imagess = snapshot.data!.docs[index]['profileurl'];
                         return ListTile(
                           leading: CircleAvatar(
                               radius: 20,
-                              backgroundImage :imagess != null ?
-                              NetworkImage(imagess) : null),
-                          title: Text("${snapshot.data!.docs[index]['username']} requested to follow you", style: const TextStyle(fontSize:15),),
+                              backgroundImage: imagess != null
+                                  ? NetworkImage(imagess)
+                                  : null),
+                          title: Text(
+                            "${snapshot.data!.docs[index]['username']} requested to follow you",
+                            style: const TextStyle(fontSize: 15),
+                          ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  BlocProvider.of<RequestBloc>(context).add(AcceptFollowRequestEvent(FollowUserUid,UID));
+                                  BlocProvider.of<RequestBloc>(context).add(
+                                      AcceptFollowRequestEvent(
+                                          FollowUserUid, UID));
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(32.sp,28),
+                                  minimumSize: Size(32.sp, 28),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   backgroundColor: Colors.blue,
                                 ),
-                                child: const Text('Accept',style: TextStyle(color: Colors.white),),
+                                child: const Text(
+                                  'Accept',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
-
                               IconButton(
                                 onPressed: () {
-                                  BlocProvider.of<RequestBloc>(context).add(DeleteFollowRequestEvent(FollowUserUid,UID));
+                                  BlocProvider.of<RequestBloc>(context).add(
+                                      DeleteFollowRequestEvent(
+                                          FollowUserUid, UID));
                                 },
                                 icon: const Icon(CupertinoIcons.clear),
                               )
@@ -77,13 +99,11 @@ class Request extends StatefulWidget {
                         );
                       },
                     );
-                  }
-                  else if(snapshot.hasError){
+                  } else if (snapshot.hasError) {
                     return const Center(
                       child: Text("No Request"),
                     );
-                  }
-                  else if(snapshot.hasData == false ){
+                  } else if (snapshot.hasData == false) {
                     return const Center(
                       child: Text("No Request"),
                     );
@@ -91,14 +111,12 @@ class Request extends StatefulWidget {
                   return Container();
                 },
               );
-            }
-            else{
+            } else {
               return const Center(
                 child: Text("No Request"),
               );
             }
-          }
-          else if(snapshot.hasData == false ) {
+          } else if (snapshot.hasData == false) {
             return const Center(
               child: Text("No Request"),
             );
@@ -109,4 +127,3 @@ class Request extends StatefulWidget {
     );
   }
 }
-

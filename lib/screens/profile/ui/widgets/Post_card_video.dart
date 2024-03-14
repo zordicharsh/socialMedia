@@ -7,9 +7,12 @@ import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 class PostCardVideo extends StatefulWidget {
   const PostCardVideo(
       {super.key,
-        required this.currentImageIndex,
-        required this.username,
-        required this.profileimage, required this.likes, required this.caption, required this.uploadtime});
+      required this.currentImageIndex,
+      required this.username,
+      required this.profileimage,
+      required this.likes,
+      required this.caption,
+      required this.uploadtime});
 
   final String currentImageIndex;
   final String username;
@@ -28,9 +31,10 @@ class _PostCardVideoState extends State<PostCardVideo> {
     "https://i.pinimg.com/474x/a7/e8/89/a7e889effe08ecbede2ddaafbecdbd66.jpg",
     "https://i.pinimg.com/236x/21/ea/de/21eade75b326b412dbff2aa320f571c8.jpg",
   ];
- @override
+
+  @override
   void dispose() {
-   videoPlayerController?.dispose();
+    videoPlayerController?.dispose();
     super.dispose();
   }
 
@@ -38,17 +42,18 @@ class _PostCardVideoState extends State<PostCardVideo> {
 
   @override
   Widget build(BuildContext context) {
-     videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.currentImageIndex))
-      ..initialize()
-      ..play()
-    ..setLooping(true);
+    videoPlayerController =
+        VideoPlayerController.networkUrl(Uri.parse(widget.currentImageIndex))
+          ..initialize()
+          ..play()
+          ..setLooping(true);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         leading: ModalRoute.of(context)?.canPop == true
             ? IconButton(
-            onPressed: Navigator.of(context).pop,
-            icon: const Icon(Icons.keyboard_backspace))
+                onPressed: Navigator.of(context).pop,
+                icon: const Icon(Icons.keyboard_backspace))
             : null,
         iconTheme: const IconThemeData(
           color: Colors.white,
@@ -66,7 +71,7 @@ class _PostCardVideoState extends State<PostCardVideo> {
         children: [
           Padding(
             padding:
-            const EdgeInsets.only(top: 0.0, bottom: 4, right: 8, left: 12),
+                const EdgeInsets.only(top: 0.0, bottom: 4, right: 8, left: 12),
             child: SizedBox(
               width: double.infinity,
               child: Row(
@@ -74,26 +79,27 @@ class _PostCardVideoState extends State<PostCardVideo> {
                 children: [
                   Row(
                     children: [
-                      widget.profileimage != "" ?
-                      CircleAvatar(
-                        radius: 14.1,
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage:
-                          NetworkImage(widget.profileimage),
-                          radius: 14,
-                        ),
-                      ):
-                      CircleAvatar(
-                        radius: 14.1,
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.black.withOpacity(0.8),
-                          radius: 14,
-                          child: Icon(Icons.person,color: Colors.black.withOpacity(0.5)),
-                        ),
-                      ),
+                      widget.profileimage != ""
+                          ? CircleAvatar(
+                              radius: 14.1,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                backgroundImage:
+                                    NetworkImage(widget.profileimage),
+                                radius: 14,
+                              ),
+                            )
+                          : CircleAvatar(
+                              radius: 14.1,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.black.withOpacity(0.8),
+                                radius: 14,
+                                child: Icon(Icons.person,
+                                    color: Colors.black.withOpacity(0.5)),
+                              ),
+                            ),
                       const SizedBox(
                         width: 12,
                       ),
@@ -122,24 +128,23 @@ class _PostCardVideoState extends State<PostCardVideo> {
               height: MediaQuery.sizeOf(context).height * 0.45,
               width: double.infinity,
               child: ZoomOverlay(
-                modalBarrierColor: Colors.black12,
+                  modalBarrierColor: Colors.black12,
 // Optional
-                minScale: 0.5,
+                  minScale: 0.5,
 // Optional
-                maxScale: 3.0,
+                  maxScale: 3.0,
 // Optional
-                animationCurve: Curves.fastOutSlowIn,
+                  animationCurve: Curves.fastOutSlowIn,
 // Defaults to fastOutSlowIn which mimics IOS instagram behavior
-                animationDuration: const Duration(milliseconds: 300),
+                  animationDuration: const Duration(milliseconds: 300),
 // Defaults to 100 Milliseconds. Recommended duration is 300 milliseconds for Curves.fastOutSlowIn
-                twoTouchOnly: true,
+                  twoTouchOnly: true,
 // Defaults to false
-                onScaleStart: () {},
+                  onScaleStart: () {},
 // optional VoidCallback
-                onScaleStop: () {},
+                  onScaleStop: () {},
 // optional VoidCallback
-                child: VideoPlayer(videoPlayerController!)
-              )),
+                  child: VideoPlayer(videoPlayerController!))),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 0),
             child: Row(
@@ -184,7 +189,7 @@ class _PostCardVideoState extends State<PostCardVideo> {
           ),
           Padding(
             padding:
-            const EdgeInsets.only(top: 0.0, bottom: 4, left: 16, right: 16),
+                const EdgeInsets.only(top: 0.0, bottom: 4, left: 16, right: 16),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -210,21 +215,21 @@ class _PostCardVideoState extends State<PostCardVideo> {
                         text: const TextSpan(
                             style: TextStyle(color: Colors.white),
                             children: [
-                              TextSpan(
-                                text: "   Liked by",
-                              ),
-                              TextSpan(
-                                text: " naman2811",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              TextSpan(
-                                text: " and",
-                              ),
-                              TextSpan(
-                                text: " 36 others",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            ]))
+                          TextSpan(
+                            text: "   Liked by",
+                          ),
+                          TextSpan(
+                            text: " naman2811",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(
+                            text: " and",
+                          ),
+                          TextSpan(
+                            text: " 36 others",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ]))
 //   Text("Liked by naman2811 and 36 others")
                   ],
                 )
@@ -242,7 +247,7 @@ class _PostCardVideoState extends State<PostCardVideo> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text:widget.caption,
+                      text: widget.caption,
                     ),
                   ]),
             ),
@@ -257,7 +262,8 @@ class _PostCardVideoState extends State<PostCardVideo> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12),
-            child: Text(DateFormat.d().add_yMMM().format(widget.uploadtime.toDate()),
+            child: Text(
+                DateFormat.d().add_yMMM().format(widget.uploadtime.toDate()),
                 style: const TextStyle(color: Colors.white60)),
           ),
         ],

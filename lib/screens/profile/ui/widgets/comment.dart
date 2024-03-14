@@ -8,22 +8,22 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:socialmedia/screens/profile/bloc/comment_bloc/comment_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/single(comment_card)state.dart';
 
 class CommentSection extends StatefulWidget {
   final ScrollController scrollController;
-  final String profileImage;
   final String username;
   final String postId;
   final String uidofpostuploader;
 
-  const CommentSection(
-      {super.key,
-      required this.profileImage,
-      required this.username,
-      required this.postId,required this.scrollController,required this.uidofpostuploader});
+  const CommentSection({
+    super.key,
+    required this.username,
+    required this.postId,
+    required this.scrollController,
+    required this.uidofpostuploader,
+  });
 
   @override
   State<CommentSection> createState() => _CommentSectionState();
@@ -33,6 +33,7 @@ class _CommentSectionState extends State<CommentSection> {
   final comment = TextEditingController();
   bool emojiShowing = true;
   bool isCommentShareButtonVisible = false;
+  late Stream<DocumentSnapshot> _currentUserDataStream;
 
   @override
   void dispose() {
@@ -42,10 +43,13 @@ class _CommentSectionState extends State<CommentSection> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+    _currentUserDataStream = FirebaseFirestore.instance
+        .collection('RegisteredUsers')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots();
     BlocProvider.of<CommentBloc>(context)
         .add(FetchCommentsOfUserPost(widget.postId));
+    super.initState();
   }
 
   @override
@@ -56,7 +60,7 @@ class _CommentSectionState extends State<CommentSection> {
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         physics: const NeverScrollableScrollPhysics(),
-        child: Stack(children: [
+        child: Stack( children: [
           Column(
             children: [
               Visibility(
@@ -109,30 +113,52 @@ class _CommentSectionState extends State<CommentSection> {
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Row(
                   children: [
-                    widget.profileImage != ""
-                        ? CachedNetworkImage(
-                          imageUrl: widget.profileImage,
-                          imageBuilder: (context, imageProvider) =>
-                              CircleAvatar(
+                    StreamBuilder(
+                      stream: _currentUserDataStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircleAvatar(
                             radius: 18.1,
                             backgroundColor: Colors.white,
                             child: CircleAvatar(
-                              backgroundColor: Colors.grey,
-                              backgroundImage: imageProvider,
+                              backgroundColor: Colors.black.withOpacity(0.8),
                               radius: 20,
                             ),
-                          ),
-                        )
-                        : CircleAvatar(
-                          radius: 18.1,
-                          backgroundColor: Colors.white,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.black.withOpacity(0.8),
-                            radius: 20,
-                            child: Icon(Icons.person,
-                                color: Colors.black.withOpacity(0.5)),
-                          ),
-                        ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return const Text("error");
+                        } else {
+                          var userData =
+                              snapshot.data!.data() as Map<String, dynamic>;
+                          return userData['profileurl'] != ""
+                              ? CachedNetworkImage(
+                                  imageUrl: userData['profileurl'],
+                                  imageBuilder: (context, imageProvider) =>
+                                      CircleAvatar(
+                                    radius: 18.1,
+                                    backgroundColor: Colors.white,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage: imageProvider,
+                                      radius: 20,
+                                    ),
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  radius: 18.1,
+                                  backgroundColor: Colors.white,
+                                  child: CircleAvatar(
+                                    backgroundColor:
+                                        Colors.black.withOpacity(0.8),
+                                    radius: 20,
+                                    child: Icon(Icons.person,
+                                        color: Colors.black.withOpacity(0.5)),
+                                  ),
+                                );
+                        }
+                      },
+                    ),
                     const SizedBox(
                       width: 20,
                     ),
@@ -145,8 +171,10 @@ class _CommentSectionState extends State<CommentSection> {
                         controller: comment,
                         autofocus: true,
                         decoration: InputDecoration(
-                          hintText:widget.uidofpostuploader == FirebaseAuth.instance.currentUser?.uid ? 'Add a comment...':
-                          'Add a comment for ${widget.username}...',
+                          hintText: widget.uidofpostuploader ==
+                                  FirebaseAuth.instance.currentUser?.uid
+                              ? 'Add a comment...'
+                              : 'Add a comment for ${widget.username}...',
                           hintStyle: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
@@ -326,7 +354,10 @@ class _CommentSectionState extends State<CommentSection> {
                             controller: widget.scrollController,
                             itemCount: commentdata.size,
                             itemBuilder: (context, index) =>
-                                SingleCommentCardItemState(index:index,commentdata:commentdata,postId: widget.postId),
+                                SingleCommentCardItemState(
+                                    index: index,
+                                    commentdata: commentdata,
+                                    postId: widget.postId),
                           );
                         }
                       },
@@ -344,6 +375,7 @@ class _CommentSectionState extends State<CommentSection> {
       ),
     );
   }
+
   _showCommentShareButton(String value) {
     if (value.isNotEmpty) {
       setState(() {

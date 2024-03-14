@@ -56,7 +56,6 @@ class _HomeSideBarState extends State<HomeSideBar> {
                           CommentSection(
                             postId: widget.PostId,
                             scrollController: scrollController,
-                            profileImage: widget.profileUrl,
                             username: widget.username,
                             uidofpostuploader:
                             widget.UploaderUid,
@@ -79,22 +78,22 @@ class _HomeSideBarState extends State<HomeSideBar> {
         GestureDetector(
             onTap: (){
                 if(islike){
-                  DocumentReference _currentUserRef =
+                  DocumentReference currentUserRef =
                   FirebaseFirestore.instance
                       .collection('UserPost')
                       .doc(widget.PostId);
-                  _currentUserRef.update({
+                  currentUserRef.update({
                     'likes': FieldValue.arrayRemove([
                       FirebaseAuth
                           .instance.currentUser!.uid
                     ])
                   });
                 }else{
-                  DocumentReference _currentUserRef =
+                  DocumentReference currentUserRef =
                   FirebaseFirestore.instance
                       .collection('UserPost')
                       .doc(widget.PostId);
-                  _currentUserRef.update({
+                  currentUserRef.update({
                     'likes': FieldValue.arrayUnion([
                       FirebaseAuth
                           .instance.currentUser!.uid
@@ -160,15 +159,15 @@ class _HomeSideBarState extends State<HomeSideBar> {
                   return Positioned(bottom: -8,
                       child: GestureDetector(
                         onTap: (){
-                          DocumentReference _videoPostUser = FirebaseFirestore.instance.collection('RegisteredUsers').doc(widget.UploaderUid);
-                          _videoPostUser.update({
+                          DocumentReference videoPostUser = FirebaseFirestore.instance.collection('RegisteredUsers').doc(widget.UploaderUid);
+                          videoPostUser.update({
                             'follower':FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid])
                           });
-                          DocumentReference _videoPostUser1 = FirebaseFirestore.instance.collection('RegisteredUsers').doc(FirebaseAuth.instance.currentUser!.uid);
-                          _videoPostUser1.update({
+                          DocumentReference videoPostUser1 = FirebaseFirestore.instance.collection('RegisteredUsers').doc(FirebaseAuth.instance.currentUser!.uid);
+                          videoPostUser1.update({
                             'following':FieldValue.arrayUnion([widget.UploaderUid])
                           });
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(" you started follow ")));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(" you started follow ")));
                         },
                         child: Container(
                           decoration: BoxDecoration(
