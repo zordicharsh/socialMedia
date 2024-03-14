@@ -91,6 +91,7 @@ class _FollowingState extends State<Following> {
       );
     }else
       {
+
         return Scaffold(
           appBar: AppBar(title: const Text("Following"),),
           body: StreamBuilder(
