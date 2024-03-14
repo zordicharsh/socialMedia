@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 
 part 'comment_event.dart';
 
@@ -88,9 +87,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
             'uploadtime': DateTime.now().toIso8601String(),
             'likes': [],
             'totallikes': 0,
-          }).then((value) async {
+          }).then((value) {
             final UserPost =
-               await FirebaseFirestore.instance.collection("UserPost").doc(postid);
+               FirebaseFirestore.instance.collection("UserPost").doc(postid);
             UserPost.get().then((value) {
               if(value.exists){
                 final totalComments = value.get('totalcomments');
@@ -117,7 +116,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         log("-------------->commentid :- $commentid");
         commentCollection.doc(commentid).delete().then((value) async{
           final UserPost =
-             await FirebaseFirestore.instance.collection("UserPost").doc(postid);
+             FirebaseFirestore.instance.collection("UserPost").doc(postid);
           UserPost.get().then((value) async{
             if (value.exists) {
               final totalComments = value.get('totalcomments');

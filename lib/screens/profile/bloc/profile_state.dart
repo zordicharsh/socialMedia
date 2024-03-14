@@ -11,9 +11,8 @@ class ProfilePageFetchUserDataState extends ProfileState {}
 
 class ProfilePageFetchUserPostSuccessState extends ProfileState{
   final Stream<QuerySnapshot<Map<String, dynamic>>> postdata;
-  final int? postlength;
 
-  ProfilePageFetchUserPostSuccessState(this.postlength, {required this.postdata});
+  ProfilePageFetchUserPostSuccessState({required this.postdata});
 }
 class ProfilePageFetchUserPostLengthSuccessState extends ProfileState{
    final int? postlength;

@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:socialmedia/global_Bloc/global_bloc.dart';
@@ -18,7 +17,6 @@ import 'package:socialmedia/screens/profile/ui/profile_page_tabs/tags_tab.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/profile_header.dart';
 
 import '../../../model/user_model.dart';
-import '../../login/loginui.dart';
 import '../../navigation_handler/bloc/navigation_bloc.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -71,13 +69,11 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.white,
             ),
             onPressed: () async {
-              BlocProvider.of<DrawerBloc>(context).add(FirstCheckAccTypeEvent());
-              await Future.delayed(Duration(milliseconds: 200),(){
+              BlocProvider.of<DrawerBloc>(context)
+                  .add(FirstCheckAccTypeEvent());
+              await Future.delayed(Duration(milliseconds: 200), () {
                 _scaffoldKey.currentState?.openEndDrawer();
               });
-            /*  BlocProvider.of<ProfileBloc>(context).add(SignOutEvent());
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const LoginUi()));*/
             },
           )
         ],
@@ -92,8 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
             if (state is GetUserDataFromGlobalBlocState) {
               List<UserModel> userdata = state.userData;
               BlocProvider.of<ProfileBloc>(context).add(
-                  ProfilePageFetchUserPostLengthEvent(
-                      userid: state.userData[0].Uid));
+                  ProfilePageFetchUserPostEvent(userid: state.userData[0].Uid));
               log("userdata in profile:- ${userdata.length.toString()}");
               profileImageUrl = userdata[0].Profileurl;
               name = userdata[0].Name;

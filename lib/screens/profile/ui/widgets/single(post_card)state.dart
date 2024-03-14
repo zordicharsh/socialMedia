@@ -43,10 +43,15 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
   VideoPlayerController? videoPlayerController;
   bool isMute = false;
   double previousVideoVolume = 0.0;
+  late Stream<DocumentSnapshot> _currentUserDataStream;
 
 
   @override
   void initState() {
+    _currentUserDataStream = FirebaseFirestore.instance
+        .collection('RegisteredUsers')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots();
     isLiked = widget.postdata.docs[widget.index]['likes']
         .contains(FirebaseAuth.instance.currentUser!.uid);
     videoPlayerController = VideoPlayerController.networkUrl(
@@ -324,8 +329,6 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                                   postId: widget.postdata.docs[widget.index]
                                       ['postid'],
                                   scrollController: scrollController,
-                                  profileImage: widget.postdata
-                                      .docs[widget.index]['profileurl'],
                                   username: widget.postdata.docs[widget.index]
                                       ['username'],
                                   uidofpostuploader:
@@ -479,8 +482,6 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                                     postId: widget.postdata.docs[widget.index]
                                         ['postid'],
                                     scrollController: scrollController,
-                                    profileImage: widget.postdata
-                                        .docs[widget.index]['profileurl'],
                                     username: widget.postdata.docs[widget.index]
                                         ['username'],
                                     uidofpostuploader: widget
@@ -495,37 +496,57 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
               )
             : Row(
                 children: [
-                  widget.postdata.docs[widget.index]['profileurl'] != ""
-                      ? Padding(
-                          padding: const EdgeInsets.only(left: 12),
-                          child: CachedNetworkImage(
-                            imageUrl: widget.postdata.docs[widget.index]
-                                ['profileurl'],
-                            imageBuilder: (context, imageProvider) =>
-                                CircleAvatar(
-                              radius: 12.1,
-                              backgroundColor: Colors.white,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                backgroundImage: imageProvider,
-                                radius: 12,
-                              ),
-                            ),
-                          ),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(left: 12),
+                  StreamBuilder(stream: _currentUserDataStream, builder: (context, snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return Padding(
+                          padding: const EdgeInsets.only(left: 12.0),
                           child: CircleAvatar(
                             radius: 12.1,
                             backgroundColor: Colors.white,
                             child: CircleAvatar(
                               backgroundColor: Colors.black.withOpacity(0.8),
                               radius: 12,
-                              child: Icon(Icons.person,
-                                  color: Colors.black.withOpacity(0.5)),
                             ),
                           ),
-                        ),
+                        );
+                      }
+                    else if(snapshot.hasError){
+                      return const Text("error");
+                    }
+                    else{
+                      var userData = snapshot.data!.data() as Map<String, dynamic>;
+                      return userData['profileurl'] != ""
+                          ? Padding(
+                        padding: const EdgeInsets.only(left:12.0),
+                            child: CachedNetworkImage(
+                                                    imageUrl:userData['profileurl'],
+                                                    imageBuilder: (context, imageProvider) =>
+                              CircleAvatar(
+                                radius: 12.1,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  backgroundImage: imageProvider,
+                                  radius: 12,
+                                ),
+                              ),
+                                                  ),
+                          )
+                          : Padding(
+                        padding: const EdgeInsets.only(left:12.0),
+                            child: CircleAvatar(
+                                                    radius: 12.1,
+                                                    backgroundColor: Colors.white,
+                                                    child: CircleAvatar(
+                            backgroundColor: Colors.black.withOpacity(0.8),
+                            radius: 12,
+                            child: Icon(Icons.person,
+                                color: Colors.black.withOpacity(0.5)),
+                                                    ),
+                                                  ),
+                          );
+                    }
+                  },),
                   const SizedBox(
                     width: 12,
                   ),
@@ -556,8 +577,6 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                                       postId: widget.postdata.docs[widget.index]
                                           ['postid'],
                                       scrollController: scrollController,
-                                      profileImage: widget.postdata
-                                          .docs[widget.index]['profileurl'],
                                       username: widget.postdata
                                           .docs[widget.index]['username'],
                                       uidofpostuploader: widget

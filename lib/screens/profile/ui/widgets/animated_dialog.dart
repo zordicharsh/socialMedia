@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ class AnimatedDialogState extends State<AnimatedDialog>
   late AnimationController controller;
   late Animation<double> opacityAnimation;
   late Animation<double> scaleAnimation;
+
   @override
   void initState() {
     super.initState();
@@ -28,11 +28,11 @@ class AnimatedDialogState extends State<AnimatedDialog>
         CurvedAnimation(parent: controller, curve: Curves.easeOutExpo));
     controller.forward();
   }
+
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
-
   }
 
   @override
@@ -41,7 +41,7 @@ class AnimatedDialogState extends State<AnimatedDialog>
       color: Colors.black.withOpacity(opacityAnimation.value),
       child: Center(
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5,sigmaY:5),
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: FadeTransition(
             opacity: scaleAnimation,
             child: ScaleTransition(

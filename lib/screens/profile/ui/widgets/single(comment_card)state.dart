@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,25 +7,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
-import 'package:readmore/readmore.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:readmore/readmore.dart';
 import 'package:socialmedia/common_widgets/like_animation_widget/like_animation_widget.dart';
+
 import '../../bloc/comment_bloc/comment_bloc.dart';
 
 class SingleCommentCardItemState extends StatefulWidget {
   final int index;
   final QuerySnapshot commentdata;
   final String postId;
-  const SingleCommentCardItemState({super.key, required this.index, required this.commentdata, required this.postId});
+
+  const SingleCommentCardItemState(
+      {super.key,
+      required this.index,
+      required this.commentdata,
+      required this.postId});
 
   @override
-  State<SingleCommentCardItemState> createState() => _SingleCommentCardItemStateState();
+  State<SingleCommentCardItemState> createState() =>
+      _SingleCommentCardItemStateState();
 }
 
-class _SingleCommentCardItemStateState extends State<SingleCommentCardItemState> {
+class _SingleCommentCardItemStateState
+    extends State<SingleCommentCardItemState> {
   bool isHeartAnimating = false;
-  late bool isLiked ;
+  late bool isLiked;
 
   @override
   void initState() {
@@ -32,9 +40,10 @@ class _SingleCommentCardItemStateState extends State<SingleCommentCardItemState>
         .contains(FirebaseAuth.instance.currentUser!.uid);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-      return CupertinoContextMenu.builder(
+    return CupertinoContextMenu.builder(
       builder: (context, animation) => GestureDetector(
         onDoubleTap: () {
           log("double tap detected on a comment");
@@ -45,7 +54,8 @@ class _SingleCommentCardItemStateState extends State<SingleCommentCardItemState>
           });
           BlocProvider.of<CommentBloc>(context).add(
               PostCardCommentSectionDoubleTapLikedAnimOnCommentEvent(
-                  widget.postId, widget.commentdata.docs[widget.index]['commentid']));
+                  widget.postId,
+                  widget.commentdata.docs[widget.index]['commentid']));
         },
         child: FittedBox(
           fit: BoxFit.scaleDown,
@@ -68,38 +78,49 @@ class _SingleCommentCardItemStateState extends State<SingleCommentCardItemState>
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          widget.commentdata.docs[widget.index]['profileurl'].toString() != ""
+                          widget.commentdata.docs[widget.index]['profileurl'] !=
+                                  ""
                               ? Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.commentdata.docs[widget.index]['profileurl']
-                                  .toString(),
-                              imageBuilder: (context, imageProvider) =>
-                                  CircleAvatar(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: CachedNetworkImage(
+                                    imageUrl: widget.commentdata
+                                        .docs[widget.index]['profileurl']
+                                        .toString(),
+                                    placeholder: (context, url) => CircleAvatar(
+                                      radius: 18.1,
+                                      backgroundColor: Colors.white,
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            Colors.black.withOpacity(0.8),
+                                        radius: 20,
+                                      ),
+                                    ),
+                                    imageBuilder: (context, imageProvider) =>
+                                        CircleAvatar(
+                                      radius: 18.1,
+                                      backgroundColor: Colors.white,
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage: imageProvider,
+                                        radius: 20,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: CircleAvatar(
                                     radius: 18.1,
                                     backgroundColor: Colors.white,
                                     child: CircleAvatar(
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: imageProvider,
+                                      backgroundColor:
+                                          Colors.black.withOpacity(0.8),
                                       radius: 20,
+                                      child: Icon(Icons.person,
+                                          color: Colors.black.withOpacity(0.5)),
                                     ),
                                   ),
-                            ),
-                          )
-                              : Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: CircleAvatar(
-                              radius: 18.1,
-                              backgroundColor: Colors.white,
-                              child: CircleAvatar(
-                                backgroundColor:
-                                Colors.black.withOpacity(0.8),
-                                radius: 20,
-                                child: Icon(Icons.person,
-                                    color: Colors.black.withOpacity(0.5)),
-                              ),
-                            ),
-                          ),
+                                ),
                           const SizedBox(
                             width: 20,
                           ),
@@ -110,27 +131,35 @@ class _SingleCommentCardItemStateState extends State<SingleCommentCardItemState>
                                 Row(
                                   children: [
                                     Text(
-                                    widget.commentdata.docs[widget.index]['username'].toString(),
-                                    style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
+                                      widget.commentdata
+                                          .docs[widget.index]['username']
+                                          .toString(),
+                                      style: TextStyle(
+                                        fontSize: 11.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ), Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 0.0, horizontal: 8),
                                       child: Text(
-                                       Jiffy.parse(
-                                           widget.commentdata.docs[widget.index]['uploadtime']).fromNow(),
-                                          style: TextStyle(color: Colors.white60,fontSize: 8.8.sp)),
+                                          Jiffy.parse(widget.commentdata
+                                                      .docs[widget.index]
+                                                  ['uploadtime'])
+                                              .fromNow(),
+                                          style: TextStyle(
+                                              color: Colors.white60,
+                                              fontSize: 8.8.sp)),
                                     ),
                                   ],
                                 ),
-
                                 const SizedBox(
                                   height: 4,
                                 ),
                                 ReadMoreText(
-                                  widget.commentdata.docs[widget.index]['text'].toString(),
+                                  widget.commentdata.docs[widget.index]['text']
+                                      .toString(),
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     color: Colors.white,
@@ -175,7 +204,9 @@ class _SingleCommentCardItemStateState extends State<SingleCommentCardItemState>
                                       BlocProvider.of<CommentBloc>(context).add(
                                           PostCardCommentSectionOnPressedLikedAnimOnCommentEvent(
                                               widget.postId,
-                                              widget.commentdata.docs[widget.index]['commentid']));
+                                              widget.commentdata
+                                                      .docs[widget.index]
+                                                  ['commentid']));
                                       setState(() {
                                         if (!isLiked) {
                                           isHeartAnimating = true;
@@ -187,14 +218,24 @@ class _SingleCommentCardItemStateState extends State<SingleCommentCardItemState>
                                       isLiked
                                           ? CupertinoIcons.heart_fill
                                           : CupertinoIcons.heart,
-                                      color: isLiked ? Colors.red : Colors.white54,
+                                      color:
+                                          isLiked ? Colors.red : Colors.white54,
                                       size: 18,
                                     ),
                                   ),
                                 ),
                               ),
-                              widget.commentdata.docs[widget.index]['totallikes'] > 0 ?
-                              Text("${widget.commentdata.docs[widget.index]['totallikes']}",style: const TextStyle(fontSize: 10,fontWeight: FontWeight.bold,  color: Colors.white54),) : const SizedBox.shrink(),
+                              widget.commentdata.docs[widget.index]
+                                          ['totallikes'] >
+                                      0
+                                  ? Text(
+                                      "${widget.commentdata.docs[widget.index]['totallikes']}",
+                                      style: const TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white54),
+                                    )
+                                  : const SizedBox.shrink(),
                             ],
                           )
                         ],
@@ -224,10 +265,11 @@ class _SingleCommentCardItemStateState extends State<SingleCommentCardItemState>
           trailingIcon: CupertinoIcons.delete,
           isDestructiveAction: true,
           onPressed: () async {
-          /*  log("------------------>${snapshot.docs[index]['commentid'].toString()}");*/
+            /*  log("------------------>${snapshot.docs[index]['commentid'].toString()}");*/
             Navigator.pop(context);
             BlocProvider.of<CommentBloc>(context).add(DeleteCommentsOfUserPost(
-                widget.commentdata.docs[widget.index]['commentid'].toString(), widget.postId));
+                widget.commentdata.docs[widget.index]['commentid'].toString(),
+                widget.postId));
             // await Future.delayed(const Duration (milliseconds:250));
           },
           child: const Text("Delete"),
