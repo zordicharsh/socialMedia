@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,9 +120,9 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               videoPlayerController!.dispose();
             }
           } else {
-            return Center(child: Text("Select Photo"));
+            return const Center(child: Text("Select Photo"));
           }
-          return SizedBox();
+          return const SizedBox();
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -135,7 +134,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             BlocBuilder<UserpostBloc, UserPostStates>(
               builder: (context, state) {
                 if (state is LoadingComeState) {
-                  return SizedBox();
+                  return const SizedBox();
                 } else {
                   return IconButton(
                     onPressed: () {
@@ -172,7 +171,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     child: const Text('Post'),
                   );
                 } else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
               },
             )

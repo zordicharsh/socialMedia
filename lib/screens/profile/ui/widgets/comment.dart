@@ -60,7 +60,7 @@ class _CommentSectionState extends State<CommentSection> {
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         physics: const NeverScrollableScrollPhysics(),
-        child: Stack(children: [
+        child: Stack( children: [
           Column(
             children: [
               Visibility(
