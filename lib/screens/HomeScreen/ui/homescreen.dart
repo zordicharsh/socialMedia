@@ -9,7 +9,6 @@ import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/home_side_bar.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/video_details.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/video_tile.dart';
-import 'package:video_player/video_player.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -36,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
         followingList = snapshot.data()!['following'];
       });
     } catch (error) {
-      print("Error fetching following list: $error");
+      log("Error fetching following list: $error");
     }
   }
 
@@ -50,9 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           children: [
             const Text('SocialRizz'),
-            PopupMenuButton( icon: Icon(Icons.arrow_drop_down),color: Colors.black,surfaceTintColor: Colors.black54,itemBuilder: (context) =>[
-              PopupMenuItem(child: Text("Posts"),value: "post",),
-              PopupMenuItem(child: Text("Videos"),value: "video",),
+            PopupMenuButton( icon: const Icon(Icons.arrow_drop_down),color: Colors.black,surfaceTintColor: Colors.black54,itemBuilder: (context) =>[
+              const PopupMenuItem(value: "post",child: Text("Posts"),),
+              const PopupMenuItem(value: "video",child: Text("Videos"),),
             ],onSelected: (newValue){
               setState(() {
                 value = newValue;
@@ -62,8 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         surfaceTintColor: Colors.black,
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.notifications)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.messenger_outlined))
+          IconButton(onPressed: (){}, icon: const Icon(Icons.notifications)),
+          IconButton(onPressed: (){}, icon: const Icon(Icons.messenger_outlined))
         ],
       ),
       body:Builder(builder: (context) {
@@ -77,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   stream: FirebaseFirestore.instance.collection("UserPost").where('uid',whereIn: followingList).where('type',isEqualTo: "image").orderBy("uploadtime",descending: true).snapshots(),
                   builder: (context, snapshot) {
                     if(snapshot.connectionState == ConnectionState.waiting){
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                     if(snapshot.hasData){
                       return ListView.builder(
@@ -103,14 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ? NetworkImage(snapshot.data!.docs[index].data()["profileurl"])
                                             : null, // If profile URL is null, set backgroundImage to null
                                         child: snapshot.data!.docs[index].data()["profileurl"] == ""
-                                            ? Icon(Icons.account_circle,size: 36,) // Show an icon if profile URL is null
+                                            ? const Icon(Icons.account_circle,size: 36,) // Show an icon if profile URL is null
                                             : null, // If profile URL is not null, don't show any child
                                       ),
 
                                       const SizedBox(width: 8),
                                       Text(
                                         snapshot.data!.docs[index].data()["username"], // Replace with actual username
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -118,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       const SizedBox(width: 16),
                                       Text(
                                         formattedTime,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,
                                         ),
@@ -236,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 Builder(builder: (context) {
                                   if(snapshot.data!.docs[index].data()["caption"] == ""){
-                                    return SizedBox();
+                                    return const SizedBox();
                                   }else{
                                     return Padding(
                                       padding: const EdgeInsets.fromLTRB(8.0,0,0,0),
@@ -244,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         children: [
                                           Text(
                                             snapshot.data!.docs[index].data()["caption"], // Replace with actual caption
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -297,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             );
                           }else{
-                            return SizedBox();
+                            return const SizedBox();
                           }
 
 
@@ -346,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Expanded(
                               flex: 3,
-                              child: Container(
+                              child: SizedBox(
                                 height: MediaQuery.of(context).size.height / 4,
                                 child: VideoDetails(
                                   username: filteredList[index]['username'],
@@ -356,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Expanded(
-                              child: Container(
+                              child: SizedBox(
                                 height: MediaQuery.of(context).size.height / 1.75,
                                 child: HomeSideBar(
                                   likes: filteredList[index]['likes'],
