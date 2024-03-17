@@ -37,20 +37,9 @@ class _VideoPageState extends State<VideoPage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              GestureDetector(onTap: (){
-                setState(() {
-                  IsFollowingSelected = true;
-                });
-              },child: Text("Following",style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: IsFollowingSelected ?18:14,color: IsFollowingSelected?Colors.white:Colors.grey),)),
-              Text(" | ",style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 18,color: Colors.grey)),
-              GestureDetector(onTap: (){
-                setState(() {
-                  IsFollowingSelected = false;
-                });
-              },child: Text("For you",style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: IsFollowingSelected ?14:18,color: IsFollowingSelected?Colors.grey:Colors.white))),
+              Text("For you",style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: IsFollowingSelected ?14:18,color: IsFollowingSelected?Colors.grey:Colors.white)),
             ],
           ),
           leading: null,
@@ -58,8 +47,9 @@ class _VideoPageState extends State<VideoPage> {
         body:StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection("UserPost")
-              .where('type', isEqualTo: "video")
               .where('acctype', isEqualTo: "public")
+              .where('uid', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
+              .where('type', isEqualTo: "video")
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
