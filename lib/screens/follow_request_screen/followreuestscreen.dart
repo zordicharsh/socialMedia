@@ -1,5 +1,6 @@
 // screenn
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,7 +41,11 @@ class _RequestState extends State<Request> {
             .doc(UID)
             .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasData) {
             List follower = snapshot.data!.get('followrequestnotification');
             if (follower.isNotEmpty) {
               return StreamBuilder(
@@ -49,18 +54,33 @@ class _RequestState extends State<Request> {
                     .where("uid", whereIn: follower)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasData) {
                     return ListView.builder(
                       itemCount: snapshot.data!.size,
                       itemBuilder: (context, index) {
                         var FollowUserUid = snapshot.data!.docs[index]['uid'];
                         var imagess = snapshot.data!.docs[index]['profileurl'];
                         return ListTile(
-                          leading: CircleAvatar(
-                              radius: 20,
-                              backgroundImage: imagess != null
-                                  ? NetworkImage(imagess)
-                                  : null),
+                          leading: imagess != ""
+                              ? CachedNetworkImage(
+                                  imageUrl: imagess,
+                                  placeholder: (context, url) => CircleAvatar(
+                                    backgroundColor: Colors.grey.withOpacity(0.3),
+                                    radius: 20.sp,
+                                  ),
+                                  imageBuilder: (context, imageProvider) =>
+                                      CircleAvatar(
+                                          radius: 20.sp,
+                                          backgroundImage: imageProvider),
+                                )
+                              : CircleAvatar(
+                                  backgroundColor: Colors.grey.withOpacity(0.3),
+                                  radius: 20.sp,
+                                ),
                           title: Text(
                             "${snapshot.data!.docs[index]['username']} requested to follow you",
                             style: const TextStyle(fontSize: 15),

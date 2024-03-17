@@ -8,44 +8,62 @@ import 'package:socialmedia/screens/Drawer/drawer_bloc.dart';
 import 'package:socialmedia/screens/Drawer/drawer_event.dart';
 import 'package:socialmedia/screens/Drawer/drawer_state.dart';
 import '../login/loginui.dart';
+
 class MyDrawer extends StatefulWidget {
-  var Url ;
-  var Name ;
+  var Url;
+  var Name;
   var date;
-  MyDrawer(this.Url,this.Name,this.date);
+  MyDrawer(this.Url, this.Name, this.date);
   @override
   State<MyDrawer> createState() => _MyDrawerState();
 }
+
 class _MyDrawerState extends State<MyDrawer> {
   @override
   bool vvv = false;
   Widget build(BuildContext context) {
     return Drawer(
-      width:220.sp,
+      width: 220.sp,
       child: Container(
-        color:const Color(0xff212121),
+        color: const Color(0xff212121),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-             DrawerHeader(
-               curve: Curves.easeInOut,
+            DrawerHeader(
+              curve: Curves.easeInOut,
               decoration: const BoxDecoration(
                 color: Color(0xff212121),
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
-                    backgroundImage:widget.Url != null
-                        ? CachedNetworkImageProvider(widget.Url)
-                        : null,
-                    backgroundColor:Colors.grey.withOpacity(0.4),
-                    radius: 36.sp,
+                  widget.Url != ""
+                      ? CachedNetworkImage(
+                          imageUrl: widget.Url,
+                          placeholder: (context, url) => CircleAvatar(
+                            backgroundColor: Colors.grey.withOpacity(0.3),
+                            radius: 36.sp,
+                          ),
+                          imageBuilder: (context, imageProvider) =>
+                              CircleAvatar(
+                                  radius: 36.sp,
+                                  backgroundImage: imageProvider),
+                        )
+                      : CircleAvatar(
+                          backgroundColor: Colors.grey.withOpacity(0.3),
+                          radius: 36.sp,
+                        ),
+                  SizedBox(
+                    height: 6.sp,
                   ),
-                 SizedBox(height:6.sp,),
-                 Text(widget.Name,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14.sp),),
+                  Text(
+                    widget.Name,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                  ),
                   Text(
                     "Join Date: ${widget.date}",
-                    style:  TextStyle(fontWeight: FontWeight.w200,fontSize: 12.sp ),
+                    style:
+                        TextStyle(fontWeight: FontWeight.w200, fontSize: 12.sp),
                   ),
                 ],
               ),
@@ -59,7 +77,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     return SizedBox(
                       height: 37,
                       child: LiteRollingSwitch(
-                        width:90,
+                        width: 90,
                         textOn: 'ON',
                         textOff: 'OFF',
                         colorOn: Colors.black,
@@ -67,17 +85,16 @@ class _MyDrawerState extends State<MyDrawer> {
                         textOnColor: Colors.white,
                         textOffColor: Colors.white,
                         iconOn: Icons.lock,
-                        iconOff:Icons.lock_open,
+                        iconOff: Icons.lock_open,
                         value: state.CheckState,
-                        animationDuration: const Duration(milliseconds:60),
+                        animationDuration: const Duration(milliseconds: 60),
                         onChanged: (value) {
-                          BlocProvider.of<DrawerBloc>(context).add(PublicPrivateTrueEvent(true));
+                          BlocProvider.of<DrawerBloc>(context)
+                              .add(PublicPrivateTrueEvent(true));
                         },
-                        onTap: (){},
-                        onDoubleTap: (){},
-                        onSwipe: (){},
-
-
+                        onTap: () {},
+                        onDoubleTap: () {},
+                        onSwipe: () {},
                       ),
                     );
                   } else if (state is PublicPrivateFaleState) {
@@ -85,7 +102,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     return SizedBox(
                       height: 37,
                       child: LiteRollingSwitch(
-                        width:90,
+                        width: 90,
                         textOn: 'ON',
                         textOff: 'OFF',
                         textOnColor: Colors.white,
@@ -94,14 +111,15 @@ class _MyDrawerState extends State<MyDrawer> {
                         colorOff: Colors.black,
                         value: state.CheckState,
                         iconOn: Icons.lock,
-                        iconOff:Icons.lock_open,
+                        iconOff: Icons.lock_open,
                         animationDuration: const Duration(milliseconds: 60),
                         onChanged: (value) {
-                          BlocProvider.of<DrawerBloc>(context).add(PublicPrivateTrueEvent(false));
+                          BlocProvider.of<DrawerBloc>(context)
+                              .add(PublicPrivateTrueEvent(false));
                         },
-                        onTap: (){},
-                        onDoubleTap: (){},
-                        onSwipe: (){},
+                        onTap: () {},
+                        onDoubleTap: () {},
+                        onSwipe: () {},
                       ),
                     );
                   } else {
@@ -109,24 +127,24 @@ class _MyDrawerState extends State<MyDrawer> {
                     return SizedBox(
                       height: 37,
                       child: LiteRollingSwitch(
-                        width:90,
+                        width: 90,
                         value: false,
-                          textOn: 'ON',
-                          textOff: 'OFF',
+                        textOn: 'ON',
+                        textOff: 'OFF',
                         textOnColor: Colors.white,
                         textOffColor: Colors.white,
                         colorOn: Colors.black,
                         colorOff: Colors.black,
                         iconOn: Icons.lock,
-                        iconOff:Icons.lock_open,
+                        iconOff: Icons.lock_open,
                         animationDuration: const Duration(milliseconds: 60),
                         onChanged: (value) {
                           BlocProvider.of<DrawerBloc>(context)
                               .add(PublicPrivateTrueEvent(false));
                         },
-                        onTap: (){}, onDoubleTap: (){}, onSwipe: (){},
-
-
+                        onTap: () {},
+                        onDoubleTap: () {},
+                        onSwipe: () {},
                       ),
                     );
                   }
@@ -135,11 +153,11 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             ListTile(
               title: const Text('Sign Out'),
-                trailing: const Icon(Icons.exit_to_app),
+              trailing: const Icon(Icons.exit_to_app),
               onTap: () {
                 BlocProvider.of<DrawerBloc>(context).add(SignOutEvent());
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => const LoginUi()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const LoginUi()));
               },
             ),
           ],
