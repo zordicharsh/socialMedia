@@ -66,7 +66,6 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                           final upuid = postData['uid'];
                           final noofcomments = postData['totalcomments'];
                           //this is main post
-
                           // Check if the current post matches the provided postuid
                           if (postID == widget.postuid) {
                             final islike = likes.contains(

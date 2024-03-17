@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmedia/screens/HomeScreen/ui/homescreen.dart';
 import 'package:socialmedia/screens/explorescreen/ui/explorescreen.dart';
 import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';
@@ -67,7 +68,7 @@ List<BottomNavigationBarItem> bottomNavItems = <BottomNavigationBarItem>[
 ];
 
 const List<Widget> bottomNavScreen = <Widget>[
-  Text('Index 0: Home'),
+  HomeScreen(),
   AllUserPosts(),
   ImageUploadScreen(),
   VideoPage(),
