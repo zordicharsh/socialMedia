@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'drawer_event.dart';
 import 'drawer_state.dart';
 
@@ -65,6 +66,7 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       SignOutEvent event, Emitter<DrawerState> emit) async {
     var auth = FirebaseAuth.instance;
     await auth.signOut();
+    ZegoUIKitPrebuiltCallInvitationService().uninit();
     emit(SignOutState());
   }
 

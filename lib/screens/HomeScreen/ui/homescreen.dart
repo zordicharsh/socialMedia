@@ -6,9 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
+import 'package:socialmedia/screens/videocalling/alluserslist.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/home_side_bar.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/video_details.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/video_tile.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,6 +25,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    ZegoUIKitPrebuiltCallInvitationService().init(
+      appID: 2126705599,
+      appSign: "707fa44ab5eaa519d60ebdb6a995d847c17108c877450576574c618ba3b680e2",
+      userID: FirebaseAuth.instance.currentUser!.uid,
+      userName: FirebaseAuth.instance.currentUser!.email.toString(),
+      plugins: [ZegoUIKitSignalingPlugin()],
+    );
     getFollowingList();
   }
   void getFollowingList() async {
@@ -38,7 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
       log("Error fetching following list: $error");
     }
   }
-
   String value= "post";
   int _snappedPageIndex=0;
   @override
@@ -62,7 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
           surfaceTintColor: Colors.black,
           actions: [
             IconButton(onPressed: (){}, icon: const Icon(Icons.notifications)),
-            IconButton(onPressed: (){}, icon: const Icon(Icons.messenger_outlined))
+            IconButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AllUsersList(),));
+            }, icon: const Icon(Icons.messenger_outlined))
           ],
         ),
         body:Builder(builder: (context) {
