@@ -36,8 +36,10 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text('Image Upload'),
+        backgroundColor: Colors.black,
       ),
       body: BlocBuilder<UserpostBloc, UserPostStates>(
         builder: (context, state) {

@@ -115,9 +115,11 @@ class _AllUserPostsState extends State<AllUserPosts> {
   Widget build(BuildContext context) {
     List<DocumentSnapshot> sufflist = [];
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
           title: const Text("RizzExplore", style: TextStyle(color: Colors.red)),
           surfaceTintColor: Colors.black,
+          backgroundColor: Colors.black,
           actions: [
             IconButton(
               onPressed: () {

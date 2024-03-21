@@ -32,6 +32,7 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
   Widget build(BuildContext context) {
     print(widget.postuid);
     return Scaffold(
+
         backgroundColor: Colors.black,
         appBar: AppBar(
           title: const Text("Explore"),

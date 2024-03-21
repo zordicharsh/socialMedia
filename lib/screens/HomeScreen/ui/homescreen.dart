@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
+import 'package:socialmedia/screens/follow_request_screen/followreuestscreen.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
 import 'package:socialmedia/screens/videocalling/alluserslist.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/home_side_bar.dart';
@@ -25,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    getFollowingList();
     ZegoUIKitPrebuiltCallInvitationService().init(
       appID: 2126705599,
       appSign: "707fa44ab5eaa519d60ebdb6a995d847c17108c877450576574c618ba3b680e2",
@@ -32,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
       userName: FirebaseAuth.instance.currentUser!.email.toString(),
       plugins: [ZegoUIKitSignalingPlugin()],
     );
-    getFollowingList();
   }
   void getFollowingList() async {
     try {
@@ -52,7 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int _snappedPageIndex=0;
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+      backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           title: Row(
@@ -70,7 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           surfaceTintColor: Colors.black,
           actions: [
-            IconButton(onPressed: (){}, icon: const Icon(Icons.notifications)),
+            IconButton(onPressed: (){
+              Navigator.push(
+                  context,
+                  CustomPageRouteRightToLeft(
+                    child: const Request(),
+                  ));
+            }, icon: const Icon(Icons.notifications)),
             IconButton(onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => AllUsersList(),));
             }, icon: const Icon(Icons.messenger_outlined))
@@ -79,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body:Builder(builder: (context) {
           if(value == "post"){
             if(followingList.isEmpty){
-              return const Center(child: Text("data"));
+              return const Center(child: Text("you are not following anyone"));
             }else{
               return RefreshIndicator(
                 onRefresh: _onrefresh,
@@ -323,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           }else {
             if (followingList.isEmpty) {
-              return const Center(child: Text("data"));
+              return const Center(child: Text("you are not following anyone"));
             }else{
               return StreamBuilder(
                 stream: FirebaseFirestore.instance.collection("UserPost").where(
@@ -333,13 +343,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     List<DocumentSnapshot> filteredList = [];
-                    List<DocumentSnapshot> otherVideos = [];
+
                     snapshot.data!.docs.forEach((doc) {
                       filteredList.add(doc);
-                      otherVideos.add(doc);
                     });
                     // Concatenate the filtered list with other videos
-                    filteredList.addAll(otherVideos);
                     return PageView.builder(
                       onPageChanged: (int page) {
                         setState(() {
