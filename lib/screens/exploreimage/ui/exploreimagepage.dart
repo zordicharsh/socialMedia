@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -73,7 +74,6 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                 FirebaseAuth.instance.currentUser!.uid);
                             print(islike.toString());
                             Widget mainPostWidget = Container(
-                              padding: const EdgeInsets.all(10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -84,7 +84,6 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                       backgroundImage: NetworkImage(profileUrl),
                                     ),
                                     title: Text(username),
-                                    trailing: const Icon(Icons.more_vert_sharp),
                                   ),
                                   // Post image or video
                                   postType == "image"
@@ -99,8 +98,6 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                           onScaleStart: () {},
                                           onScaleStop: () {},
                                           child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
                                             child: CachedNetworkImage(
                                               imageUrl: postUrl,
                                               width: double.infinity,
@@ -175,21 +172,15 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                           // Implement comment functionality
                                         },
                                         icon: const Icon(
-                                            Icons.chat_bubble_outline_outlined),
+                                            CupertinoIcons.chat_bubble),
                                       ),
                                       IconButton(
                                         onPressed: () {
                                           // Implement share functionality
                                         },
-                                        icon: const Icon(Icons.send),
+                                        icon: const Icon( CupertinoIcons.paperplane),
                                       ),
                                       const Spacer(),
-                                      IconButton(
-                                        onPressed: () {
-                                          // Implement save functionality
-                                        },
-                                        icon: const Icon(Icons.bookmark_border),
-                                      ),
                                     ],
                                   ),
                                   // Display the number of likes
@@ -287,7 +278,6 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                             final islike = likes.contains(
                                 FirebaseAuth.instance.currentUser!.uid);
                             Widget mainPostWidget = Container(
-                              padding: const EdgeInsets.all(10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -298,7 +288,6 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                       backgroundImage: NetworkImage(profileUrl),
                                     ),
                                     title: Text(username),
-                                    trailing: const Icon(Icons.more_vert_sharp),
                                   ),
                                   // Post image or video
                                   postType == "image"
@@ -313,8 +302,6 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                           onScaleStart: () {},
                                           onScaleStop: () {},
                                           child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
                                             child: CachedNetworkImage(
                                               imageUrl: postUrl,
                                               width: double.infinity,
@@ -390,21 +377,15 @@ class _ExplorePageImageState extends State<ExplorePageImage> {
                                           );
                                         },
                                         icon: const Icon(
-                                            Icons.chat_bubble_outline_outlined),
+                                            CupertinoIcons.chat_bubble),
                                       ),
                                       IconButton(
                                         onPressed: () {
                                           // Implement share functionality
                                         },
-                                        icon: const Icon(Icons.send),
+                                        icon: const Icon(CupertinoIcons.paperplane),
                                       ),
                                       const Spacer(),
-                                      IconButton(
-                                        onPressed: () {
-                                          // Implement save functionality
-                                        },
-                                        icon: const Icon(Icons.bookmark_border),
-                                      ),
                                     ],
                                   ),
                                   // const SizedBox(height: 8),

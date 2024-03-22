@@ -97,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  badges:
+    dependency: "direct main"
+    description:
+      name: badges
+      sha256: "727580d938b7a1ff47ea42df730d581415606b4224cfa708671c10287f8d3fe6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   bloc:
     dependency: "direct main"
     description:
@@ -1014,7 +1022,7 @@ packages:
     source: hosted
     version: "2.2.0"
   rxdart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: rxdart
       sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
