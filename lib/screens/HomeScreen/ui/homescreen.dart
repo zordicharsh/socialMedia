@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:socialmedia/chat_screen/chat_user_lists/chatlist.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/follow_request_screen/followreuestscreen.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
@@ -82,7 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ));
             }, icon: const Icon(Icons.notifications)),
             IconButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AllUsersList(),));
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => AllUsersList(),));
+              Navigator.push(context,MaterialPageRoute(builder: (context) => ChatLists(),));
             }, icon: const Icon(Icons.messenger_outlined))
           ],
         ),
