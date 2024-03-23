@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
+import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
@@ -358,7 +359,9 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
               children: [
                 IconButton(
                   highlightColor: Colors.transparent,
-                  onPressed: () {},
+                  onPressed: () {
+                  BlocProvider.of<ProfileBloc>(context).add(DeletePostEvent(widget.postdata.docs[widget.index]['postid'],));
+                  },
                   icon: const Icon(
                     CupertinoIcons.bookmark,
                     size: 24,

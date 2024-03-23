@@ -10,6 +10,7 @@ import 'package:socialmedia/global_Bloc/global_bloc.dart';
 import 'package:socialmedia/screens/Drawer/drawer.dart';
 import 'package:socialmedia/screens/Drawer/drawer_bloc.dart';
 import 'package:socialmedia/screens/Drawer/drawer_event.dart';
+import 'package:socialmedia/screens/FollowingsAndFollowers/Followers.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/reels_tab.dart';
@@ -42,6 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String? profileImageUrl;
   String? name;
   String? joindate;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -69,9 +71,8 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.white,
             ),
             onPressed: () async {
-              BlocProvider.of<DrawerBloc>(context)
-                  .add(FirstCheckAccTypeEvent());
-              await Future.delayed(Duration(milliseconds: 200), () {
+              BlocProvider.of<DrawerBloc>(context).add(FirstCheckAccTypeEvent());
+              await Future.delayed(const Duration(milliseconds: 200), () {
                 _scaffoldKey.currentState?.openEndDrawer();
               });
             },
@@ -94,6 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
               name = userdata[0].Name;
               joindate = DateFormat('dd-MMM-yyyy').format(
                   DateTime.parse(userdata[0].datetime.toDate().toString()));
+
               return Text(
                 userdata[0].Username,
                 style: const TextStyle(

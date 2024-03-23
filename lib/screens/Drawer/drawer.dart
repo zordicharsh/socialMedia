@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ class MyDrawer extends StatefulWidget {
   var Url;
   var Name;
   var date;
+
   MyDrawer(this.Url, this.Name, this.date);
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -21,6 +23,8 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   @override
   bool vvv = false;
+  TextEditingController Delete = TextEditingController();
+
   Widget build(BuildContext context) {
     return Drawer(
       width: 220.sp,
@@ -69,7 +73,7 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
             ),
             ListTile(
-              title: Text("Private"),
+              title: const Text("Private"),
               trailing: BlocBuilder<DrawerBloc, DrawerState>(
                 builder: (context, state) {
                   if (state is PublicPrivateTrueState) {
@@ -155,9 +159,14 @@ class _MyDrawerState extends State<MyDrawer> {
               title: const Text('Sign Out'),
               trailing: const Icon(Icons.exit_to_app),
               onTap: () {
-                BlocProvider.of<DrawerBloc>(context).add(SignOutEvent());
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const LoginUi()));
+                showOptionsDialog2(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Delete'),
+              trailing: const Icon(Icons.delete),
+              onTap: () {
+              showOptionsDialog(context);
               },
             ),
           ],
@@ -165,4 +174,112 @@ class _MyDrawerState extends State<MyDrawer> {
       ),
     );
   }
+
+
+  void showOptionsDialog(BuildContext context) async {
+    final deletekey = GlobalKey<FormState>();
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('To Delete Account Write Delete', style: TextStyle(fontSize: 16)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Form(
+                  key: deletekey,
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value == null) {
+                        return "Write Delete";
+                      } else if (value != 'Delete') {
+                        return "Write Delete";
+                      }
+                      return null;
+                    },
+                    controller: Delete,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.sp),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10.sp, horizontal: 12.sp), // Adjust the padding to make it smaller
+                    ),
+                  ),
+
+
+                ),
+                SizedBox(height: 24.sp,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (deletekey.currentState!.validate()) {
+                         BlocProvider.of<DrawerBloc>(context).add(DeleteAccountEvent());
+                           await  FirebaseAuth.instance.currentUser?.delete();
+                           Navigator.pop(context);
+                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginUi()));
+
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        minimumSize: Size(60.sp, 40.sp),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                      ),
+                      child: const Text("Delete", style: TextStyle(color: Colors.white),),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(60.sp, 40.sp),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),// Set button size
+                      ),
+                      child: const Text("Cancel"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  void showOptionsDialog2(BuildContext context) async {
+
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:  Text('Do you want Logout ?', style: TextStyle(fontSize:16.sp)),
+          content: SingleChildScrollView(
+            child: Row(
+              children: [
+              TextButton(onPressed: () {
+                 BlocProvider.of<DrawerBloc>(context).add(SignOutEvent());
+                 Navigator.pop(context);
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const LoginUi()));
+              }, child: Text("Yes",style: TextStyle(color: Colors.white,fontSize:16.sp),)),
+                SizedBox(width: 12.sp,),
+                TextButton(onPressed: () {
+                  Navigator.of(context).pop();
+                }, child:Text("No",style: TextStyle(color: Colors.white,fontSize:16.sp),))
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
 }

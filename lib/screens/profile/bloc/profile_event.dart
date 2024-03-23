@@ -22,6 +22,11 @@ class SignOutEvent extends ProfileEvent {}
 
 class ProfilePageOnRefreshEvent extends ProfileEvent {}
 
+class DeletePostEvent extends ProfileEvent{
+  String PostUid;
+
+  DeletePostEvent(this.PostUid);
+}
 /*
 class ProfilePagePopUpDialogLikedOnPostEvent extends ProfileEvent {
    bool isHeartAnimating;
