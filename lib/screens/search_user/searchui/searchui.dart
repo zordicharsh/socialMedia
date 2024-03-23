@@ -1,12 +1,13 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:socialmedia/screens/profile/ui/profile.dart';
+import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_bloc.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_event.dart';
 import 'package:socialmedia/screens/search_user/searchbloc/search_state.dart';
+import 'package:socialmedia/screens/search_user/searchui/searched_profile/anotherprofile.dart';
+import 'package:video_player/video_player.dart';
 
 class SearchUser extends StatefulWidget {
   const SearchUser({Key? key}) : super(key: key);
@@ -17,6 +18,24 @@ class SearchUser extends StatefulWidget {
 
 class _SearchUserState extends State<SearchUser> {
   TextEditingController search = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    search.dispose();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<SearchBloc>(context).add(SearchUsersIntialEvent());
+  }
+
+  VideoPlayerController? controller;
+  bool islike = false;
+  bool? ispopupremoved;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +51,10 @@ class _SearchUserState extends State<SearchUser> {
                 children: [
                   IconButton(
                     onPressed: () {
-
+                      BlocProvider.of<SearchBloc>(context)
+                          .add(SearchUsersIntialEvent());
+                      search.clear();
+                      Navigator.pop(context);
                     },
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
                   ),
@@ -41,6 +63,7 @@ class _SearchUserState extends State<SearchUser> {
                       height: 38,
                       child: TextField(
                         controller: search,
+                        onTap: () {},
                         onChanged: (value) {
                           if (value.isEmpty) {
                             search.clear();
@@ -62,7 +85,8 @@ class _SearchUserState extends State<SearchUser> {
                           filled: true,
                           fillColor: const Color.fromRGBO(90, 90, 90, 0.35),
                           labelStyle: const TextStyle(color: Colors.grey),
-                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                          prefixIcon:
+                              const Icon(Icons.search, color: Colors.grey),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: const BorderSide(color: Colors.grey),
@@ -70,12 +94,12 @@ class _SearchUserState extends State<SearchUser> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide:
-                            const BorderSide(color: Colors.transparent),
+                                const BorderSide(color: Colors.transparent),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide:
-                            const BorderSide(color: Colors.transparent),
+                                const BorderSide(color: Colors.transparent),
                           ),
                         ),
                       ),
@@ -89,45 +113,85 @@ class _SearchUserState extends State<SearchUser> {
               child: BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
                   if (state is EmittheUSers) {
-                    print("emmitingus");
-                    return ListView.builder(
-                      itemCount: state.users.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          onTap: () {
-                            if(FirebaseAuth.instance.currentUser!.uid == state.users[index].Uid.toString()){
-                              Navigator.push(context,  MaterialPageRoute(builder: (context) => ProfilePage(),));
-                            }
-                            else{
-                              print("anotherscreen");
-                            }
-                          },
-                          leading: CircleAvatar(
-                              maxRadius: 20,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: state.users[index].Profileurl != ""
-                                  ? NetworkImage(state.users[index].Profileurl.toString()) : NetworkImage("https://imgs.search.brave.com/S4Q092Ic9VDPZIPUc2EqH8Bvx0XVvLNErkxgHy8FpjA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9idWZm/ZXIuY29tL2xpYnJh/cnkvY29udGVudC9p/bWFnZXMvMjAyMi8w/My9hbWluYS5wbmc")
-                          ),
-                          title: Text(
-                            state.users[index].Username.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          subtitle: Text(
-                            state.users[index].Uid.toString(),
-                            style: const TextStyle(color: Colors.white70),
-                          ),
-                        );
-                      },
-                    );
+                    log("emmitingus");
+                    return StreamBuilder(
+                        stream: state.UserLists,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            log(snapshot.data!.docs[0]['username'].toString());
+                            return ListView.builder(
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  splashColor: Colors.transparent,
+                                  onTap: () async {
+                                    log("anotherscreen");
+                                    if (!context.mounted) return;
+                                    Navigator.push(
+                                        context,
+                                        CustomPageRouteRightToLeft(
+                                          child: AnotherUserProfile(
+                                            uid: snapshot
+                                                .data!.docs[index]['uid']
+                                                .toString(),
+                                            username: snapshot
+                                                .data!.docs[index]['username']
+                                                .toString(),
+                                          ),
+                                        ));
+                                  },
+                                  leading: CircleAvatar(
+                                    maxRadius: 20,
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage: snapshot.data!
+                                                    .docs[index]['profileurl']
+                                                    .toString() !=
+                                                "" &&
+                                            snapshot.data!.docs[index]
+                                                    ['profileurl'] !=
+                                                null
+                                        ? NetworkImage(snapshot
+                                            .data!.docs[index]['profileurl']
+                                            .toString())
+                                        : null,
+                                    // Set backgroundImage to null if URL is null or empty
+                                    child: snapshot.data!
+                                                    .docs[index]['profileurl']
+                                                    .toString() !=
+                                                "" &&
+                                            snapshot.data!.docs[index]
+                                                    ['profileurl'] !=
+                                                null
+                                        ? null
+                                        : const Icon(Icons.person,
+                                            size: 40, color: Colors.white),
+                                  ),
+                                  title: Text(
+                                    snapshot.data!.docs[index]['username']
+                                        .toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  subtitle: Text(
+                                    snapshot.data!.docs[index]['uid']
+                                        .toString(),
+                                    style:
+                                        const TextStyle(color: Colors.white70),
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            return const Text("data");
+                          }
+                        });
                   } else if (state is NouserAvailable) {
-                    print("nouseravailable");
+                    log("nouseravailable");
                     return const Center(
                       child: Text("no user found"),
                     );
                   } else {
-                    print("inint");
                     return const Center(
-                      child: Text("init state"),
+                      child: Text("init"),
                     );
                   }
                 },

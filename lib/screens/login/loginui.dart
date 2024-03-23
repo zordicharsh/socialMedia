@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_event.dart';
@@ -26,11 +25,10 @@ class LoginUiState extends State<LoginUi> {
   late OverlayEntry circularLoadingBar;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  var obscured = true;
 
   @override
   Widget build(BuildContext context) {
-    var obscured = true;
     double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
@@ -131,74 +129,194 @@ class LoginUiState extends State<LoginUi> {
                           height: deviceWidth * .14,
                           child: BlocBuilder<LoginBloc, LoginState>(
                             builder: (context, state) {
-                              return TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Enter Password";
-                                  }
-                                  return null;
-                                },
-                                controller: passwordController,
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    icon: BlocBuilder<LoginBloc, LoginState>(
-                                      builder: (context, state) {
-                                        if (state is VisibilityFalseState) {
-                                          obscured = state.Obsecure;
-                                          return const Icon(Icons.visibility);
-                                        } else {
-                                          obscured = false;
-                                          return const Icon(Icons.visibility_off);
+                              return BlocBuilder<LoginBloc, LoginState>(
+                                builder: (context, state) {
+                                  if(state is VisibilityTrueState)
+                                    {
+                                      return TextFormField(
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Enter Password";
+                                          }
+                                          return null;
+                                        },
+                                        controller: passwordController,
+                                        decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            icon: const Icon(Icons.visibility_off),
+                                            onPressed: () {
+                                              BlocProvider.of<LoginBloc>(context)
+                                                  .add(VisibilityButtonEvent(
+                                                  visibility: true));
+                                            },
+                                          ),
+                                          labelText: "Password",
+                                          labelStyle: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Colors.white60,
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                            borderSide: const BorderSide(
+                                              width: 2,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                            borderSide: const BorderSide(
+                                              color: Colors.white70,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          errorStyle: const TextStyle(
+                                            color: Colors
+                                                .red, // Customize the color of the error text
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                            borderSide: const BorderSide(
+                                              width: 2,
+                                              color: Colors
+                                                  .red, // Customize the color of the error border
+                                            ),
+                                          ),
+                                          focusedErrorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                            borderSide: const BorderSide(
+                                              width: 2,
+                                              color: Colors
+                                                  .red, // Customize the color of the focused error border
+                                            ),
+                                          ),
+                                        ),
+                                        obscureText:state.Obsecure,
+                                      );
+                                    }
+                                  else if( state is VisibilityFalseState){
+                                    return TextFormField(
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "Enter Password";
                                         }
-
+                                        return null;
                                       },
-                                    ),
-                                    onPressed: () {
-                                      BlocProvider.of<LoginBloc>(context).add(
-                                          VisibilityButtonEvent(
-                                              visibility: obscured));
-                                    },
-                                  ),
-                                  labelText: "Password",
-                                  labelStyle: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: Colors.white60,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(9),
-                                    borderSide: const BorderSide(
-                                      width: 2,
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(9),
-                                    borderSide: const BorderSide(
-                                      color: Colors.white70,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  errorStyle: const TextStyle(
-                                    color: Colors.red, // Customize the color of the error text
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(9),
-                                    borderSide: const BorderSide(
-                                      width: 2,
-                                      color: Colors
-                                          .red, // Customize the color of the error border
-                                    ),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(9),
-                                    borderSide: const BorderSide(
-                                      width: 2,
-                                      color: Colors
-                                          .red, // Customize the color of the focused error border
-                                    ),
-                                  ),
-                                ),
-                                obscureText: obscured,
+                                      controller: passwordController,
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                          icon: const Icon(Icons.visibility),
+                                          onPressed: () {
+                                            BlocProvider.of<LoginBloc>(context)
+                                                .add(VisibilityButtonEvent(
+                                                visibility: false));
+                                          },
+                                        ),
+                                        labelText: "Password",
+                                        labelStyle: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Colors.white60,
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(9),
+                                          borderSide: const BorderSide(
+                                            width: 2,
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(9),
+                                          borderSide: const BorderSide(
+                                            color: Colors.white70,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        errorStyle: const TextStyle(
+                                          color: Colors
+                                              .red, // Customize the color of the error text
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(9),
+                                          borderSide: const BorderSide(
+                                            width: 2,
+                                            color: Colors
+                                                .red, // Customize the color of the error border
+                                          ),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(9),
+                                          borderSide: const BorderSide(
+                                            width: 2,
+                                            color: Colors
+                                                .red, // Customize the color of the focused error border
+                                          ),
+                                        ),
+                                      ),
+                                      obscureText:state.Obsecure,
+                                    );
+                                  }
+                                  else
+                                    {
+                                      return TextFormField(
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Enter Password";
+                                          }
+                                          return null;
+                                        },
+                                        controller: passwordController,
+                                        decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            icon: const Icon(Icons.visibility),
+                                            onPressed: () {
+                                              BlocProvider.of<LoginBloc>(context)
+                                                  .add(VisibilityButtonEvent(
+                                                  visibility: false));
+                                            },
+                                          ),
+                                          labelText: "Password",
+                                          labelStyle: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Colors.white60,
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                            borderSide: const BorderSide(
+                                              width: 2,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                            borderSide: const BorderSide(
+                                              color: Colors.white70,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          errorStyle: const TextStyle(
+                                            color: Colors
+                                                .red, // Customize the color of the error text
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                            borderSide: const BorderSide(
+                                              width: 2,
+                                              color: Colors
+                                                  .red, // Customize the color of the error border
+                                            ),
+                                          ),
+                                          focusedErrorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                            borderSide: const BorderSide(
+                                              width: 2,
+                                              color: Colors
+                                                  .red, // Customize the color of the focused error border
+                                            ),
+                                          ),
+                                        ),
+                                        obscureText: false,
+                                      );
+                                    }
+                                },
                               );
                             },
                           ),
@@ -231,13 +349,15 @@ class LoginUiState extends State<LoginUi> {
                                     SnackBar(content: Text(state.message)));
                               } else if (state is LoginSuccessState) {
                                 circularLoadingBar.remove();
-                                BlocProvider.of<GlobalBloc>(context).add(GetUserIDEvent(uid: state.uid));
-                                BlocProvider.of<NavigationBloc>(context).add(NavigationInitialEvent(tabIndex: 0));
+                                BlocProvider.of<GlobalBloc>(context)
+                                    .add(GetUserIDEvent(uid: state.uid));
+                                BlocProvider.of<NavigationBloc>(context)
+                                    .add(NavigationInitialEvent(tabIndex: 0));
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (newContext) =>
-                                        const LandingPage()));
+                                            const LandingPage()));
                               }
                             },
                             child: BlocBuilder<LoginBloc, LoginState>(
@@ -250,13 +370,18 @@ class LoginUiState extends State<LoginUi> {
                                         String email = emailController.text;
                                         String password =
                                             passwordController.text;
-                                        BlocProvider.of<LoginBloc>(context).add(LoginValidationError(Email: email, Password: password));
-                                        circularLoadingBar = _createCircularLoadingBar();
-                                        Overlay.of(context).insert(circularLoadingBar);
+                                        BlocProvider.of<LoginBloc>(context).add(
+                                            LoginValidationError(
+                                                Email: email,
+                                                Password: password));
+                                        circularLoadingBar =
+                                            _createCircularLoadingBar();
+                                        Overlay.of(context)
+                                            .insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      minimumSize: Size(400.sp, 40),
+                                      minimumSize: Size(328.sp, 40),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(9),
                                       ),
@@ -279,8 +404,10 @@ class LoginUiState extends State<LoginUi> {
                                             LoginValidationError(
                                                 Email: email,
                                                 Password: password));
-                                        circularLoadingBar = _createCircularLoadingBar();
-                                        Overlay.of(context).insert(circularLoadingBar);
+                                        circularLoadingBar =
+                                            _createCircularLoadingBar();
+                                        Overlay.of(context)
+                                            .insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -307,7 +434,7 @@ class LoginUiState extends State<LoginUi> {
                           text: Text(
                             "or",
                             style:
-                            TextStyle(color: Colors.white54, fontSize: 14),
+                                TextStyle(color: Colors.white54, fontSize: 14),
                           ),
                           thickness: 1,
                           color: Colors.grey,
@@ -368,6 +495,7 @@ class LoginUiState extends State<LoginUi> {
       ),
     );
   }
+
   OverlayEntry _createCircularLoadingBar() {
     return OverlayEntry(
       builder: (context) => Center(

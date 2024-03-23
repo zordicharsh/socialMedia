@@ -1,11 +1,12 @@
-import 'dart:developer';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile.dart';
-import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
+import 'package:socialmedia/screens/FollowingsAndFollowers/Followers.dart';
+import 'package:socialmedia/screens/FollowingsAndFollowers/Followings.dart';
+import 'package:socialmedia/screens/follow_request_screen/followreuestscreen.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
 
 import '../../../../global_Bloc/global_bloc.dart';
@@ -34,17 +35,25 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   if (state is GetUserDataFromGlobalBlocState) {
                     List<UserModel> userdata = state.userData;
                     if (userdata[0].Profileurl.toString() != "") {
-                      return CircleAvatar(
-                        backgroundColor: Colors.grey.withOpacity(0.4),
-                        backgroundImage: NetworkImage(userdata[0].Profileurl.toString()),
-                        radius: 36.sp,
+                      return CachedNetworkImage(
+                        imageUrl: userdata[0].Profileurl.toString(),
+                        filterQuality: FilterQuality.low,
+                        placeholder: (context, url) => CircleAvatar(
+                          backgroundColor: Colors.grey.withOpacity(0.3),
+                          radius: 36.sp,
+                        ),
+                        imageBuilder: (context, imageProvider) => CircleAvatar(
+                          backgroundColor: Colors.grey.withOpacity(0.4),
+                          backgroundImage: imageProvider,
+                          radius: 36.sp,
+                        ),
                       );
                     } else {
                       return GestureDetector(
                         onTap: () => Navigator.push(
                             context,
                             CustomPageRouteRightToLeft(
-                              child: EditProfile(),
+                              child: const EditProfile(),
                             )),
                         child: Stack(children: [
                           CircleAvatar(
@@ -75,7 +84,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       onTap: () => Navigator.push(
                           context,
                           CustomPageRouteRightToLeft(
-                            child: EditProfile(),
+                            child: const EditProfile(),
                           )),
                       child: Stack(children: [
                         CircleAvatar(
@@ -119,27 +128,38 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           const SizedBox(
                             width: 24,
                           ),
-                          BlocBuilder<ProfileBloc, ProfileState>(
-                              builder: (context, state) {
-                            if (state is ProfilePageFetchUserPostSuccessState) {
-                              return buildStatColumn(state.postlength, "Posts");
-                            } else if (state
-                                is ProfilePageFetchUserPostLengthSuccessState) {
-                              return buildStatColumn(state.postlength, "Posts");
-                            } else {
-                              return buildStatColumn(0, "Posts");
-                            }
-                          }),
+                          buildStatColumn(userdata[0].TotalPosts, "Posts"),
                           const SizedBox(
                             width: 16,
                           ),
-                          buildStatColumn(
-                              userdata[0].Follower.length, "Followers"),
+                          GestureDetector(
+                            child: buildStatColumn(
+                                userdata[0].Follower.length, "Followers"),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Followers(userdata[0].Uid),
+                                  ));
+                            },
+                          ),
                           const SizedBox(
                             width: 16,
                           ),
-                          buildStatColumn(
-                              userdata[0].Following.length, "Following"),
+                          GestureDetector(
+                            child: buildStatColumn(
+                                userdata[0].Following.length, "Following"),
+                            onTap: () {
+                              userdata[0].Uid;
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Following(userdata[0].Uid),
+                                  ));
+                            },
+                          ),
                         ],
                       );
                     } else {
@@ -204,24 +224,16 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         fontSize: 12.sp,
                       ));
                 } else {
-                  return Text("",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                      ));
+                  return const SizedBox.shrink();
                 }
               } else {
-                return Text("",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                    ));
+                return const SizedBox.shrink();
               }
             },
           ),
         ),
         const SizedBox(
-          height: 8,
+          height: 16,
         ),
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
@@ -240,13 +252,18 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         onTap: () => Navigator.push(
                             context,
                             CustomPageRouteRightToLeft(
-                              child: EditProfile(),
+                              child: const EditProfile(),
                             ))),
                     ProfileManipulationButton(
-                        text: "Share profile",
-                        height: 32,
-                        width: 160.sp,
-                        onTap: () => log("share button tapped from profile")),
+                      text: "Share profile",
+                      height: 32,
+                      width: 160.sp,
+                      onTap: () => Navigator.push(
+                          context,
+                          CustomPageRouteRightToLeft(
+                            child: const Request(),
+                          )),
+                    )
                   ],
                 ),
               )

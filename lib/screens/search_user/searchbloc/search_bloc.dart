@@ -40,15 +40,23 @@ class SearchBloc extends Bloc<Searchevents, SearchState> {
           .collection("RegisteredUsers")
           .orderBy('username')
           .startAt([event.SearchingValue]).endAt(
-              [event.SearchingValue + '\uf8ff']).get();
-      final userdata =
-          snapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
+          [event.SearchingValue + '\uf8ff']).get();
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      Stream<QuerySnapshot<Map<String, dynamic>>> userdata1 = await FirebaseFirestore.instance
+          .collection("RegisteredUsers")
+          .orderBy('username')
+          .startAt([event.SearchingValue]).endAt(
+          [event.SearchingValue + '\uf8ff']).snapshots();
+      ////////////////////////////////////////////////////////////////////////////////////////////////////
+      // log(snapshot1.toString());
+      final userdata = snapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
       print(snapshot.size);
       final UserAuth = FirebaseAuth.instance.currentUser;
       userList.assignAll(userdata);
       print(userList);
       if (userList.isNotEmpty) {
-        emit(EmittheUSers(userList));
+        emit(EmittheUSers(userList,userdata1));
       } else {
         emit(NouserAvailable());
       }

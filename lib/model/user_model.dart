@@ -11,21 +11,27 @@ class UserModel {
   Timestamp datetime;
   String? Bio;
   String? Name;
+  String? Acctype;
+  List Followrequest;
+  List Followrequestnotification;
+  int TotalPosts;
 
-   String? Acctype;
-
-  UserModel(
-      {required this.Uid,
-      required this.Username,
-      required this.Email,
-      required this.Password,
-      required this.Follower,
-      required this.Following,
-      required this.datetime,
-      required this.Profileurl,
-      required this.Bio,
-      required this.Name,
-      required this.Acctype });
+  UserModel({
+    required this.Uid,
+    required this.Username,
+    required this.Email,
+    required this.Password,
+    required this.Follower,
+    required this.Following,
+    required this.datetime,
+    required this.Profileurl,
+    required this.Bio,
+    required this.Name,
+    required this.Acctype,
+    required this.Followrequest,
+    required this.Followrequestnotification,
+    required this.TotalPosts,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -39,8 +45,10 @@ class UserModel {
       'profileurl': Profileurl,
       'bio': Bio,
       'name': Name,
-      'acctype':Acctype,
-
+      'acctype': Acctype,
+      'followrequest': Followrequest,
+      'followrequestnotification': Followrequestnotification,
+      'totalposts': TotalPosts,
     };
   }
 
@@ -58,7 +66,10 @@ class UserModel {
       datetime: data["datetime"],
       Bio: data["bio"],
       Name: data["name"],
-      Acctype:data["acctype"],
+      Acctype: data["acctype"],
+      Followrequest: data['followrequest'],
+      Followrequestnotification: data['followrequestnotification'],
+      TotalPosts:data['totalposts'],
     );
   }
 }

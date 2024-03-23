@@ -1,41 +1,78 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmedia/screens/HomeScreen/ui/homescreen.dart';
+import 'package:socialmedia/screens/explorescreen/ui/explorescreen.dart';
 import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile.dart';
-import 'package:socialmedia/screens/search_user/searchui/searchui.dart';
 import 'package:socialmedia/screens/user_post/ui/userpost.dart';
+import 'package:socialmedia/screens/videoscreen/ui/videopage.dart';
 
-
-List<BottomNavigationBarItem> bottomNavItems =  <BottomNavigationBarItem>[
-  BottomNavigationBarItem(icon: const Icon(Icons.home_outlined,size: 30,),
-      activeIcon: const Icon(Icons.home_filled,size:30,),
-      backgroundColor:Colors.black.withOpacity(0.25),
-      label: '',tooltip: 'Here You Can View Posts Of Friends You Follow'),
-  BottomNavigationBarItem(icon: const Icon(Icons.search,size: 30,),
-      activeIcon: const Icon(Icons.search,size:30,),
-      backgroundColor:Colors.black.withOpacity(0.25),
-      label: '',tooltip: 'Search a Friend or Family Member'),
-  BottomNavigationBarItem(icon: const Icon(Icons.add_box_outlined,size: 30,),
-      activeIcon: const Icon(Icons.add_box_rounded,size: 30,),
-      backgroundColor:Colors.black.withOpacity(0.25),
-      label: '',tooltip: 'Here You Can Upload New Post On Your Profile'),
-  BottomNavigationBarItem(icon: const Icon(Icons.movie_filter_outlined,size: 30,),
-      activeIcon: const Icon(Icons.movie_filter,size: 30,),
-      backgroundColor:Colors.black.withOpacity(0.25),
-      label: '',tooltip: 'Here You Can Watch Reels'),
-  BottomNavigationBarItem(icon: const Icon(Icons.person_outline_rounded,size: 30,),
-      activeIcon: const Icon(Icons.person,size: 30,),
-    //  backgroundColor:Colors.black.withOpacity(0.25),
-      label: '',tooltip: 'Your SocialRizz Profile'),
+List<BottomNavigationBarItem> bottomNavItems = <BottomNavigationBarItem>[
+  const BottomNavigationBarItem(
+      icon: Icon(Icons.home_outlined, size: 30),
+      activeIcon: Icon(
+        Icons.home_filled,
+        size: 32,
+      ),
+      backgroundColor: Colors.black,
+      label: '',
+      tooltip: 'Here You Can View Posts Of Friends You Follow'),
+  const BottomNavigationBarItem(
+      icon: Icon(
+        Icons.search,
+        size: 30,
+      ),
+      activeIcon: Icon(
+        Icons.search,
+        size: 32,
+      ),
+      backgroundColor: Colors.black,
+      label: '',
+      tooltip: 'Search a Friend or Family Member'),
+  const BottomNavigationBarItem(
+      icon: Icon(
+        Icons.add_box_outlined,
+        size: 30,
+      ),
+      activeIcon: Icon(
+        Icons.add_box_rounded,
+        size: 32,
+      ),
+      backgroundColor: Colors.black,
+      label: '',
+      tooltip: 'Here You Can Upload New Post On Your Profile'),
+  const BottomNavigationBarItem(
+      icon: Icon(
+        Icons.video_library_outlined,
+        size: 30,
+      ),
+      activeIcon: Icon(
+        Icons.video_library,
+        size: 32,
+      ),
+      backgroundColor: Colors.black,
+      label: '',
+      tooltip: 'Here You Can Watch Reels'),
+  const BottomNavigationBarItem(
+      icon: Icon(
+        CupertinoIcons.person_alt_circle,
+        size: 30,
+      ),
+      activeIcon: Icon(
+        CupertinoIcons.person_alt_circle_fill,
+        size: 32,
+      ),
+      label: '',
+      tooltip: 'Your SocialRizz Profile'),
 ];
 
 const List<Widget> bottomNavScreen = <Widget>[
-  Text('Index 0: Home'),
-  SearchUser(),
+  HomeScreen(),
+  AllUserPosts(),
   ImageUploadScreen(),
-  Text('Index 3: Reels'),
+  VideoPage(),
   ProfilePage(),
-
 ];
 
 class LandingPage extends StatefulWidget {
@@ -46,10 +83,10 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-
   @override
   void initState() {
-    BlocProvider.of<NavigationBloc>(context).add(NavigationInitialEvent(tabIndex: 0));
+    BlocProvider.of<NavigationBloc>(context)
+        .add(NavigationInitialEvent(tabIndex: 0));
     super.initState();
   }
 
@@ -59,26 +96,38 @@ class _LandingPageState extends State<LandingPage> {
       builder: (context, state) {
         return SafeArea(
           child: Scaffold(
-            body: Center(child: bottomNavScreen.elementAt(state.tabindex),),
+            body: Center(
+              child: bottomNavScreen.elementAt(state.tabindex),
+            ),
             bottomNavigationBar: Theme(
               data: ThemeData(
                 splashFactory: NoSplash.splashFactory,
                 highlightColor: Colors.transparent,
               ),
-              child: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                landscapeLayout: BottomNavigationBarLandscapeLayout.spread,
-                backgroundColor:Colors.black.withOpacity(0.25),
-                enableFeedback:true ,
-                items: bottomNavItems,
-                currentIndex: state.tabindex,
-                selectedFontSize: 12,
-                selectedItemColor: Colors.white,
-                unselectedItemColor: Colors.grey.withOpacity(0.5),
-                onTap: (index) {
-                  BlocProvider.of<NavigationBloc>(context).add(
-                      TabChangedEvent(tabIndex: index));
-                },),
+              child: Stack(
+                children: [
+                  BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    landscapeLayout:
+                        BottomNavigationBarLandscapeLayout.centered,
+                    backgroundColor: Colors.black,
+                    items: bottomNavItems,
+                    currentIndex: state.tabindex,
+                    selectedFontSize: 0,
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.grey.withOpacity(0.5),
+                    onTap: (index) {
+                      BlocProvider.of<NavigationBloc>(context)
+                          .add(TabChangedEvent(tabIndex: index));
+                    },
+                  ),
+                  const Divider(
+                    height: 1,
+                    color: Colors.white10,
+                    thickness: 1,
+                  ),
+                ],
+              ),
             ),
           ),
         );
