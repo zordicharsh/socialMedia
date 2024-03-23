@@ -217,11 +217,13 @@ class _MyDrawerState extends State<MyDrawer> {
                       onPressed: () async {
                         if (deletekey.currentState!.validate()) {
                          BlocProvider.of<DrawerBloc>(context).add(DeleteAccountEvent());
-                           await  FirebaseAuth.instance.currentUser?.delete();
-                           Navigator.pop(context);
-                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginUi()));
+                          Future.delayed(Duration(milliseconds: 5000),() async {
+                            await  FirebaseAuth.instance.currentUser?.delete();
+                            Navigator.pop(context);
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginUi()));
 
-                        }
+                          }
+                          );}
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,

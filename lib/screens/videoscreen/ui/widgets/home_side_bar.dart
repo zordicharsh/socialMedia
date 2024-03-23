@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:socialmedia/chat_screen/sharelist.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
 
 class HomeSideBar extends StatefulWidget {
@@ -35,14 +37,18 @@ class _HomeSideBarState extends State<HomeSideBar> {
         .bodyLarge!
         .copyWith(fontSize: 13, color: Colors.white);
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         _profileImageButton(),
+        SizedBox(height: 30,),
         _sideBarItemForLike(Icons.favorite_outline,
             widget.likes.length.toString(), style, isliked, widget.PostId),
+        SizedBox(height: 30,),
         _sideBarForComment(
-            Icons.comment_outlined, widget.noofcomments.toString(), style),
-        _sideBarItem(Icons.send_sharp, 'share', style)
+            CupertinoIcons.chat_bubble, widget.noofcomments.toString(), style),
+        SizedBox(height: 30,),
+        _sideBarItem( CupertinoIcons.paperplane, 'share', style),
+        SizedBox(height: 10,),
       ],
     );
   }
@@ -130,7 +136,9 @@ class _HomeSideBarState extends State<HomeSideBar> {
   _sideBarItem(IconData iconName, String label, TextStyle style) {
     return Column(
       children: [
-        GestureDetector(onTap: () {}, child: Icon(iconName, size: 28)),
+        GestureDetector(onTap: () {
+          showModalBottomSheet(context: context, builder:(context) => ShareScreen(Postid:widget.PostId,Type:"video"));
+        }, child: Icon(iconName, size: 28)),
         const SizedBox(
           height: 5,
         ),
