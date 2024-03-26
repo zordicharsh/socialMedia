@@ -582,7 +582,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       ],
                     ),
                   );
-                } else {
+                }
+                else {
                   if (userData['acctype'] == 'private') {
                     if (followerRequestPending == false &&
                         isFollowing == true) {
@@ -653,7 +654,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           ],
                         ),
                       );
-                    } else {
+                    }
+                    else {
                       return Column(
                         children: [
                           const Divider(
@@ -714,7 +716,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         ],
                       );
                     }
-                  } else {
+                  }
+                  else {
                     return DefaultTabController(
                       length: 3,
                       animationDuration: const Duration(milliseconds: 600),

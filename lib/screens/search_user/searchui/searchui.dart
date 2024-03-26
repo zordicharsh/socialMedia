@@ -172,7 +172,7 @@ class _SearchUserState extends State<SearchUser> {
                                     style: const TextStyle(color: Colors.white),
                                   ),
                                   subtitle: Text(
-                                    snapshot.data!.docs[index]['uid']
+                                    snapshot.data!.docs[index]['name']
                                         .toString(),
                                     style:
                                         const TextStyle(color: Colors.white70),

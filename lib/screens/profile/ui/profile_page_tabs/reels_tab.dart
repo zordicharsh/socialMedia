@@ -12,9 +12,9 @@ class _ProfileReelSectionState extends State<ProfileReelSection> {
   Widget build(BuildContext context) {
     return const Center(
         child: Text(
-          "Reels tab",
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold),
-        ));
+      "Reels tab",
+      style: TextStyle(
+          color: Colors.white, fontWeight: FontWeight.bold),
+    ));
   }
 }
