@@ -68,6 +68,13 @@ FutureOr<void> signOutEvent(
   emit(SignOutState());
 }
   Future<void> deletePostEvent(DeletePostEvent event, Emitter<ProfileState> emit) async {
+  var UID = FirebaseAuth.instance.currentUser!.uid;
+    final DATA = await FirebaseFirestore.instance.collection('RegisteredUsers').doc(UID).get();
+    var TotalPost = DATA.get('totalposts') ;
+    await FirebaseFirestore.instance.collection('RegisteredUsers').doc(UID).update({
+      "totalposts" : TotalPost-1
+    });
+
     await FirebaseFirestore.instance.collection('UserPost').doc(event.PostUid).delete();
   }
 }

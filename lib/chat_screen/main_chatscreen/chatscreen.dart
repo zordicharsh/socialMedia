@@ -59,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   buttonSize: Size(40, 40),
                   isVideoCall: false,
                   resourceID:
-                      "zego_call", //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
+                  "zego_call", //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
                   invitees: [
                     ZegoUIKitUser(
                       id: snapshot.data!.get('uid'),
@@ -75,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   buttonSize: Size(40, 40),
                   isVideoCall: true,
                   resourceID:
-                      "zego_call", //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
+                  "zego_call", //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
                   invitees: [
                     ZegoUIKitUser(
                       id: snapshot.data!.get('uid'),
@@ -88,7 +88,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   CircleAvatar(
                     backgroundImage:
-                        NetworkImage(snapshot.data!.get('profileurl')),
+                    NetworkImage(snapshot.data!.get('profileurl')),
                   ),
                   SizedBox(width: 8),
                   Text(
@@ -107,7 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     stream: FirebaseFirestore.instance
                         .collection('Chats')
                         .where('senderuid',
-                            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                         .where('receiveruid', isEqualTo: widget.touid)
                         .orderBy('timestamp', descending: true)
                         .snapshots(),
@@ -117,9 +117,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           stream: FirebaseFirestore.instance
                               .collection('Chats')
                               .where('senderuid', isEqualTo: widget.touid)
-                              .where('receiveruid',
-                                  isEqualTo:
-                                      FirebaseAuth.instance.currentUser!.uid)
+                              .where('receiveruid', isEqualTo:
+                          FirebaseAuth.instance.currentUser!.uid)
                               .orderBy('timestamp', descending: true)
                               .snapshots(),
                           builder: (context, receiverSnapshot) {
@@ -129,13 +128,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                       receiverSnapshot.data!.docs;
                               combinedSnapshots.sort((a, b) => b['timestamp']
                                   .compareTo(
-                                      a['timestamp'])); // Sort by timestamp
+                                  a['timestamp'])); // Sort by timestamp
                               return ListView.builder(
                                 reverse: true,
                                 itemCount: combinedSnapshots.length,
                                 itemBuilder: (context, index) {
                                   var message =
-                                      combinedSnapshots[index].data() as Map;
+                                  combinedSnapshots[index].data() as Map;
                                   bool isCurrentUser = message['senderuid'] ==
                                       FirebaseAuth.instance.currentUser!.uid;
                                   bool isSeen = message['seen'] ?? false;
@@ -145,10 +144,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                         combinedSnapshots[index].id);
                                   }
                                   DateTime timestamp =
-                                      (message['timestamp'] as Timestamp)
-                                          .toDate();
+                                  (message['timestamp'] as Timestamp)
+                                      .toDate();
                                   String formattedTime =
-                                      DateFormat('hh:mm').format(timestamp);
+                                  DateFormat('hh:mm').format(timestamp);
                                   return Align(
                                     alignment: isCurrentUser
                                         ? Alignment.centerRight
@@ -167,11 +166,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 ? Colors.blue
                                                 : Colors.green,
                                             borderRadius:
-                                                BorderRadius.circular(15),
+                                            BorderRadius.circular(15),
                                           ),
                                           child: Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               if (message
                                                   .containsKey('message'))
@@ -191,28 +190,39 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 StreamBuilder(
                                                   stream: FirebaseFirestore.instance.collection('UserPost').doc(message['postid']).snapshots(),
                                                   builder: (context, postSnapshot) {
-                                                    if (postSnapshot.hasData) {
-                                                      if(postSnapshot.data!.get('type')=="image"){
-                                                        return Container(
-                                                          child: Image.network(postSnapshot.data!.get('posturl'),
-                                                            width: 200,
-                                                            height: 300,
-                                                            fit: BoxFit.fill,
-                                                          ),
-                                                          // Other UI components to display the post data
-                                                        );
-                                                      }else{
-                                                        return Container(
-                                                          child: Image.network(postSnapshot.data!.get('thumbnail'),
-                                                            width: 200,
-                                                            height: 300,
-                                                            fit: BoxFit.fill,
-                                                          ),
-                                                          // Other UI components to display the post data
-                                                        );
+                                                    if(postSnapshot.connectionState == ConnectionState.waiting){
+                                                      return CircularProgressIndicator();
+                                                    }
+                                                    else if(postSnapshot.data!.exists){
+                                                      if (postSnapshot.hasData) {
+                                                        if(postSnapshot.data!.get('type')=="image"){
+                                                          return Container(
+                                                            child: Image.network(postSnapshot.data!.get('posturl'),
+                                                              width: 200,
+                                                              height: 300,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                            // Other UI components to display the post data
+                                                          );
+                                                        }
+                                                        else{
+                                                          return Container(
+                                                            child: Image.network(postSnapshot.data!.get('thumbnail'),
+                                                              width: 200,
+                                                              height: 300,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                            // Other UI components to display the post data
+                                                          );
+                                                        }
                                                       }
-
-                                                    } else {
+                                                      else if(postSnapshot.hasData==false){
+                                                        return Text('Post not found');
+                                                      }
+                                                      else {
+                                                        return Text('Post not found');
+                                                      }
+                                                    }else{
                                                       return Text('Post not found');
                                                     }
                                                   },
@@ -239,7 +249,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 ),
                                               ],
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.end,
+                                              MainAxisAlignment.end,
                                             ),
                                           )
                                         else
@@ -252,7 +262,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                     formattedTime), // Displaying formatted time
                                               ],
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                              MainAxisAlignment.start,
                                             ),
                                           ),
                                       ],
@@ -367,7 +377,7 @@ class _ChatScreenState extends State<ChatScreen> {
       File imageFile = File(pickedFile.path);
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
       Reference ref =
-          FirebaseStorage.instance.ref().child('chat_images').child(fileName);
+      FirebaseStorage.instance.ref().child('chat_images').child(fileName);
       UploadTask uploadTask = ref.putFile(imageFile);
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
 

@@ -115,11 +115,7 @@ class _ChatListsState extends State<ChatLists> {
                 // Filter the user list based on the search query
                 var filteredUsers = userList.where((userDoc) {
                   var user = userDoc.data();
-                  return user['username']
-                      .toString()
-                      .toLowerCase()
-                      .contains(_searchController.text.toLowerCase());
-                }).toList();
+                  return user['username'].toString().toLowerCase().contains(_searchController.text.toLowerCase());}).toList();
                 return ListView.builder(
                   itemCount: filteredUsers.length,
                   itemBuilder: (BuildContext context, int index) {
