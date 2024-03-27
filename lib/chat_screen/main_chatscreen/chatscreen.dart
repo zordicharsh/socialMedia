@@ -8,12 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:io';
+
 
 class ChatScreen extends StatefulWidget {
   final String touid;
@@ -55,8 +50,8 @@ class _ChatScreenState extends State<ChatScreen> {
             appBar: AppBar(
               actions: [
                 ZegoSendCallInvitationButton(
-                  iconSize: Size(40, 40),
-                  buttonSize: Size(40, 40),
+                  iconSize: const Size(40, 40),
+                  buttonSize: const Size(40, 40),
                   isVideoCall: false,
                   resourceID:
                   "zego_call", //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
@@ -67,12 +62,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 ZegoSendCallInvitationButton(
-                  iconSize: Size(40, 40),
-                  buttonSize: Size(40, 40),
+                  iconSize: const Size(40, 40),
+                  buttonSize: const Size(40, 40),
                   isVideoCall: true,
                   resourceID:
                   "zego_call", //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
@@ -90,10 +85,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     backgroundImage:
                     NetworkImage(snapshot.data!.get('profileurl')),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
                     snapshot.data!.get('username'),
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ],
               ),
@@ -158,9 +153,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                           : CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                          margin: EdgeInsets.symmetric(
+                                          margin: const EdgeInsets.symmetric(
                                               vertical: 5, horizontal: 10),
-                                          padding: EdgeInsets.all(10),
+                                          padding: const EdgeInsets.all(10),
                                           decoration: BoxDecoration(
                                             color: isCurrentUser
                                                 ? Colors.blue
@@ -176,7 +171,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   .containsKey('message'))
                                                 Text(
                                                   message['message'],
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.white),
                                                 ),
                                               if (message.containsKey('image'))
@@ -191,7 +186,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   stream: FirebaseFirestore.instance.collection('UserPost').doc(message['postid']).snapshots(),
                                                   builder: (context, postSnapshot) {
                                                     if(postSnapshot.connectionState == ConnectionState.waiting){
-                                                      return CircularProgressIndicator();
+                                                      return const CircularProgressIndicator();
                                                     }
                                                     else if(postSnapshot.data!.exists){
                                                       if (postSnapshot.hasData) {
@@ -217,13 +212,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         }
                                                       }
                                                       else if(postSnapshot.hasData==false){
-                                                        return Text('Post not found');
+                                                        return const Text('Post not found');
                                                       }
                                                       else {
-                                                        return Text('Post not found');
+                                                        return const Text('Post not found');
                                                       }
                                                     }else{
-                                                      return Text('Post not found');
+                                                      return const Text('Post not found');
                                                     }
                                                   },
                                                 )
@@ -232,7 +227,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         ),
                                         if (isCurrentUser)
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                                 horizontal: 10),
                                             child: Row(
                                               children: [
@@ -254,7 +249,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           )
                                         else
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                                 horizontal: 10),
                                             child: Row(
                                               children: [
@@ -271,14 +266,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                 },
                               );
                             } else {
-                              return Center(
+                              return const Center(
                                 child: CircularProgressIndicator(),
                               );
                             }
                           },
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
@@ -300,15 +295,15 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       IconButton(
-                        icon: Icon(Icons.image),
+                        icon: const Icon(Icons.image),
                         onPressed: () {
                           _pickImage();
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.send),
+                        icon: const Icon(Icons.send),
                         onPressed: () {
                           sendMessage();
                         },
@@ -322,9 +317,9 @@ class _ChatScreenState extends State<ChatScreen> {
         } else {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Loading...'),
+              title: const Text('Loading...'),
             ),
-            body: Center(
+            body: const Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -376,8 +371,7 @@ class _ChatScreenState extends State<ChatScreen> {
       // Upload image to Firebase Storage
       File imageFile = File(pickedFile.path);
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference ref =
-      FirebaseStorage.instance.ref().child('chat_images').child(fileName);
+      Reference ref = FirebaseStorage.instance.ref().child('chat_images').child(fileName);
       UploadTask uploadTask = ref.putFile(imageFile);
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
 
@@ -388,4 +382,5 @@ class _ChatScreenState extends State<ChatScreen> {
       sendMessage(imageUrl: imageUrl);
     }
   }
+
 }

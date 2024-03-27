@@ -374,10 +374,8 @@ class LoginUiState extends State<LoginUi> {
                                             LoginValidationError(
                                                 Email: email,
                                                 Password: password));
-                                        circularLoadingBar =
-                                            _createCircularLoadingBar();
-                                        Overlay.of(context)
-                                            .insert(circularLoadingBar);
+                                        circularLoadingBar = _createCircularLoadingBar();
+                                        Overlay.of(context).insert(circularLoadingBar);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(

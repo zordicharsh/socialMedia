@@ -417,10 +417,8 @@ class _EditProfileState extends State<EditProfile> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   if (_editprofilekey.currentState!.validate()) {
-                                    circularLoadingBar =
-                                        _createCircularLoadingBar();
-                                    Overlay.of(context)
-                                        .insert(circularLoadingBar);
+                                    circularLoadingBar = _createCircularLoadingBar();
+                                    Overlay.of(context).insert(circularLoadingBar);
                                     print("phela if 1");
                                     BlocProvider.of<EditprofileBloc>(context)
                                         .add(EditProfilUserNameCheckEvent(
@@ -595,8 +593,7 @@ class _EditProfileState extends State<EditProfile> {
                             child: ElevatedButton(
                               onPressed: () {
                                 if (_editprofilekey.currentState!.validate()) {
-                                  circularLoadingBar =
-                                      _createCircularLoadingBar();
+                                  circularLoadingBar = _createCircularLoadingBar();
                                   Overlay.of(context).insert(circularLoadingBar);
                                   print("phela if 1");
                                   BlocProvider.of<EditprofileBloc>(context)

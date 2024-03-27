@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +25,7 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   @override
   bool vvv = false;
+  late OverlayEntry circularLoadingBar;
   TextEditingController Delete = TextEditingController();
 
   Widget build(BuildContext context) {
@@ -215,14 +218,18 @@ class _MyDrawerState extends State<MyDrawer> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
+                        FocusScope.of(context).unfocus();
                         if (deletekey.currentState!.validate()) {
+                          circularLoadingBar =
+                              _createCircularLoadingBar();
+                          Overlay.of(context).insert(circularLoadingBar);
                          BlocProvider.of<DrawerBloc>(context).add(DeleteAccountEvent());
-                          Future.delayed(Duration(milliseconds: 5000),() async {
-                            await  FirebaseAuth.instance.currentUser?.delete();
-                            Navigator.pop(context);
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginUi()));
-
-                          }
+                          Future.delayed(const Duration(milliseconds: 5000),() async {
+                            await FirebaseAuth.instance.currentUser?.delete();
+                            circularLoadingBar.remove();
+                            if(!context.mounted) return;
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginUi()));}
                           );}
                       },
                       style: ElevatedButton.styleFrom(
@@ -282,6 +289,16 @@ class _MyDrawerState extends State<MyDrawer> {
       },
     );
   }
-
-
+  OverlayEntry _createCircularLoadingBar() {
+    return OverlayEntry(
+      builder: (context) => Center(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: const CircularProgressIndicator.adaptive(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
 }
