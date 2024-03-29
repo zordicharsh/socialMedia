@@ -15,13 +15,14 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
     on<PublicPrivateFalseEvent>(publicPrivateFalseEvent);
     on<SignOutEvent>(signOutEvent);
     on<FirstCheckAccTypeEvent>(firstCheckAccTypeEvent);
+    on<DeleteAccountEvent>(deleteAccountEvent);
   }
 
   FutureOr<void> publicPrivateEvent(PublicPrivateTrueEvent event, Emitter<DrawerState> emit) {
     bool CheckBloc ;
     if( event.Checking == true)
 
-      {    print("Checking ====      True");
+      {    print("Checking ====  True");
         CheckBloc = false;
       UserTypesUpdate('public');
       emit(PublicPrivateFaleState(CheckBloc));
@@ -81,5 +82,107 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
      }
 
 }
+
+
+  Future<void> deleteAccountEvent(DeleteAccountEvent event, Emitter<DrawerState> emit) async {
+    List? Followers;
+    List? Following;
+    String? Username ;
+    String? UID = FirebaseAuth.instance.currentUser?.uid;
+    var response =  await  FirebaseFirestore.instance.collection('RegisteredUsers').where('uid',isEqualTo:UID).get();
+    for (var value in response.docs) {
+      Followers = value['follower'];
+      Following = value['following'];
+      Username = value['username'];
+    }
+///// post /////////////
+   try{
+     await FirebaseFirestore.instance.collection('UserPost').where('uid',isEqualTo:UID).get().then((value) {
+       for (var i in value.docs) {
+         i.reference.delete();
+       }
+     },);
+   } catch(e){
+      print("currentuserpostdeleteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+   }
+    ///// comments & Like ////////////////
+
+    DeleteCommentAndLike(UID!, Username!);
+    //////////// followers ///////////////////////
+   try{
+     for( var i = 0 ; i < Followers!.length ; i++) {
+       await FirebaseFirestore.instance.collection('RegisteredUsers').doc(Followers[i]).update({'following': FieldValue.arrayRemove([UID])});
+     }
+   }catch(e){
+     print("followingggggggggggggggggggggggg deleteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+   }
+    //////////////// following ////////////////////////
+
+    try{
+      for( var i = 0 ; i < Following!.length ; i++  ) {
+        await FirebaseFirestore.instance.collection('RegisteredUsers').doc(Following[i]).update({'follower': FieldValue.arrayRemove([UID])});
+      }
+    }catch(e){
+      print("followerssssssssssssssssssssssssssssssssssss deleteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+    }
+
+    try{
+      await FirebaseFirestore.instance.collection('RegisteredUsers').doc(UID).delete();
+    }catch(e){
+     print("ddddddddddddddddddooooooooooooooooooccccccccccccccccccccccccccNNNNNNNNNotdeleeeeeeeeeeeeeeeeeeeeeeeeete");
+    }
+
+
+  }
+
+  Future<void> DeleteCommentAndLike(String UID,String Username) async {
+    await FirebaseFirestore.instance.collection('UserPost').get().then((value) async {
+      for (var i in value.docs) {
+        String doc = i.id;
+        var count = 0;
+        /////////// Comments /////////////
+       try
+       {
+         await FirebaseFirestore.instance
+             .collection('UserPost')
+             .doc(doc)
+             .collection('comments')
+             .where('username',isEqualTo:Username).get().then((value) {
+           for (var i in value.docs) {
+             i.reference.delete();
+             count++;
+           }
+           if(count != 0){
+             final TotalPost = FirebaseFirestore.instance.collection("UserPost").doc(doc);
+             TotalPost.get().then((value) async{
+               if (value.exists) {
+                 final totalComments = value.get('totalcomments');
+                 await  TotalPost.update({"totalcomments": totalComments - count});
+                 count = 0;
+               }
+             });
+           }
+         },);
+       }catch(e){
+           print("noooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+       }
+        ///////////// Like /////////////////
+        try{
+          final yamama =  await FirebaseFirestore.instance.collection('UserPost').doc(doc).get();
+          List arrLike = yamama.get("likes");
+          final totallikes = yamama.get("totallikes");
+          if(arrLike.contains(UID)){
+            await FirebaseFirestore.instance.collection('UserPost').doc(doc).update({
+              "likes": FieldValue.arrayRemove([UID]),
+              "totallikes": totallikes - 1,
+            });
+          }
+        }catch (e){
+          print("likeeeeeeeeeeeeeeeeeeeeeeeeeeeeeenooooooooooooooooooooooooooooooo");
+          print("An error occurred while removing likes: $e");
+        }
+      }
+    },);
+  }
 
 }

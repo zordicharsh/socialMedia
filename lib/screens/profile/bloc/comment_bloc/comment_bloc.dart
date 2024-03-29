@@ -115,9 +115,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
             .collection('comments');
         log("-------------->commentid :- $commentid");
         commentCollection.doc(commentid).delete().then((value) async{
-          final UserPost =
-             FirebaseFirestore.instance.collection("UserPost").doc(postid);
-          UserPost.get().then((value) async{
+          final UserPost = FirebaseFirestore.instance.collection("UserPost").doc(postid);UserPost.get().then((value) async{
             if (value.exists) {
               final totalComments = value.get('totalcomments');
             await  UserPost.update({"totalcomments": totalComments - 1});

@@ -315,8 +315,8 @@ class _CommentSectionState extends State<CommentSection> {
                         final commentdata = snapshot.data;
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return Center(
+                            child: CircularProgressIndicator(color: Colors.grey[900],),
                           );
                         } else if (commentdata!.size == 0) {
                           return Center(
@@ -364,8 +364,8 @@ class _CommentSectionState extends State<CommentSection> {
                     ),
                   );
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return Center(
+                    child: CircularProgressIndicator(color: Colors.grey[900],),
                   );
                 }
               },

@@ -11,3 +11,7 @@ class PublicPrivateFalseEvent extends DrawerEvent {}
 class SignOutEvent extends DrawerEvent{}
 
 class FirstCheckAccTypeEvent extends DrawerEvent{}
+
+class DeleteAccountEvent extends DrawerEvent{
+
+}

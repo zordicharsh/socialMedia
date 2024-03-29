@@ -1,16 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+
+
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/exploreimage/ui/exploreimagepage.dart';
 import 'package:socialmedia/screens/search_user/searchui/searchui.dart';
 import 'package:socialmedia/screens/videoscreen/ui/videopage.dart';
 import 'package:video_player/video_player.dart';
-
 import '../../profile/ui/widgets/animated_dialog.dart';
 
 class AllUserPosts extends StatefulWidget {
@@ -115,9 +117,17 @@ class _AllUserPostsState extends State<AllUserPosts> {
   Widget build(BuildContext context) {
     List<DocumentSnapshot> sufflist = [];
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-          title: const Text("RizzExplore", style: TextStyle(color: Colors.red)),
+          title: const Row(
+            children: [
+              Icon(CupertinoIcons.compass),
+              SizedBox(width: 8,),
+              Text("Discover",),
+            ],
+          ),
           surfaceTintColor: Colors.black,
+          backgroundColor: Colors.black,
           actions: [
             IconButton(
               onPressed: () {
@@ -176,88 +186,7 @@ class _AllUserPostsState extends State<AllUserPosts> {
                                           .toString(),
                                       snapshot.data!.docs[index]['username']);
                                   Overlay.of(context).insert(popupDialog!);
-                                  // popupDialog = OverlayEntry(
-                                  //   builder: (context) {
-                                  //     return Dialog(
-                                  //       backgroundColor: Colors.black,
-                                  //       child: Container(
-                                  //         constraints:
-                                  //         const BoxConstraints(
-                                  //             maxWidth: 600,
-                                  //             maxHeight:
-                                  //             650),
-                                  //         child: Column(
-                                  //           mainAxisSize:
-                                  //           MainAxisSize.min,
-                                  //           children: [
-                                  //             Row(
-                                  //               mainAxisAlignment:
-                                  //               MainAxisAlignment
-                                  //                   .start,
-                                  //               children: [
-                                  //                 CircleAvatar(
-                                  //                   backgroundImage: NetworkImage(
-                                  //                       snapshot.data!.docs[index]['profileurl']
-                                  //                   ),
-                                  //                 ),
-                                  //                 Text(
-                                  //                     snapshot.data!.docs[index]['username']
-                                  //                 )
-                                  //               ],
-                                  //             ),
-                                  //             SizedBox(
-                                  //               width:
-                                  //               double.infinity,
-                                  //               height:
-                                  //               400, // Example height
-                                  //               child:Image.network
-                                  //                 (
-                                  //                 snapshot.data!.docs[index]['posturl'],
-                                  //                 fit: BoxFit
-                                  //                     .cover, // Adjust the fit as per your requirement
-                                  //               ),
-                                  //             ),
-                                  //             Row(
-                                  //               mainAxisAlignment:
-                                  //               MainAxisAlignment
-                                  //                   .spaceEvenly,
-                                  //               children: [
-                                  //                 IconButton(
-                                  //                   tooltip:
-                                  //                   "Send message",
-                                  //                   onPressed:
-                                  //                       () {
-                                  //                     print(context
-                                  //                         .toString());
-                                  //                   },
-                                  //                   icon: const Icon(
-                                  //                       Icons
-                                  //                           .favorite_border_rounded), // Example IconButton
-                                  //                 ),
-                                  //                 IconButton(
-                                  //                   tooltip:
-                                  //                   "Send message",
-                                  //                   onPressed: () {},
-                                  //                   icon: const Icon(Icons
-                                  //                       .person), // Example IconButton
-                                  //                 ),
-                                  //                 IconButton(
-                                  //                   tooltip:
-                                  //                   "Send message",
-                                  //                   onPressed: () {},
-                                  //                   icon: const Icon(Icons
-                                  //                       .send_sharp), // Example IconButton
-                                  //                 ),
-                                  //               ],
-                                  //             ),
-                                  //           ],
-                                  //         ),
-                                  //       ),
-                                  //     );
-                                  //   },
-                                  // );
-                                  // Overlay.of(context)
-                                  //     .insert(popupDialog!);
+
                                 },
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8.0),
@@ -269,7 +198,13 @@ class _AllUserPostsState extends State<AllUserPosts> {
                                       width: double.infinity,
                                       height: double.infinity,
                                       placeholder: (context, url) =>
-                                          Shimmer(child: Container()),
+                                          Shimmer(
+                                              duration: const Duration(milliseconds: 2500),
+                                              color: Colors.white.withOpacity(0.1),
+                                              colorOpacity: 0.1,
+                                              enabled: true,
+                                              direction: const ShimmerDirection.fromLTRB(),
+                                              child: Container(  color: Colors.grey.withOpacity(0.1),)),
                                     )));
                           } else {
                             return GestureDetector(
@@ -297,12 +232,22 @@ class _AllUserPostsState extends State<AllUserPosts> {
                                           width: double.infinity,
                                           height: double.infinity,
                                           placeholder: (context, url) =>
-                                              Shimmer(child: Container()))),
-                                  const Icon(
-                                    Icons.video_library,
-                                    // Replace Icons.close with your desired icon
-                                    color: Colors.white,
-                                    size: 20.0,
+                                              Shimmer(
+                                                  duration: const Duration(milliseconds: 2500),
+                                                  color: Colors.white.withOpacity(0.1),
+                                                  colorOpacity: 0.1,
+                                                  enabled: true,
+                                                  direction: const ShimmerDirection.fromLTRB(),
+                                                  child: Container(  color: Colors.grey.withOpacity(0.1),)))),
+                                  const Padding(
+                                    padding:
+                                    EdgeInsets.all(2.0),
+                                    child: Icon(
+                                      Icons.video_library,
+                                      // Replace Icons.close with your desired icon
+                                      color: Colors.white,
+                                      size: 20.0,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -561,7 +506,7 @@ class _AllUserPostsState extends State<AllUserPosts> {
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(profileurl),
+                  backgroundImage: CachedNetworkImageProvider(profileurl),
                   radius: 14,
                 ),
               )
@@ -577,7 +522,6 @@ class _AllUserPostsState extends State<AllUserPosts> {
               ),
         title: Text(
           username,
-          // "hi",
           style:
               const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
@@ -590,15 +534,15 @@ class _AllUserPostsState extends State<AllUserPosts> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Icon(
-              Icons.favorite_border,
+              CupertinoIcons.heart,
               color: Colors.white,
             ),
             Icon(
-              Icons.chat_bubble_outline_outlined,
+              CupertinoIcons.chat_bubble,
               color: Colors.white,
             ),
             Icon(
-              Icons.send,
+              CupertinoIcons.paperplane,
               color: Colors.white,
             ),
           ],

@@ -13,6 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc() : super(ProfileInitialState()) {
     on<ProfilePageInitialEvent>(profilePageInitialEvent);
     on<ProfilePageFetchUserPostEvent>(profilePageFetchUserPostEvent);
+    on<DeletePostEvent>(deletePostEvent);
   //  on<ProfilePageFetchUserPostLengthEvent>(profilePageFetchUserPostLengthEvent);
 /*    on<ProfilePagePopUpDialogLikedOnPostEvent>(profilePagePopUpDialogLikedOnPostEvent);*/
     on<SignOutEvent>(signOutEvent);
@@ -65,4 +66,15 @@ FutureOr<void> signOutEvent(
   var auth = FirebaseAuth.instance;
   await auth.signOut();
   emit(SignOutState());
-}}
+}
+  Future<void> deletePostEvent(DeletePostEvent event, Emitter<ProfileState> emit) async {
+  var UID = FirebaseAuth.instance.currentUser!.uid;
+    final DATA = await FirebaseFirestore.instance.collection('RegisteredUsers').doc(UID).get();
+    var TotalPost = DATA.get('totalposts') ;
+    await FirebaseFirestore.instance.collection('RegisteredUsers').doc(UID).update({
+      "totalposts" : TotalPost-1
+    });
+
+    await FirebaseFirestore.instance.collection('UserPost').doc(event.PostUid).delete();
+  }
+}

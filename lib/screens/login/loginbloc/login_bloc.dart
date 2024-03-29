@@ -13,12 +13,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ////////////////////////////////////////////////////////////    OBESCURED  METHOD/////////////////////////////////////////////////////
   FutureOr<void> visibilityButtonEvent(
       VisibilityButtonEvent event, Emitter<LoginState> emit) {
-    if (event.visibility == true) {
+    if (event.visibility == false) {
       //  print("true");
-      emit(VisibilityTrueState(Obsecure: false));
+      emit(VisibilityTrueState(Obsecure:  true));
+
+
     } else {
       // print("kuchen");
-      emit(VisibilityFalseState(Obsecure: true));
+      emit(VisibilityFalseState(Obsecure: false));
     }
   }
   //////////////////////////////////////////////////////////////// LOGIN  METHOD ///////////////////////////////////////////////////////////
