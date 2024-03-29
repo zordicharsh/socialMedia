@@ -14,6 +14,7 @@ import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
+import '../../../../chat_screen/sharelist.dart';
 import '../../../../common_widgets/like_animation_widget/like_animation_widget.dart';
 import '../../bloc/heart_animation_bloc/heart_bloc.dart';
 
@@ -46,7 +47,6 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
   double previousVideoVolume = 0.0;
   late Stream<DocumentSnapshot> _currentUserDataStream;
 
-
   @override
   void initState() {
     _currentUserDataStream = FirebaseFirestore.instance
@@ -56,8 +56,9 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
     isLiked = widget.postdata.docs[widget.index]['likes']
         .contains(FirebaseAuth.instance.currentUser!.uid);
     videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse(widget.postdata.docs[widget.index]['posturl'].toString()),videoPlayerOptions: VideoPlayerOptions())
-      ..initialize().then((_) => setState((){}))
+        Uri.parse(widget.postdata.docs[widget.index]['posturl'].toString()),
+        videoPlayerOptions: VideoPlayerOptions())
+      ..initialize().then((_) => setState(() {}))
       ..setLooping(true);
     previousVideoVolume = videoPlayerController!.value.volume;
     super.initState();
@@ -90,21 +91,21 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                                 ['profileurl'],
                             imageBuilder: (context, imageProvider) =>
                                 CircleAvatar(
-                              radius: 14.1,
+                              radius: 14.1.sp,
                               backgroundColor: Colors.white,
                               child: CircleAvatar(
                                 backgroundColor: Colors.grey,
                                 backgroundImage: imageProvider,
-                                radius: 14,
+                                radius: 14.sp,
                               ),
                             ),
                           )
                         : CircleAvatar(
-                            radius: 14.1,
+                            radius: 14.1.sp,
                             backgroundColor: Colors.white,
                             child: CircleAvatar(
                               backgroundColor: Colors.black.withOpacity(0.8),
-                              radius: 14,
+                              radius: 14.sp,
                               child: Icon(Icons.person,
                                   color: Colors.black.withOpacity(0.5)),
                             ),
@@ -123,7 +124,245 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      highlightColor: Colors.transparent,
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) => Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.grey[900],
+                                  ),
+                                  height:
+                                      MediaQuery.of(context).size.height / 8,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        GestureDetector(
+                                            onTap: () => Navigator.pop(context),
+                                            child: const Icon(
+                                              CupertinoIcons.xmark_circle,
+                                              size: 32,
+                                              color: Colors.grey,
+                                            )),
+                                        GestureDetector(
+                                          onTap: () =>
+                                              widget.postdata.docs[widget.index]
+                                                          ['uid'] ==
+                                                      FirebaseAuth.instance
+                                                          .currentUser!.uid
+                                                  ? null
+                                                  : Navigator.pop(context),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 6.0),
+                                            child: MaterialButton(
+                                                color: Colors.grey[900],
+                                                padding: const EdgeInsets.only(
+                                                    top: 20),
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                splashColor: Colors.transparent,
+                                                elevation: 0,
+                                                focusElevation: 0,
+                                                highlightElevation: 0,
+                                                onPressed: () {
+                                                  if (widget.postdata.docs[widget.index]['uid'] == FirebaseAuth.instance.currentUser!.uid) {
+                                                    showCupertinoDialog(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          CupertinoAlertDialog(
+                                                        title: const Text(
+                                                          "Alert !",
+                                                          style: TextStyle(
+                                                              fontSize: 20),
+                                                        ),
+                                                        content: const Text(
+                                                          "Are you sure you want to delete this post?",
+                                                          style: TextStyle(
+                                                              fontSize: 16),
+                                                        ),
+                                                        actions: <CupertinoDialogAction>[
+                                                          CupertinoDialogAction(
+                                                              isDestructiveAction:
+                                                                  false,
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              child: const Text(
+                                                                "No",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white60),
+                                                              )),
+                                                          CupertinoDialogAction(
+                                                              isDestructiveAction:
+                                                                  true,
+                                                              onPressed: () {
+                                                                BlocProvider.of<
+                                                                            ProfileBloc>(
+                                                                        context)
+                                                                    .add(
+                                                                        DeletePostEvent(
+                                                                  widget.postdata
+                                                                              .docs[
+                                                                          widget
+                                                                              .index]
+                                                                      [
+                                                                      'postid'],
+                                                                ));
+                                                                Navigator.pop(
+                                                                    context);
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              child: const Text(
+                                                                  "Yes")),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }
+                                                  else {
+                                                    Navigator.pop(context);
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .grey[900],
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        800),
+                                                            elevation: 8,
+                                                            behavior:
+                                                                SnackBarBehavior
+                                                                    .floating,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20)),
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                              bottom: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height -
+                                                                  140,
+                                                              right: 12,
+                                                              left: 12,
+                                                            ),
+                                                            content:
+                                                                const Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              4.0),
+                                                                  child: Text(
+                                                                    "Oops! ",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            20,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              4.0),
+                                                                  child: Text(
+                                                                    "Currently this feature is under development.",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        color: Colors
+                                                                            .white54),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            )));
+                                                  }
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    widget.postdata.docs[widget
+                                                                    .index]
+                                                                ['uid'] ==
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser!
+                                                                .uid
+                                                        ? const Icon(
+                                                            CupertinoIcons
+                                                                .delete,
+                                                            color: Colors.red,
+                                                            size: 20,
+                                                          )
+                                                        : const Icon(
+                                                            CupertinoIcons
+                                                                .exclamationmark_triangle,
+                                                            color: Colors.red,
+                                                            size: 20,
+                                                          ),
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    widget.postdata.docs[widget
+                                                                    .index]
+                                                                ['uid'] ==
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser!
+                                                                .uid
+                                                        ? const Text(
+                                                            "Delete Post",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.red,
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          )
+                                                        : const Text(
+                                                            "Report",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.red,
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
+                                                  ],
+                                                )),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            backgroundColor: Colors.transparent);
+                      },
                       icon: const Icon(Icons.more_vert_sharp),
                       color: Colors.white,
                     )
@@ -149,14 +388,11 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
               onScaleStop: () {},
               child: GestureDetector(
                 onTap: () {
-                  setState((){
+                  setState(() {
                     isVideoPlaying = !isVideoPlaying;
                     isVideoPlaying == false
                         ? videoPlayerController!.pause()
                         : videoPlayerController!.play();
-                   /* if(isVideoPlaying){
-                      position = await getCurrentVideoDuration();
-                    }*/
                   });
                   log(isVideoPlaying.toString());
                 },
@@ -171,13 +407,12 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                       ProfilePagePostCardDoubleTapLikedAnimOnPostEvent(
                           widget.postdata.docs[widget.index]['postid']));
                 },
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                    children: [
+                child: Stack(alignment: Alignment.bottomRight, children: [
                   Center(
                     child: SizedBox(
                       width: double.infinity,
-                      child: widget.postdata.docs[widget.index]['type'] == 'image'
+                      child: widget.postdata.docs[widget.index]['type'] ==
+                              'image'
                           ? Image(
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
@@ -185,14 +420,17 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                                 widget.postdata.docs[widget.index]['posturl']
                                     .toString(),
                               ))
-                          :  !videoPlayerController!.value.isInitialized
-                          ? CachedNetworkImage(
-                        imageUrl: widget.postdata
-                            .docs[widget.index]['thumbnail'],
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.low,
-                      )
-                          : AspectRatio(aspectRatio: videoPlayerController!.value.aspectRatio,child: VideoPlayer(videoPlayerController!)),
+                          : !videoPlayerController!.value.isInitialized
+                              ? CachedNetworkImage(
+                                  imageUrl: widget.postdata.docs[widget.index]
+                                      ['thumbnail'],
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.low,
+                                )
+                              : AspectRatio(
+                                  aspectRatio:
+                                      videoPlayerController!.value.aspectRatio,
+                                  child: VideoPlayer(videoPlayerController!)),
                     ),
                   ),
                   widget.postdata.docs[widget.index]['type'] != 'image'
@@ -240,35 +478,36 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                       ),
                     ),
                   ),
-                      widget.postdata.docs[widget.index]['type'] == 'video'
-                          ? Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 8.0),
-                        child: GestureDetector(
-                          onTap: () => setState(() {
-                            isMute = !isMute;
-                            isMute == false
-                                ? videoPlayerController!
-                                .setVolume(previousVideoVolume)
-                                : videoPlayerController!.setVolume(0);
-                          }),
-                          child: CircleAvatar(
-                              radius: 16,
-                              backgroundColor: Colors.black.withOpacity(0.8),
-                              child: Center(
-                                  child: isMute == false
-                                      ? const Icon(
-                                    Icons.volume_up_sharp,
-                                    size: 18,
-                                    color: Colors.white,
-                                  )
-                                      : const Icon(
-                                    Icons.volume_off_sharp,
-                                    size: 18,
-                                    color: Colors.white,
-                                  ))),
-                        ),
-                      ) : const SizedBox.shrink(),
+                  widget.postdata.docs[widget.index]['type'] == 'video'
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 8.0),
+                          child: GestureDetector(
+                            onTap: () => setState(() {
+                              isMute = !isMute;
+                              isMute == false
+                                  ? videoPlayerController!
+                                      .setVolume(previousVideoVolume)
+                                  : videoPlayerController!.setVolume(0);
+                            }),
+                            child: CircleAvatar(
+                                radius: 16,
+                                backgroundColor: Colors.black.withOpacity(0.8),
+                                child: Center(
+                                    child: isMute == false
+                                        ? const Icon(
+                                            Icons.volume_up_sharp,
+                                            size: 18,
+                                            color: Colors.white,
+                                          )
+                                        : const Icon(
+                                            Icons.volume_off_sharp,
+                                            size: 18,
+                                            color: Colors.white,
+                                          ))),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 ]),
               ),
             )),
@@ -346,7 +585,15 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                 ),
                 IconButton(
                   highlightColor: Colors.transparent,
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) => ShareScreen(
+                            Postid: widget.postdata.docs[widget.index]
+                                ['postid'],
+                            Type: widget.postdata.docs[widget.index]['type']),
+                        constraints: const BoxConstraints(maxHeight: 400));
+                  },
                   icon: const Icon(
                     CupertinoIcons.paperplane,
                     size: 24,
@@ -360,7 +607,74 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                 IconButton(
                   highlightColor: Colors.transparent,
                   onPressed: () {
-                  BlocProvider.of<ProfileBloc>(context).add(DeletePostEvent(widget.postdata.docs[widget.index]['postid'],));
+                    ScaffoldMessenger.of(
+                        context)
+                        .showSnackBar(SnackBar(
+                        backgroundColor:
+                        Colors
+                            .grey[900],
+                        duration:
+                        const Duration(
+                            milliseconds:
+                            800),
+                        elevation: 8,
+                        behavior:
+                        SnackBarBehavior
+                            .floating,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius
+                                .circular(
+                                20)),
+                        margin:
+                        EdgeInsets.only(
+                          bottom: MediaQuery.of(
+                              context)
+                              .size
+                              .height -
+                              160,
+                          right: 12,
+                          left: 12,
+                        ),
+                        content:
+                        const Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+                          children: [
+                            Padding(
+                              padding:
+                              EdgeInsets
+                                  .all(
+                                  4.0),
+                              child: Text(
+                                "Oops! ",
+                                style: TextStyle(
+                                    fontSize:
+                                    20,
+                                    fontWeight:
+                                    FontWeight
+                                        .bold,
+                                    color: Colors
+                                        .white),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsets
+                                  .all(
+                                  4.0),
+                              child: Text(
+                                "Currently bookmarking a post feature is under development.",
+                                style: TextStyle(
+                                    fontSize:
+                                    16,
+                                    color: Colors
+                                        .white54),
+                              ),
+                            )
+                          ],
+                        )));
                   },
                   icon: const Icon(
                     CupertinoIcons.bookmark,
@@ -499,9 +813,11 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
               )
             : Row(
                 children: [
-                  StreamBuilder(stream: _currentUserDataStream, builder: (context, snapshot) {
-                    if(snapshot.connectionState == ConnectionState.waiting){
-                      return Padding(
+                  StreamBuilder(
+                    stream: _currentUserDataStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Padding(
                           padding: const EdgeInsets.only(left: 12.0),
                           child: CircleAvatar(
                             radius: 12.1,
@@ -512,44 +828,45 @@ class _SinglePostCardItemStateState extends State<SinglePostCardItemState> {
                             ),
                           ),
                         );
-                      }
-                    else if(snapshot.hasError){
-                      return const Text("error");
-                    }
-                    else{
-                      var userData = snapshot.data!.data() as Map<String, dynamic>;
-                      return userData['profileurl'] != ""
-                          ? Padding(
-                        padding: const EdgeInsets.only(left:12.0),
-                            child: CachedNetworkImage(
-                                                    imageUrl:userData['profileurl'],
-                                                    imageBuilder: (context, imageProvider) =>
-                              CircleAvatar(
-                                radius: 12.1,
-                                backgroundColor: Colors.white,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.grey,
-                                  backgroundImage: imageProvider,
-                                  radius: 12,
+                      } else if (snapshot.hasError) {
+                        return const Text("error");
+                      } else {
+                        var userData =
+                            snapshot.data!.data() as Map<String, dynamic>;
+                        return userData['profileurl'] != ""
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 12.0),
+                                child: CachedNetworkImage(
+                                  imageUrl: userData['profileurl'],
+                                  imageBuilder: (context, imageProvider) =>
+                                      CircleAvatar(
+                                    radius: 12.1,
+                                    backgroundColor: Colors.white,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage: imageProvider,
+                                      radius: 12,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                                                  ),
-                          )
-                          : Padding(
-                        padding: const EdgeInsets.only(left:12.0),
-                            child: CircleAvatar(
-                                                    radius: 12.1,
-                                                    backgroundColor: Colors.white,
-                                                    child: CircleAvatar(
-                            backgroundColor: Colors.black.withOpacity(0.8),
-                            radius: 12,
-                            child: Icon(Icons.person,
-                                color: Colors.black.withOpacity(0.5)),
-                                                    ),
-                                                  ),
-                          );
-                    }
-                  },),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(left: 12.0),
+                                child: CircleAvatar(
+                                  radius: 12.1,
+                                  backgroundColor: Colors.white,
+                                  child: CircleAvatar(
+                                    backgroundColor:
+                                        Colors.black.withOpacity(0.8),
+                                    radius: 12,
+                                    child: Icon(Icons.person,
+                                        color: Colors.black.withOpacity(0.5)),
+                                  ),
+                                ),
+                              );
+                      }
+                    },
+                  ),
                   const SizedBox(
                     width: 12,
                   ),

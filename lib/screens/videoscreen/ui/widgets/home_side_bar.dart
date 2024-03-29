@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/chat_screen/sharelist.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/comment.dart';
 
@@ -14,7 +15,9 @@ class HomeSideBar extends StatefulWidget {
       required this.UploaderUid,
       required this.username,
       required this.noofcomments});
+
   final List likes;
+
   // final String comments;
   final String profileUrl;
   final String PostId;
@@ -36,20 +39,31 @@ class _HomeSideBarState extends State<HomeSideBar> {
         .textTheme
         .bodyLarge!
         .copyWith(fontSize: 13, color: Colors.white);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        _profileImageButton(),
-        SizedBox(height: 30,),
-        _sideBarItemForLike(Icons.favorite_outline,
-            widget.likes.length.toString(), style, isliked, widget.PostId),
-        SizedBox(height: 30,),
-        _sideBarForComment(
-            CupertinoIcons.chat_bubble, widget.noofcomments.toString(), style),
-        SizedBox(height: 30,),
-        _sideBarItem( CupertinoIcons.paperplane, 'share', style),
-        SizedBox(height: 10,),
-      ],
+    return Padding(
+      padding: EdgeInsets.only(bottom: 3.sp, left: 28.sp),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          _profileImageButton(),
+          const SizedBox(
+            height: 30,
+          ),
+          _sideBarItemForLike(CupertinoIcons.heart,
+              widget.likes.length.toString(), style, isliked, widget.PostId),
+          const SizedBox(
+            height: 30,
+          ),
+          _sideBarForComment(CupertinoIcons.chat_bubble,
+              widget.noofcomments.toString(), style),
+          const SizedBox(
+            height: 30,
+          ),
+          _sideBarItem(CupertinoIcons.paperplane, 'share', style),
+          const SizedBox(
+            height: 10,
+          ),
+        ],
+      ),
     );
   }
 
@@ -136,9 +150,15 @@ class _HomeSideBarState extends State<HomeSideBar> {
   _sideBarItem(IconData iconName, String label, TextStyle style) {
     return Column(
       children: [
-        GestureDetector(onTap: () {
-          showModalBottomSheet(context: context, builder:(context) => ShareScreen(Postid:widget.PostId,Type:"video"));
-        }, child: Icon(iconName, size: 28)),
+        GestureDetector(
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) =>
+                      ShareScreen(Postid: widget.PostId, Type: "video"),
+                  constraints: BoxConstraints(maxHeight: 400));
+            },
+            child: Icon(iconName, size: 28)),
         const SizedBox(
           height: 5,
         ),
@@ -175,7 +195,7 @@ class _HomeSideBarState extends State<HomeSideBar> {
                   ),
                 ),
               if (widget.profileUrl == "")
-                Center(
+                const Center(
                   child: Icon(
                     Icons.account_circle,
                     size: 40,

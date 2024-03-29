@@ -1,11 +1,17 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmedia/screens/search_user/searchui/searched_profile/anotherprofile.dart';
 import 'package:socialmedia/screens/videoscreen/bloc/refresh_bloc.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/home_side_bar.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/video_details.dart';
 import 'package:socialmedia/screens/videoscreen/ui/widgets/video_tile.dart';
+
+import '../../../chat_screen/chat_user_lists/chatlist.dart';
+import '../../../common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 
 class VideoPage extends StatefulWidget {
   final postid;
@@ -20,6 +26,7 @@ class _VideoPageState extends State<VideoPage> {
   List<Color> colors = [];
   bool IsFollowingSelected = false;
   int _snappedPageIndex=0;
+
 
   @override
   void initState() {
@@ -40,7 +47,7 @@ class _VideoPageState extends State<VideoPage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("For you",style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: IsFollowingSelected ?14:18,color: IsFollowingSelected?Colors.grey:Colors.white)),
+              Text("For you",style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: IsFollowingSelected ?14:18,color: IsFollowingSelected?Colors.grey:Colors.white,fontWeight: FontWeight.bold)),
             ],
           ),
           leading: null,
@@ -81,6 +88,7 @@ class _VideoPageState extends State<VideoPage> {
                       VideoTile(
                         video: filteredList[index]['posturl'],
                         currentIndex: index,
+                        filteredList:filteredList,
                         snappedPageIndex: _snappedPageIndex,
                       ),
                       Row(
@@ -88,17 +96,18 @@ class _VideoPageState extends State<VideoPage> {
                         children: [
                           Expanded(
                             flex: 3,
-                            child: Container(
+                            child: SizedBox(
                               height: MediaQuery.of(context).size.height / 4,
                               child: VideoDetails(
                                 username: filteredList[index]['username'],
                                 caption: filteredList[index]['caption'],
+                                profileUrl: filteredList[index]['profileurl'],
                                 UploaderUid: filteredList[index]['uid'],
                               ),
                             ),
                           ),
                           Expanded(
-                            child: Container(
+                            child: SizedBox(
                               height: MediaQuery.of(context).size.height / 1.75,
                               child: HomeSideBar(
                                 likes: filteredList[index]['likes'],

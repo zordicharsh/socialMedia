@@ -185,6 +185,8 @@ class _MyDrawerState extends State<MyDrawer> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.black,
+          surfaceTintColor: Colors.black,
           title: const Text('To Delete Account Write Delete', style: TextStyle(fontSize: 16)),
           content: SingleChildScrollView(
             child: Column(
@@ -217,6 +219,18 @@ class _MyDrawerState extends State<MyDrawer> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(60.sp, 40.sp),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),// Set button size
+                      ),
+                      child: const Text("Cancel",style: TextStyle(color: Colors.white54),),
+                    ),
+                    ElevatedButton(
                       onPressed: () async {
                         FocusScope.of(context).unfocus();
                         if (deletekey.currentState!.validate()) {
@@ -228,7 +242,6 @@ class _MyDrawerState extends State<MyDrawer> {
                             await FirebaseAuth.instance.currentUser?.delete();
                             circularLoadingBar.remove();
                             if(!context.mounted) return;
-                          Navigator.pop(context);
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginUi()));}
                           );}
                       },
@@ -241,18 +254,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                       child: const Text("Delete", style: TextStyle(color: Colors.white),),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(60.sp, 40.sp),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9),
-                        ),// Set button size
-                      ),
-                      child: const Text("Cancel"),
-                    ),
+
                   ],
                 ),
               ],
@@ -264,12 +266,44 @@ class _MyDrawerState extends State<MyDrawer> {
   }
   void showOptionsDialog2(BuildContext context) async {
 
-    showDialog<void>(
+    showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title:  Text('Do you want Logout ?', style: TextStyle(fontSize:16.sp)),
-          content: SingleChildScrollView(
+        return CupertinoAlertDialog(
+           title: const Text(
+          "Alert !",
+          style: TextStyle(
+          fontSize: 20),
+          ),
+          content:Text('Do you want to Logout?', style: TextStyle(fontSize:16.sp)),
+           actions:<CupertinoDialogAction>[
+             CupertinoDialogAction(
+                 isDestructiveAction:
+                 false,
+                 onPressed: () {
+                   Navigator.pop(
+                       context);
+                 },
+                 child: const Text(
+                   "No",
+                   style: TextStyle(
+                       color: Colors
+                           .white60),
+                 )),
+             CupertinoDialogAction(
+                 isDestructiveAction:
+                 true,
+                 onPressed: () {
+                   BlocProvider.of<DrawerBloc>(context).add(SignOutEvent());
+                   Navigator.pop(context);
+                   Navigator.pushReplacement(context,
+                       MaterialPageRoute(builder: (context) => const LoginUi()));
+                 },
+                 child: const Text(
+                     "Yes")),
+           ]
+
+       /* SingleChildScrollView(
             child: Row(
               children: [
               TextButton(onPressed: () {
@@ -284,11 +318,12 @@ class _MyDrawerState extends State<MyDrawer> {
                 }, child:Text("No",style: TextStyle(color: Colors.white,fontSize:16.sp),))
               ],
             ),
-          ),
+          ),*/
         );
       },
     );
   }
+
   OverlayEntry _createCircularLoadingBar() {
     return OverlayEntry(
       builder: (context) => Center(

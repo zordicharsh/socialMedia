@@ -44,7 +44,8 @@ class _PostGalleryState extends State<PostGallery> {
               if (snapshot.hasError) {
                 log("error while loading post :- ${snapshot.hasError.toString()}");
                 return Text(snapshot.hasError.toString());
-              } else if (snapshot.hasData) {
+              }
+              else if (snapshot.hasData) {
                 final posts = snapshot.data;
                 return posts!.size == 0
                     ? GestureDetector(
@@ -359,7 +360,8 @@ class _PostGalleryState extends State<PostGallery> {
                           }
                         },
                       );
-              } else {
+              }
+              else {
                 return Shimmer(
                   duration: const Duration(milliseconds: 2500),
                   color: Colors.white.withOpacity(0.5),

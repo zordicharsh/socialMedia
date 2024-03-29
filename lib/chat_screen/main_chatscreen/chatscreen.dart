@@ -1,14 +1,19 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:intl/intl.dart';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:socialmedia/chat_screen/main_chatscreen/shared_post_page.dart';
+import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-
 
 class ChatScreen extends StatefulWidget {
   final String touid;
@@ -21,7 +26,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   DocumentSnapshot<Map<String, dynamic>>? userDataSnapshot;
-  TextEditingController _messageController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
 
   @override
   void initState() {
@@ -47,14 +52,19 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
+            backgroundColor: Colors.black,
             appBar: AppBar(
+              scrolledUnderElevation: 0,
               actions: [
                 ZegoSendCallInvitationButton(
-                  iconSize: const Size(40, 40),
-                  buttonSize: const Size(40, 40),
+                  iconSize: Size(32.sp, 32.sp),
+                  buttonSize: Size(32.sp, 32.sp),
+                  notificationTitle: snapshot.data!.get('name'),
+                  notificationMessage:
+                      "hi! Voice call from ${snapshot.data!.get('name')}",
                   isVideoCall: false,
-                  resourceID:
-                  "zego_call", //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
+                  resourceID: "zego_call",
+                  //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
                   invitees: [
                     ZegoUIKitUser(
                       id: snapshot.data!.get('uid'),
@@ -63,32 +73,78 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 ),
                 const SizedBox(
-                  width: 20,
+                  width: 16,
                 ),
-                ZegoSendCallInvitationButton(
-                  iconSize: const Size(40, 40),
-                  buttonSize: const Size(40, 40),
-                  isVideoCall: true,
-                  resourceID:
-                  "zego_call", //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
-                  invitees: [
-                    ZegoUIKitUser(
-                      id: snapshot.data!.get('uid'),
-                      name: snapshot.data!.get('username').toString(),
-                    ),
-                  ],
+                Padding(
+                  padding: EdgeInsets.only(right: 12.0.sp),
+                  child: ZegoSendCallInvitationButton(
+                    iconSize: Size(32.sp, 32.sp),
+                    buttonSize: Size(32.sp, 32.sp),
+                    notificationTitle: snapshot.data!.get('name'),
+                    notificationMessage:
+                        "hi! Video call from ${snapshot.data!.get('name')}",
+                    isVideoCall: true,
+                    resourceID: "zego_call",
+                    //You need to use the resourceID that you created in the subsequent steps. Please continue reading this document.
+                    invitees: [
+                      ZegoUIKitUser(
+                        id: snapshot.data!.get('uid'),
+                        name: snapshot.data!.get('username').toString(),
+                      ),
+                    ],
+                  ),
                 )
               ],
               title: Row(
                 children: [
-                  CircleAvatar(
-                    backgroundImage:
-                    NetworkImage(snapshot.data!.get('profileurl')),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    snapshot.data!.get('username'),
-                    style: const TextStyle(fontSize: 16),
+                  snapshot.data!.get('profileurl') != ""
+                      ? CachedNetworkImage(
+                          imageUrl: snapshot.data!.get('profileurl'),
+                          filterQuality: FilterQuality.low,
+                          placeholder: (context, url) => CircleAvatar(
+                            radius: 14.1.sp,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.grey.withOpacity(0.3),
+                              radius: 14.sp,
+                            ),
+                          ),
+                          imageBuilder: (context, imageProvider) =>
+                              CircleAvatar(
+                            radius: 14.1.sp,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.grey.withOpacity(0.4),
+                              backgroundImage: imageProvider,
+                              radius: 14.sp,
+                            ),
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 14.1.sp,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.black.withOpacity(0.8),
+                            radius: 14.sp,
+                            child: Icon(Icons.person,
+                                color: Colors.black.withOpacity(0.5)),
+                          ),
+                        ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        snapshot.data!.get('name'),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        snapshot.data!.get('username'),
+                        style: const TextStyle(
+                            color: Colors.white54, fontSize: 12),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -102,7 +158,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     stream: FirebaseFirestore.instance
                         .collection('Chats')
                         .where('senderuid',
-                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                         .where('receiveruid', isEqualTo: widget.touid)
                         .orderBy('timestamp', descending: true)
                         .snapshots(),
@@ -112,8 +168,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           stream: FirebaseFirestore.instance
                               .collection('Chats')
                               .where('senderuid', isEqualTo: widget.touid)
-                              .where('receiveruid', isEqualTo:
-                          FirebaseAuth.instance.currentUser!.uid)
+                              .where('receiveruid',
+                                  isEqualTo:
+                                      FirebaseAuth.instance.currentUser!.uid)
                               .orderBy('timestamp', descending: true)
                               .snapshots(),
                           builder: (context, receiverSnapshot) {
@@ -123,26 +180,79 @@ class _ChatScreenState extends State<ChatScreen> {
                                       receiverSnapshot.data!.docs;
                               combinedSnapshots.sort((a, b) => b['timestamp']
                                   .compareTo(
-                                  a['timestamp'])); // Sort by timestamp
-                              return ListView.builder(
+                                      a['timestamp'])); // Sort by timestamp
+                              combinedSnapshots =
+                                  combinedSnapshots.reversed.toList();
+                              return StickyGroupedListView(
                                 reverse: true,
-                                itemCount: combinedSnapshots.length,
+                                elements: combinedSnapshots,
+                                order: StickyGroupedListOrder.DESC,
+                                groupBy: (element) {
+                                  // Group by timestamp
+                                  DateTime timestamp =
+                                      (element['timestamp'] as Timestamp)
+                                          .toDate();
+                                  return DateTime(
+                                    timestamp.year,
+                                    timestamp.month,
+                                    timestamp.day,
+                                  );
+                                },
+                                stickyHeaderBackgroundColor: Colors.transparent,
+                                groupSeparatorBuilder:
+                                    (QueryDocumentSnapshot element) {
+                                  DateTime timestamp =
+                                      (element['timestamp'] as Timestamp)
+                                          .toDate();
+                                  return Container(
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 6, horizontal: 160),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child: Center(
+                                      child: Text(
+                                        DateFormat('MMMMd')
+                                                    .format(DateTime.now()) ==
+                                                DateFormat('MMMMd')
+                                                    .format(timestamp)
+                                            ? "Today"
+                                            : DateFormat('MMMMd').format(
+                                                        DateTime.now().subtract(
+                                                            const Duration(
+                                                                days: 1))) ==
+                                                    DateFormat('MMMMd')
+                                                        .format(timestamp)
+                                                ? "Yesterday"
+                                                : DateFormat('MMMMd')
+                                                    .format(timestamp),
+                                        style: const TextStyle(
+                                            color: Colors.white60,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                floatingHeader: false,
                                 itemBuilder: (context, index) {
-                                  var message =
-                                  combinedSnapshots[index].data() as Map;
+                                  var message = index.data() as Map;
                                   bool isCurrentUser = message['senderuid'] ==
                                       FirebaseAuth.instance.currentUser!.uid;
                                   bool isSeen = message['seen'] ?? false;
                                   if (!isSeen && !isCurrentUser) {
                                     // Mark the message as seen if it's not from the current user and hasn't been seen yet
-                                    markMessageAsSeen(
-                                        combinedSnapshots[index].id);
+                                    markMessageAsSeen(index.id);
                                   }
                                   DateTime timestamp =
-                                  (message['timestamp'] as Timestamp)
-                                      .toDate();
+                                      (message['timestamp'] as Timestamp)
+                                          .toDate();
                                   String formattedTime =
-                                  DateFormat('hh:mm').format(timestamp);
+                                      DateFormat('hh:mm aa').format(timestamp);
                                   return Align(
                                     alignment: isCurrentUser
                                         ? Alignment.centerRight
@@ -155,17 +265,26 @@ class _ChatScreenState extends State<ChatScreen> {
                                         Container(
                                           margin: const EdgeInsets.symmetric(
                                               vertical: 5, horizontal: 10),
-                                          padding: const EdgeInsets.all(10),
+                                          padding:
+                                              message.containsKey('message')
+                                                  ? const EdgeInsets.all(10)
+                                                  : EdgeInsets.zero,
                                           decoration: BoxDecoration(
                                             color: isCurrentUser
-                                                ? Colors.blue
-                                                : Colors.green,
+                                                ? message.containsKey('message')
+                                                    ? Colors.blue
+                                                    : Colors.white
+                                                        .withOpacity(0.1)
+                                                : message.containsKey('message')
+                                                    ? Colors.grey[900]
+                                                    : Colors.white
+                                                        .withOpacity(0.1),
                                             borderRadius:
-                                            BorderRadius.circular(15),
+                                                BorderRadius.circular(16),
                                           ),
                                           child: Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               if (message
                                                   .containsKey('message'))
@@ -175,50 +294,148 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       color: Colors.white),
                                                 ),
                                               if (message.containsKey('image'))
-                                                Image.network(
-                                                  message['image'],
-                                                  width: 200,
-                                                  height: 300,
-                                                  fit: BoxFit.fill,
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          16.0),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: message['image'],
+                                                    width: 200,
+                                                    height: 280,
+                                                    fit: BoxFit.cover,
+                                                    filterQuality:
+                                                        FilterQuality.low,
+                                                  ),
                                                 ),
-                                              if(message.containsKey('postid'))
+                                              if (message.containsKey('postid'))
                                                 StreamBuilder(
-                                                  stream: FirebaseFirestore.instance.collection('UserPost').doc(message['postid']).snapshots(),
-                                                  builder: (context, postSnapshot) {
-                                                    if(postSnapshot.connectionState == ConnectionState.waiting){
-                                                      return const CircularProgressIndicator();
-                                                    }
-                                                    else if(postSnapshot.data!.exists){
-                                                      if (postSnapshot.hasData) {
-                                                        if(postSnapshot.data!.get('type')=="image"){
-                                                          return Container(
-                                                            child: Image.network(postSnapshot.data!.get('posturl'),
-                                                              width: 200,
-                                                              height: 300,
-                                                              fit: BoxFit.fill,
+                                                  stream: FirebaseFirestore
+                                                      .instance
+                                                      .collection('UserPost')
+                                                      .doc(message['postid'])
+                                                      .snapshots(),
+                                                  builder:
+                                                      (context, postSnapshot) {
+                                                    if (postSnapshot.hasError) {
+                                                      return const Text(
+                                                          'error');
+                                                    } else if (postSnapshot
+                                                            .connectionState ==
+                                                        ConnectionState
+                                                            .waiting) {
+                                                      return CircularProgressIndicator(
+                                                        color: Colors.grey[900],
+                                                      );
+                                                    } else if (!postSnapshot
+                                                        .data!.exists) {
+                                                      return Container(
+                                                        width: 250,
+                                                        height: 84,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 12),
+                                                        child: const Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .stretch,
+                                                          children: [
+                                                            Text(
+                                                              'Post Unavailable',
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600),
                                                             ),
-                                                            // Other UI components to display the post data
-                                                          );
-                                                        }
-                                                        else{
-                                                          return Container(
-                                                            child: Image.network(postSnapshot.data!.get('thumbnail'),
-                                                              width: 200,
-                                                              height: 300,
-                                                              fit: BoxFit.fill,
+                                                            Text(
+                                                              'This post is unavailable because it was deleted.',
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300,
+                                                                  color: Colors
+                                                                      .white38),
                                                             ),
-                                                            // Other UI components to display the post data
-                                                          );
-                                                        }
-                                                      }
-                                                      else if(postSnapshot.hasData==false){
-                                                        return const Text('Post not found');
-                                                      }
-                                                      else {
-                                                        return const Text('Post not found');
-                                                      }
-                                                    }else{
-                                                      return const Text('Post not found');
+                                                          ],
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16.0),
+                                                        child: GestureDetector(
+                                                          onTap: () =>
+                                                              Navigator.push(
+                                                                  context,
+                                                                  CustomPageRouteRightToLeft(
+                                                                      child:
+                                                                          SharedPostInChatItemState(
+                                                                    postdata:
+                                                                        postSnapshot,
+                                                                  ))),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              _createPhotoTitle(
+                                                                  postSnapshot
+                                                                      .data!
+                                                                      .get(
+                                                                          'profileurl'),
+                                                                  postSnapshot
+                                                                      .data!
+                                                                      .get(
+                                                                          'username')),
+                                                              Stack(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topRight,
+                                                                children: [
+                                                                  CachedNetworkImage(
+                                                                    imageUrl: postSnapshot.data!.get('type') ==
+                                                                            "image"
+                                                                        ? postSnapshot
+                                                                            .data!
+                                                                            .get(
+                                                                                'posturl')
+                                                                        : postSnapshot
+                                                                            .data!
+                                                                            .get('thumbnail'),
+                                                                    width: 300,
+                                                                    height: 300,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                  postSnapshot.data!.get(
+                                                                              'type') ==
+                                                                          "image"
+                                                                      ? const SizedBox
+                                                                          .shrink()
+                                                                      : const Padding(
+                                                                          padding:
+                                                                              EdgeInsets.all(2.0),
+                                                                          child: Icon(
+                                                                              Icons.video_library,
+                                                                              size: 20),
+                                                                        )
+                                                                ],
+                                                              ),
+                                                              _createCaptionBar(
+                                                                  postSnapshot
+                                                                      .data!
+                                                                      .get(
+                                                                          'username'),
+                                                                  postSnapshot
+                                                                      .data!
+                                                                      .get(
+                                                                          'caption'))
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
                                                     }
                                                   },
                                                 )
@@ -230,21 +447,29 @@ class _ChatScreenState extends State<ChatScreen> {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 10),
                                             child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
                                               children: [
                                                 Text(
-                                                    formattedTime), // Displaying formatted time
+                                                  formattedTime,
+                                                  style: const TextStyle(
+                                                      color: Colors.white54,
+                                                      fontSize: 11),
+                                                ),
+                                                // Displaying formatted time
+                                                const SizedBox(
+                                                  width: 4,
+                                                ),
                                                 Icon(
                                                   isSeen
                                                       ? Icons.done_all_rounded
-                                                      : Icons.done_rounded,
+                                                      : Icons.done_all_rounded,
                                                   color: isSeen
                                                       ? Colors.blue
                                                       : Colors.grey,
                                                   size: 18,
                                                 ),
                                               ],
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.end,
                                             ),
                                           )
                                         else
@@ -252,61 +477,138 @@ class _ChatScreenState extends State<ChatScreen> {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 10),
                                             child: Row(
-                                              children: [
-                                                Text(
-                                                    formattedTime), // Displaying formatted time
-                                              ],
                                               mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Text(formattedTime,
+                                                    style: const TextStyle(
+                                                      color: Colors.white54,
+                                                      fontSize: 11,
+                                                    )),
+                                                // Displaying formatted time
+                                              ],
                                             ),
                                           ),
+                                        const SizedBox(
+                                          height: 16,
+                                        ),
                                       ],
                                     ),
                                   );
                                 },
                               );
                             } else {
-                              return const Center(
-                                child: CircularProgressIndicator(),
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.grey[900],
+                                ),
                               );
                             }
                           },
                         );
                       } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.grey[900],
+                          ),
                         );
                       }
                     },
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  child: Stack(
+                    alignment: Alignment.centerRight,
                     children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _messageController,
-                          decoration: InputDecoration(
-                            hintText: 'Type a message...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
+                      TextField(
+                        controller: messageController,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                          hintText: " Message... ",
+                          contentPadding:
+                              EdgeInsets.only(right: 92.sp, left: 16.sp),
+                          filled: true,
+                          fillColor: Colors.grey[900],
+                          labelStyle: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(color: Colors.grey),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 56,
+                        child: Container(
+                          width: 36,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withOpacity(0.1),
+                          ),
+                          child: Center(
+                            child: IconButton(
+                              highlightColor: Colors.transparent,
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(
+                                CupertinoIcons.photo,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                _pickImage();
+                              },
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Icons.image),
-                        onPressed: () {
-                          _pickImage();
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.send),
-                        onPressed: () {
-                          sendMessage();
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: GestureDetector(
+                          onTap: () => sendMessage(),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                height: 34,
+                                width: 34,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: const SweepGradient(colors: [
+                                      Colors.pinkAccent,
+                                      Colors.pinkAccent,
+                                      Colors.orangeAccent,
+                                      Colors.red,
+                                      Colors.purple,
+                                      Colors.pink,
+                                    ])),
+                              ),
+                              Container(
+                                height: 30,
+                                width: 30,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.grey[900]),
+                              ),
+                              const Icon(
+                                Icons.arrow_upward_sharp,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -315,11 +617,11 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           );
         } else {
-          return Scaffold(
-            appBar: AppBar(
+          return const Scaffold(
+            /* appBar: AppBar(
               title: const Text('Loading...'),
-            ),
-            body: const Center(
+            ),*/
+            body: Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -329,7 +631,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void sendMessage({String? imageUrl}) {
-    String message = _messageController.text.trim();
+    String message = messageController.text.trim();
     if (message.isNotEmpty || imageUrl != null) {
       Map<String, dynamic> messageData = {
         'receiveruid': widget.touid,
@@ -348,9 +650,9 @@ class _ChatScreenState extends State<ChatScreen> {
           .collection('Chats')
           .add(messageData)
           .then((value) {
-        _messageController.clear();
+        messageController.clear();
       }).catchError((error) {
-        print("Failed to send message: $error");
+        log("Failed to send message: $error");
       });
     }
   }
@@ -359,7 +661,7 @@ class _ChatScreenState extends State<ChatScreen> {
     FirebaseFirestore.instance.collection('Chats').doc(messageId).update({
       'seen': true,
     }).catchError((error) {
-      print("Failed to mark message as seen: $error");
+      log("Failed to mark message as seen: $error");
     });
   }
 
@@ -371,7 +673,8 @@ class _ChatScreenState extends State<ChatScreen> {
       // Upload image to Firebase Storage
       File imageFile = File(pickedFile.path);
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference ref = FirebaseStorage.instance.ref().child('chat_images').child(fileName);
+      Reference ref =
+          FirebaseStorage.instance.ref().child('chat_images').child(fileName);
       UploadTask uploadTask = ref.putFile(imageFile);
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
 
@@ -383,4 +686,59 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  Widget _createPhotoTitle(String profileurl, String username) => Container(
+      width: 300,
+      color: Colors.grey[900],
+      child: ListTile(
+        leading: profileurl != ""
+            ? CircleAvatar(
+                radius: 14.1,
+                backgroundColor: Colors.white,
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey,
+                  backgroundImage: CachedNetworkImageProvider(profileurl),
+                  radius: 14,
+                ),
+              )
+            : CircleAvatar(
+                radius: 14.1,
+                backgroundColor: Colors.white,
+                child: CircleAvatar(
+                  backgroundColor: Colors.black.withOpacity(0.8),
+                  radius: 14,
+                  child:
+                      Icon(Icons.person, color: Colors.black.withOpacity(0.5)),
+                ),
+              ),
+        title: Text(
+          username,
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ));
+
+  Widget _createCaptionBar(String username, String caption) => Container(
+        width: 300,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        color: Colors.grey[900],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              username,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              width: 6,
+            ),
+            SizedBox(
+                width: 180.sp,
+                child: Expanded(
+                    child: Text(caption,
+                        style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                        )))),
+          ],
+        ),
+      );
 }
