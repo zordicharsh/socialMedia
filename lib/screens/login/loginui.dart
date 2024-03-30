@@ -61,9 +61,9 @@ class LoginUiState extends State<LoginUi> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SvgPicture.asset(
-                          'assets/images/instaLOGO.svg',
-                          height: deviceWidth * .24,
+                        Image.asset(
+                          'assets/images/fonttry.png',
+                          height: 120,
                         ),
                         SizedBox(
                           height: deviceWidth * .05,

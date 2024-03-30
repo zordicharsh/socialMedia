@@ -17,17 +17,8 @@ class _splState extends State<spl> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 250,
-            width: 250,
-            color: Colors.green,
-          ),
-        ],
-      ),
+      color: Colors.black,
+      child: Image.asset('assets/images/spgif.gif',width: 100,height: 100,),
     );
   }
 }

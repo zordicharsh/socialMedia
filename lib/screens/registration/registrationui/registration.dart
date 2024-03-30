@@ -9,6 +9,7 @@ import 'package:socialmedia/common_widgets/transition_widgets/left_to_right/cust
 import 'package:socialmedia/screens/registration/registrationbloc/registration_bloc.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_event.dart';
 import 'package:socialmedia/screens/registration/registrationbloc/registration_state.dart';
+import 'package:socialmedia/screens/registration/services/verification.dart';
 
 import '../../login/loginui.dart';
 import '../registrationwidgets/textfromfield.dart';
@@ -130,9 +131,9 @@ class _SignUpState extends State<SignUp> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(
-                              'assets/images/instaLOGO.svg',
-                              height: deviceWidth * .24,
+                            Image.asset(
+                              'assets/images/fonttry.png',
+                              height: 120,
                             ),
                             SizedBox(height: deviceWidth * .02),
                             Text(
@@ -319,6 +320,21 @@ class _SignUpState extends State<SignUp> {
                                       builder: (context) => const LoginUi(),
                                     ),
                                   );
+                                }
+                                else if(state is NavigateToEmail){
+                                  circularLoadingbar.remove();
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => EmailVerificationScreen(   name: NameController.text.toString(),
+                                    username:
+                                    UserNameController
+                                        .text
+                                        .toString(),
+                                    email: EmailController
+                                        .text
+                                        .toString(),
+                                    password:
+                                    PasswordController
+                                        .text
+                                        .toString(),),));
                                 }
                               },
                               child: BlocBuilder<RegistrationBloc,

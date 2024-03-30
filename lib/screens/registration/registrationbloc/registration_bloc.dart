@@ -44,14 +44,17 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
       // print(gloable.toString());
       // print(password.toString());
       if (querySnapshot.docs.isEmpty) {
+        bool isvarifieldEmail;
         final UserCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-                email: event.Email.trim(), password: event.Password.trim());
-        final UserAuth = FirebaseAuth.instance.currentUser;
-        emit(AuthSuccessLoading());
-        // DateTime now = DateTime.now();
-        UserModel RegModel = await UserModel(
-             Name: event.Name.toString(),
+            email: event.Email.trim(), password: event.Password.trim());
+        isvarifieldEmail= UserCredential.user!.emailVerified;
+        if(isvarifieldEmail){
+          final UserAuth = FirebaseAuth.instance.currentUser;
+          emit(AuthSuccessLoading());
+          // DateTime now = DateTime.now();
+          UserModel RegModel = await UserModel(
+            Name: event.Name.toString(),
             Uid:  UserAuth!.uid.toString(),
             Username:  event.Username.trim(),
             Email:  event.Email.trim(),
@@ -59,20 +62,23 @@ class RegistrationBloc extends Bloc<RegistrationEvents, RegistrationStates> {
             Following:  [],
             Follower:  [],
             datetime:  Timestamp.now(),
-          Profileurl: "",
-          Bio: "",
-          Acctype: "public",
-          Followrequest: [],
-          Followrequestnotification: [],
-          TotalPosts: 0,
-        );
-        var res = await FirebaseFirestore.instance
-            .collection("RegisteredUsers")
-            .doc(UserAuth.uid.toString())
-            .set(RegModel.toMap());
-        // emit(FirebaseAuthSuccessState(AuthSuccessMessage: "Loginpage load"));
-        emit(AuthSuccessLoading());
-        emit(NavigateToLoginScreen());
+            Profileurl: "",
+            Bio: "",
+            Acctype: "public",
+            Followrequest: [],
+            Followrequestnotification: [],
+            TotalPosts: 0,
+          );
+          var res = await FirebaseFirestore.instance
+              .collection("RegisteredUsers")
+              .doc(UserAuth.uid.toString())
+              .set(RegModel.toMap());
+          // emit(FirebaseAuthSuccessState(AuthSuccessMessage: "Loginpage load"));
+          emit(AuthSuccessLoading());
+          emit(NavigateToLoginScreen());
+        }else{
+          emit(NavigateToEmail());
+        }
       } else {
         emit(
             FirebaseAuthErrorState(AuthErrorMessage: "Username already exits"));

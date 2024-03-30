@@ -29,3 +29,5 @@ class obsecureFalse extends RegistrationStates {
 }
 
 class NavigateToLoginScreen extends RegistrationStates {}
+
+class NavigateToEmail extends RegistrationStates{}
