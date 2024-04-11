@@ -14,6 +14,7 @@ final void Function()?onTap;
       height: height,
       child: ElevatedButton(onPressed:onTap,
         style: ElevatedButton.styleFrom(
+          elevation: 0,
         foregroundColor:Colors.black12,
         splashFactory: NoSplash.splashFactory,
         padding: const EdgeInsets.all(4),

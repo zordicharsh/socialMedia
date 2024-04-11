@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/screens/profile/bloc/comment_bloc/comment_bloc.dart';
-import 'package:socialmedia/screens/profile/ui/widgets/single(comment_card)state.dart';
+import 'package:socialmedia/common_widgets/single_item_state/single(comment_card)state.dart';
 
 class CommentSection extends StatefulWidget {
   final ScrollController scrollController;
@@ -357,7 +357,9 @@ class _CommentSectionState extends State<CommentSection> {
                                 SingleCommentCardItemState(
                                     index: index,
                                     commentdata: commentdata,
-                                    postId: widget.postId),
+                                    postId: widget.postId,
+                                  uidofpostuploader: widget.uidofpostuploader,
+                                ),
                           );
                         }
                       },

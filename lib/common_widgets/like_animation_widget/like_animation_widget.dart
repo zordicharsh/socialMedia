@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 
 import 'package:flutter/material.dart';
 
@@ -42,8 +42,8 @@ class _HeartAnimationWidgetState extends State<HeartAnimationWidget>
   void didUpdateWidget(covariant HeartAnimationWidget oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
-    log(oldWidget.isAnimating.toString());
-    log(widget.isAnimating.toString());
+    /*log(oldWidget.isAnimating.toString());
+    log(widget.isAnimating.toString());*/
     if (widget.isAnimating != oldWidget.isAnimating) {
       doAnimation();
     }

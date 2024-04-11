@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,7 +27,7 @@ class HeartBloc extends Bloc<HeartEvent, HeartState> {
     if (event.isHeartAnimating) {
       event.isHeartAnimating = false;
     }
-    log("2nd attempt :- isLiked:- ${event.isLiked} & isHeartAnimating:- ${event.isHeartAnimating}");
+  /*  log("2nd attempt :- isLiked:- ${event.isLiked} & isHeartAnimating:- ${event.isHeartAnimating}");*/
   }
 
   FutureOr<void> profilePagePostCardDoubleTapLikedAnimOnPostEvent(ProfilePagePostCardDoubleTapLikedAnimOnPostEvent event, Emitter<HeartState> emit) async{

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileTagSection extends StatefulWidget {
@@ -11,10 +12,31 @@ class _ProfileTagSectionState extends State<ProfileTagSection> {
   @override
   Widget build(BuildContext context) {
     return const Center(
-        child: Text(
-          "Tags tab",
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold),
-        ));
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 44,
+            backgroundColor: Colors.white,
+            child: CircleAvatar(
+              backgroundColor: Colors.black,
+              radius: 42,
+              child: Icon(
+                CupertinoIcons.person_crop_square,
+                size: 38,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Text(
+            "No posts yet",
+            style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
   }
 }

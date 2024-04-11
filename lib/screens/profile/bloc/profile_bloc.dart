@@ -50,7 +50,7 @@ _getCurrentUserPosts(String? uid) {
 
 
 
-Future<AggregateQuerySnapshot> _getCurrentUserPostsLength(String? uid)async {
+/*Future<AggregateQuerySnapshot> _getCurrentUserPostsLength(String? uid)async {
   log("uid in gallery1 $uid");
   AggregateQuerySnapshot posts = await FirebaseFirestore.instance
       .collection("UserPost")
@@ -59,7 +59,7 @@ Future<AggregateQuerySnapshot> _getCurrentUserPostsLength(String? uid)async {
   log("aa rha hun mein");
   //log(postlength.toString());
   return posts;
-}
+}*/
 
 FutureOr<void> signOutEvent(
     SignOutEvent event, Emitter<ProfileState> emit) async {

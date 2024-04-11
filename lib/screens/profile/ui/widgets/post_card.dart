@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:socialmedia/screens/profile/ui/widgets/single(post_card)state.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+import '../../../../common_widgets/single_item_state/single(post_card)state.dart';
+import '../../../../common_widgets/single_item_state/single(video_post_card)state.dart';
 import '../../bloc/profile_bloc.dart';
 
 class PostCard extends StatefulWidget {
@@ -26,7 +30,6 @@ class _PostCardState extends State<PostCard> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         scrolledUnderElevation: 0,
-    //    elevation: 0,
         leading: ModalRoute.of(context)?.canPop == true
             ? IconButton(
                 onPressed: Navigator.of(context).pop,
@@ -56,11 +59,20 @@ class _PostCardState extends State<PostCard> {
                 else if(snapshot.hasError){
                   return const Center(child: Text("errro"));
                 }else {
-                  return ListView.builder(
+                  return ScrollablePositionedList.builder(
                     scrollDirection: Axis.vertical,
+                    initialScrollIndex: widget.currentImageIndex,
                     shrinkWrap: true,
                       itemCount: postsdata!.size,
-                      itemBuilder:(context, index) => SinglePostCardItemState(index: index,postdata: postsdata)
+                      itemBuilder:(context, index) {
+                        bool isLiked = snapshot.data!.docs[index]['likes']
+                            .contains(FirebaseAuth.instance.currentUser!.uid);
+                        return snapshot.data!.docs[index]['type'] == 'image' ? SingleImagePostCardItemState(
+                          postdata: postsdata.docs[index].data(),
+                          isLiked: isLiked,) : SingleVideoPostCardItemState(
+                          postdata: postsdata.docs[index].data(),
+                          isLiked: isLiked,);
+                      }
                     );
                 }
               },

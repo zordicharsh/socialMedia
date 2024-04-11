@@ -4,13 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
 import 'package:socialmedia/screens/EditProfile/ui/editprofile.dart';
-import 'package:socialmedia/screens/FollowingsAndFollowers/Followers.dart';
-import 'package:socialmedia/screens/FollowingsAndFollowers/Followings.dart';
-import 'package:socialmedia/screens/follow_request_screen/followreuestscreen.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/elevated_button.dart';
-
 import '../../../../global_Bloc/global_bloc.dart';
 import '../../../../model/user_model.dart';
+import '../../../chat_screen/sharelist.dart';
+import '../../../followings_and_followers/ui/Followers.dart';
+import '../../../followings_and_followers/ui/Followings.dart';
 
 class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key});
@@ -59,6 +58,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           CircleAvatar(
                             backgroundColor: Colors.grey.withOpacity(0.3),
                             radius: 36.sp,
+                            child: Icon(Icons.person,size: 66,color: Colors.black.withOpacity(0.5),),
                           ),
                           Positioned(
                               top: 48.sp,
@@ -90,6 +90,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         CircleAvatar(
                           backgroundColor: Colors.grey.withOpacity(0.3),
                           radius: 36.sp,
+                          child: Icon(Icons.person,size: 66,color: Colors.black.withOpacity(0.5),),
                         ),
                         Positioned(
                             top: 48.sp,
@@ -138,10 +139,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                             onTap: () {
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        Followers(userdata[0].Uid),
-                                  ));
+                                  CustomPageRouteRightToLeft(
+                                          child: Followers(userdata[0].Uid))).then((value) => setState((){}));
                             },
                           ),
                           const SizedBox(
@@ -154,10 +153,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                               userdata[0].Uid;
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
+                                  CustomPageRouteRightToLeft(
+                                    child:
                                         Following(userdata[0].Uid),
-                                  ));
+                                  )).then((value) => setState((){}));
                             },
                           ),
                         ],
@@ -223,7 +222,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         color: Colors.white,
                         fontSize: 12.sp,
                       ));
-                } else {
+                } 
+                else {
                   return const SizedBox.shrink();
                 }
               } else {
@@ -254,16 +254,39 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                             CustomPageRouteRightToLeft(
                               child: const EditProfile(),
                             ))),
-                    ProfileManipulationButton(
-                      text: "Share profile",
-                      height: 32,
-                      width: 160.sp,
-                      onTap: () => Navigator.push(
-                          context,
-                          CustomPageRouteRightToLeft(
-                            child: const Request(),
-                          )),
-                    )
+                    BlocBuilder<GlobalBloc, GlobalState>(
+  builder: (context, state) {
+    if (state is GetUserDataFromGlobalBlocState) {
+      List<UserModel> userdata = state.userData;
+      return ProfileManipulationButton(
+        text: "Share profile",
+        height: 32,
+        width: 160.sp,
+        onTap: () {
+          showModalBottomSheet(
+              useSafeArea: true,
+              context: context,
+              builder: (context) =>
+                  ShareScreen(
+                      Profileid: userdata[0].Uid,
+                    Profileurl: userdata[0].Profileurl,
+                    Username:userdata[0].Username ,
+                    name: userdata[0].Name,
+                  ),
+              constraints: const BoxConstraints(maxHeight: 400));
+        },
+
+      );
+    }else{
+      return ProfileManipulationButton(
+        text: "Share profile",
+        height: 32,
+        width: 160.sp,
+        onTap: () {},
+      );
+    }
+  },
+)
                   ],
                 ),
               )

@@ -45,6 +45,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21
+        buildToolsVersion = '30.0.3'
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -67,5 +68,6 @@ flutter {
 
 dependencies {
     implementation 'com.google.firebase:firebase-messaging:21.1.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
 
 }

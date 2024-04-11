@@ -6,18 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:socialmedia/global_Bloc/global_bloc.dart';
-import 'package:socialmedia/screens/Drawer/drawer.dart';
-import 'package:socialmedia/screens/Drawer/drawer_bloc.dart';
-import 'package:socialmedia/screens/Drawer/drawer_event.dart';
-import 'package:socialmedia/screens/FollowingsAndFollowers/Followers.dart';
+import 'package:socialmedia/screens/Drawer/ui/drawer.dart';
+import 'package:socialmedia/screens/Drawer/bloc/drawer_bloc.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/post_gallery_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/reels_tab.dart';
 import 'package:socialmedia/screens/profile/ui/profile_page_tabs/tags_tab.dart';
 import 'package:socialmedia/screens/profile/ui/widgets/profile_header.dart';
 
+import '../../../global_Bloc/global_bloc.dart';
 import '../../../model/user_model.dart';
+import '../../Drawer/bloc/drawer_event.dart';
 import '../../navigation_handler/bloc/navigation_bloc.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -79,9 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ],
         leading: ModalRoute.of(context)?.canPop == true
-            ? null /*IconButton(
-                onPressed: Navigator.of(context).pop,
-                icon: const Icon(Icons.keyboard_backspace))*/
+            ? null
             : null,
         backgroundColor: Colors.black,
         title: BlocBuilder<GlobalBloc, GlobalState>(

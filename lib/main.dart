@@ -1,21 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socialmedia/firebase_options.dart';
-import 'package:socialmedia/screens/Drawer/drawer_bloc.dart';
-import 'package:socialmedia/screens/FollowingsAndFollowers/followers_following_bloc.dart';
-import 'package:socialmedia/screens/SplashScreeenUI.dart';
-import 'package:socialmedia/screens/EditProfile/ui/editprofile_bloc.dart';
+import 'package:socialmedia/screens/Drawer/bloc/drawer_bloc.dart';
+import 'package:socialmedia/screens/followings_and_followers/bloc/followers_following_bloc.dart';
+import 'package:socialmedia/screens/splash_screen/ui/splash_screen.dart';
+import 'package:socialmedia/screens/EditProfile/bloc/editprofile_bloc.dart';
 import 'package:socialmedia/screens/exploreimage/bloc/exploreimagebloc_bloc.dart';
-import 'package:socialmedia/screens/follow_request_screen/request_bloc.dart';
+import 'package:socialmedia/screens/follow_request_screen/bloc/request_bloc.dart';
 import 'package:socialmedia/screens/login/loginbloc/login_bloc.dart';
 import 'package:socialmedia/screens/navigation_handler/bloc/navigation_bloc.dart';
 import 'package:socialmedia/screens/profile/bloc/comment_bloc/comment_bloc.dart';
 import 'package:socialmedia/screens/profile/bloc/heart_animation_bloc/heart_bloc.dart';
 import 'package:socialmedia/screens/profile/bloc/profile_bloc.dart';
-import 'package:socialmedia/screens/search_user/explorebloc/explore_bloc.dart';
-import 'package:socialmedia/screens/search_user/searchbloc/search_bloc.dart';
+import 'package:socialmedia/screens/search_user/bloc/explore/explore_bloc.dart';
+import 'package:socialmedia/screens/search_user/bloc/search/search_bloc.dart';
 import 'package:socialmedia/screens/user_post/bloc/userpost_bloc.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,]);
     return ScreenUtilInit(
       minTextAdapt: true,
       splitScreenMode: true,

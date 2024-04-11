@@ -6,16 +6,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:socialmedia/screens/profile/ui/widgets/single(popup_dialog)state.dart';
-
+import '../../../../common_widgets/single_item_state/single(popup_dialog)state.dart';
 import '../../../../common_widgets/transition_widgets/right_to_left/custom_page_route_right_to_left.dart';
+import '../../../chat_screen/sharelist.dart';
 import '../../../navigation_handler/bloc/navigation_bloc.dart';
 import '../../bloc/heart_animation_bloc/heart_bloc.dart';
 import '../../bloc/profile_bloc.dart';
 import '../widgets/animated_dialog.dart';
 import '../widgets/comment.dart';
 import '../widgets/post_card.dart';
+import 'package:flutter/cupertino.dart';
 
 class PostGallery extends StatefulWidget {
   const PostGallery({
@@ -61,16 +61,25 @@ class _PostGalleryState extends State<PostGallery> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  Icons.add_box_rounded,
-                                  size: 32,
+                                CircleAvatar(
+                                  radius: 44,
+                                  backgroundColor: Colors.white,
+                                  child: CircleAvatar(
+                                    child: Icon(
+                                      CupertinoIcons.add,
+                                      size: 38,
+                                      color: Colors.white,
+                                    ),
+                                    backgroundColor: Colors.black,
+                                    radius: 42,
+                                  ),
                                 ),
                                 SizedBox(
                                   height: 8,
                                 ),
                                 Text(
-                                  "Upload a Post",
-                                  style: TextStyle(fontSize: 16),
+                                  "Upload Post",
+                                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -197,7 +206,24 @@ class _PostGalleryState extends State<PostGallery> {
                                                   ));
                                         },
                                       );
-                                    } else {
+                                    }
+                                    else if ((details.globalPosition.dx >=
+                                        285 &&
+                                        details.globalPosition.dx <= 325) &&
+                                        (details.globalPosition.dy >= 660 &&
+                                            details.globalPosition.dy <= 680)){
+                                      HapticFeedback.vibrate();
+                                      popupDialog.remove();
+                                      if (!context.mounted) return;
+                                      showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => ShareScreen(
+                                              Postid: snapshot.data!.docs[index]
+                                              ['postid'],
+                                              Type: snapshot.data!.docs[index]['type']),
+                                          constraints: const BoxConstraints(maxHeight: 400));
+                                    }
+                                    else {
                                       popupDialog.remove();
                                     }
                                   },
@@ -209,6 +235,7 @@ class _PostGalleryState extends State<PostGallery> {
                                             currentImageIndex: index,
                                             uid: FirebaseAuth
                                                 .instance.currentUser!.uid,
+
                                           ),
                                         ));
                                   },
@@ -218,7 +245,8 @@ class _PostGalleryState extends State<PostGallery> {
                                     fit: BoxFit.cover,
                                   )),
                             );
-                          } else {
+                          }
+                          else {
                             return Container(
                               color: Colors.grey.withOpacity(0.2),
                               child: GestureDetector(
@@ -291,7 +319,8 @@ class _PostGalleryState extends State<PostGallery> {
                                             const Duration(milliseconds: 150));
                                       }
                                       popupDialog.remove();
-                                    } else if ((details.globalPosition.dx >=
+                                    }
+                                    else if ((details.globalPosition.dx >=
                                                 180 &&
                                             details.globalPosition.dx <= 225) &&
                                         (details.globalPosition.dy >= 760 &&
@@ -325,7 +354,24 @@ class _PostGalleryState extends State<PostGallery> {
                                                   ));
                                         },
                                       );
-                                    } else {
+                                    }
+                                    else if ((details.globalPosition.dx >=
+                                        285 &&
+                                        details.globalPosition.dx <= 325) &&
+                                        (details.globalPosition.dy >= 760 &&
+                                            details.globalPosition.dy <= 780)){
+                                      HapticFeedback.vibrate();
+                                      popupDialog.remove();
+                                      if (!context.mounted) return;
+                                      showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => ShareScreen(
+                                              Postid: posts.docs[index]
+                                              ['postid'],
+                                              Type: posts.docs[index]['type']),
+                                          constraints: const BoxConstraints(maxHeight: 400));
+                                    }
+                                    else {
                                       popupDialog.remove();
                                     }
                                   },
@@ -362,33 +408,13 @@ class _PostGalleryState extends State<PostGallery> {
                       );
               }
               else {
-                return Shimmer(
-                  duration: const Duration(milliseconds: 2500),
-                  color: Colors.white.withOpacity(0.5),
-                  colorOpacity: 0.1,
-                  enabled: true,
-                  direction: const ShimmerDirection.fromLeftToRight(),
-                  child: GridView.builder(
-                    itemCount: 12,
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 2,
-                            mainAxisSpacing: 2,
-                            childAspectRatio: 1),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        color: Colors.grey.withOpacity(0.1),
-                      );
-                    },
-                  ),
-                );
+                return const SizedBox.shrink();
               }
             },
           );
         } else {
-          return Shimmer(
+          return const SizedBox.shrink();
+          /*return Shimmer(
             duration: const Duration(milliseconds: 2500),
             color: Colors.white.withOpacity(0.5),
             colorOpacity: 0.1,
@@ -408,7 +434,7 @@ class _PostGalleryState extends State<PostGallery> {
                 );
               },
             ),
-          );
+          );*/
         }
       },
     );
@@ -416,7 +442,7 @@ class _PostGalleryState extends State<PostGallery> {
 
   OverlayEntry _createPopupDialog(
       int index,
-      QuerySnapshot postdata,
+      QuerySnapshot<Map<String, dynamic>>? postdata,
       GlobalKey<TooltipState> likeState,
       GlobalKey<TooltipState> commentState,
       GlobalKey<TooltipState> shareState,
@@ -430,7 +456,6 @@ class _PostGalleryState extends State<PostGallery> {
         likeState: likeState,
         commentState: commentState,
         shareState: shareState,
-        isLiked: isLiked,
         isHeartAnimating: isHeartAnimating,
       )),
     );
